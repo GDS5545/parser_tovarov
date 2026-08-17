@@ -156,7 +156,10 @@ class UWP_Url {
         $path  = strtolower(self::path($url));
         $query = strtolower((string) parse_url($url, PHP_URL_QUERY));
 
-        $service = '~(^|/)(wp-admin|wp-login|wp-json|wp-content|wp-includes|admin|administrator|bitrix|local|upload|uploads|assets|static|media|cart|korzina|basket|checkout|oformlenie|order|zakaz|compare|sravnenie|wishlist|izbrannoe|favorites|login|signin|signup|register|registraciya|logout|account|cabinet|lichnyj-kabinet|profile|search|poisk|feed|rss|sitemap|tag|tags|author|comment|print|ajax|api)(/|$)~';
+        // Только то, что действительно никогда не бывает разделом каталога.
+        // Раньше список был шире и заодно отсекал живые разделы: «media», «order»,
+        // «tag» и подобные слова встречаются в адресах товарных категорий.
+        $service = '~(^|/)(wp-admin|wp-login|wp-json|wp-content|wp-includes|administrator|bitrix/admin|cart|korzina|basket|checkout|oformlenie-zakaza|compare|sravnenie|wishlist|izbrannoe|login|signin|signup|register|registraciya|logout|logout\.php|account|cabinet|lichnyj-kabinet|myaccount|profile|search|poisk|feed|rss|comment-page-\d+|print|ajax)(/|$)~';
         if (preg_match($service, $path)) { return true; }
 
         if ($query !== '') {

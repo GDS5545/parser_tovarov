@@ -86,9 +86,12 @@ class UWP_Runner {
     /**
      * Один тик обработки очереди.
      *
+     * @param bool $spawn_next заказывать ли следующий тик фоном. Когда очередь
+     *                         двигает открытая вкладка админки, фоновая цепочка
+     *                         не нужна — она только дублировала бы работу.
      * @return array сводка тика
      */
-    public static function tick() {
+    public static function tick($spawn_next = true) {
         $summary = array(
             'processed' => 0,
             'products'  => 0,
@@ -176,7 +179,7 @@ class UWP_Runner {
         delete_transient(self::LOCK);
 
         // Есть работа — сразу заказываем следующий тик.
-        if (!$summary['stopped'] && $summary['pending'] > 0 && self::is_running()) {
+        if ($spawn_next && !$summary['stopped'] && $summary['pending'] > 0 && self::is_running()) {
             self::spawn();
         }
 
@@ -247,10 +250,16 @@ class UWP_Runner {
                 : 'Работает';
         }
 
+        $failures = array();
+        foreach (UWP_DB::recent_failures(5) as $failure) {
+            $failures[] = $failure->note . ' — ' . $failure->url;
+        }
+
         return array(
             'running'         => $running,
             'state'           => $state,
             'pending'         => $pending,
+            'failures'        => $failures,
             'pages_done'      => $counts['page']['done'],
             'pages_pending'   => $counts['page']['pending'],
             'products_done'   => $counts['product']['done'],

@@ -25,6 +25,7 @@ class UWP_Admin {
         add_action('wp_ajax_uwp_clear', array($this, 'ajax_clear'));
         add_action('wp_ajax_uwp_status', array($this, 'ajax_status'));
         add_action('wp_ajax_uwp_inspect', array($this, 'ajax_inspect'));
+        add_action('wp_ajax_uwp_run_tick', array($this, 'ajax_run_tick'));
     }
 
     private function capability() {
@@ -148,6 +149,30 @@ class UWP_Admin {
     }
 
     /**
+     * Тик очереди, запущенный открытой вкладкой админки.
+     *
+     * Нужен для хостингов, где заблокированы обращения сайта к самому себе
+     * и отключен WP-Cron: там фоновая цепочка не стартует и очередь стоит.
+     * Пока страница парсера открыта, работу двигает браузер. Тик ограничен
+     * тем же бюджетом времени, поэтому запрос всегда короткий.
+     */
+    public function ajax_run_tick() {
+        $this->guard();
+
+        if (!UWP_Runner::is_running()) {
+            wp_send_json_success(array('ran' => false, 'status' => UWP_Runner::status()));
+        }
+
+        $summary = UWP_Runner::tick(false);
+
+        wp_send_json_success(array(
+            'ran'      => true,
+            'summary'  => $summary,
+            'status'   => UWP_Runner::status(),
+        ));
+    }
+
+    /**
      * Диагностика одной страницы: что плагин на ней увидел и куда положит товар.
      */
     public function ajax_inspect() {
@@ -204,7 +229,15 @@ class UWP_Admin {
                 }
             }
         } else {
+            $report = $extractor->detection_report();
+
             $lines[] = 'Это НЕ карточка товара — страница будет обойдена как раздел каталога.';
+            $lines[] = 'Оценка признаков товара: ' . $report['score'] . ' из нужных ' . $report['threshold'] . '.';
+            $lines[] = 'Что нашлось: ' . ($report['signals'] ? implode(', ', $report['signals']) : 'ничего товарного');
+            if ($report['title'] === '') {
+                $lines[] = 'Название товара не определилось — задайте селектор названия в разделе «Дополнительно».';
+            }
+            $lines[] = '';
             $lines[] = 'Заголовок страницы: ' . $extractor->page_title();
             $lines[] = 'Хлебные крошки: ' . ($crumbs ? implode(' / ', $crumbs) : 'не найдены');
             $lines[] = 'Всего ссылок: ' . count($links);
@@ -284,7 +317,13 @@ class UWP_Admin {
                 </div>
                 <div class="uwp-progress"><div class="uwp-progress-bar" id="uwp-progress-bar"></div></div>
                 <div class="uwp-metrics" id="uwp-metrics"></div>
+                <div class="uwp-failures" id="uwp-failures" style="display:none"></div>
             </div>
+
+            <p class="uwp-hint">
+                Пока эта страница открыта, очередь двигает браузер — это работает
+                на любом хостинге. Закрытую вкладку подхватывает фоновый режим.
+            </p>
 
             <div class="uwp-actions">
                 <button type="button" class="button button-primary button-hero" id="uwp-start">Запустить</button>

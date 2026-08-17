@@ -4,6 +4,7 @@
 
     var pollTimer = null;
     var busy = false;
+    var ticking = false;
 
     function post(action, extra) {
         var data = $.extend({ action: action, nonce: UWP.nonce }, extra || {});
@@ -49,6 +50,18 @@
             .text(status.state)
             .attr('data-running', status.running ? '1' : '0');
 
+        var $failures = $('#uwp-failures');
+        if (status.failures && status.failures.length) {
+            $failures.html(
+                '<b>Последние проблемные страницы:</b>' +
+                status.failures.map(function (line) {
+                    return '<div class="uwp-failure">' + $('<span/>').text(line).html() + '</div>';
+                }).join('')
+            ).show();
+        } else {
+            $failures.hide().empty();
+        }
+
         $('#uwp-heartbeat').text(
             status.source
                 ? 'Источник: ' + status.source + ' · последний проход: ' + status.heartbeat
@@ -91,18 +104,46 @@
 
         post('uwp_status')
             .done(function (response) {
-                if (response && response.success) {
-                    renderStatus(response.data.status);
-                    renderLogs(response.data.logs);
-                    schedule(response.data.status && response.data.status.running ? 4000 : 12000);
-                } else {
-                    schedule(15000);
-                }
+                if (!response || !response.success) { schedule(15000); return; }
+
+                var status = response.data.status;
+                renderStatus(status);
+                renderLogs(response.data.logs);
+
+                // Пока вкладка открыта, очередь двигает браузер. Это страховка
+                // для хостингов, где не работают ни WP-Cron, ни обращение сайта
+                // к самому себе — иначе фон там просто не стартует.
+                if (status && status.running && status.pending > 0) { runTick(); return; }
+
+                schedule(status && status.running ? 5000 : 12000);
             })
             .fail(function () {
                 schedule(15000);
             })
             .always(function () { busy = false; });
+    }
+
+    function runTick() {
+        if (ticking) { return; }
+        ticking = true;
+
+        post('uwp_run_tick')
+            .done(function (response) {
+                if (response && response.success) {
+                    renderStatus(response.data.status);
+
+                    var summary = response.data.summary;
+                    if (summary && summary.messages && summary.messages.length) {
+                        summary.messages.slice(0, 5).forEach(function (line) { say(line, 'muted'); });
+                    }
+                }
+                schedule(400);
+            })
+            .fail(function (xhr) {
+                say('Проход прерван: ' + failMessage(xhr), 'bad');
+                schedule(10000);
+            })
+            .always(function () { ticking = false; });
     }
 
     function schedule(delay) {

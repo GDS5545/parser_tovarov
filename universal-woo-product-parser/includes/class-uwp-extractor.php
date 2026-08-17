@@ -16,6 +16,9 @@ if (!defined('ABSPATH')) { exit; }
 
 class UWP_Extractor {
 
+    /** Порог суммы признаков, начиная с которого страница считается карточкой товара. */
+    const PRODUCT_SCORE_THRESHOLD = 4;
+
     /** @var UWP_Dom */
     private $dom;
 
@@ -61,7 +64,7 @@ class UWP_Extractor {
         $ld = $this->ld_product();
 
         $signals = $this->product_signals($ld !== null);
-        if ($signals['score'] < 3) { return null; }
+        if ($signals['score'] < self::PRODUCT_SCORE_THRESHOLD) { return null; }
 
         $title = $this->product_title($ld);
         if ($title === '') { return null; }
@@ -93,70 +96,222 @@ class UWP_Extractor {
         $score   = 0;
         $matched = array();
 
+        // --- Сильные признаки: разметка прямо объявляет страницу товаром.
         if ($has_ld_product) {
-            $score += 5;
+            $score += 6;
             $matched[] = 'JSON-LD Product';
         }
 
-        if ($this->dom->first('[itemtype*="schema.org/Product"]')) {
-            $score += 5;
+        if ($this->dom->first('[itemtype*="schema.org/Product"]') || $this->dom->first('[itemtype*="schema.org/IndividualProduct"]')) {
+            $score += 6;
             $matched[] = 'микроразметка Product';
         }
 
         $og_type = mb_strtolower($this->dom->meta('og:type'));
         if ($og_type !== '' && preg_match('~product|item|goods~', $og_type)) {
-            $score += 4;
+            $score += 5;
             $matched[] = 'og:type=' . $og_type;
         }
 
         if ($this->dom->meta('product:price:amount') !== '') {
-            $score += 4;
+            $score += 5;
             $matched[] = 'meta product:price';
         }
 
-        // Кнопка/форма покупки — самый универсальный признак карточки.
-        $cart_selectors = array(
-            'form.cart', 'form[action*="cart"]', 'button[name="add-to-cart"]',
-            '[class*="add-to-cart"]', '[class*="add_to_cart"]', '[class*="addtocart"]',
-            '[data-product-id]', '[id*="add-to-cart"]', '[class*="buy-button"]',
-            '[class*="btn-buy"]', '[class*="product-buy"]', '[class*="to-cart"]',
-        );
-        foreach ($cart_selectors as $selector) {
-            if ($this->dom->first($selector)) {
-                $score += 3;
-                $matched[] = 'кнопка покупки';
-                break;
-            }
+        $strong = $score > 0;
+
+        // --- Средние признаки: элементы, которые бывают только на карточке.
+        $buy = $this->buy_controls();
+        if ($buy['count'] > 0) {
+            $score += 2;
+            $matched[] = 'кнопка покупки (' . $buy['how'] . ')';
         }
 
-        if ($this->dom->first('[itemprop="price"]') || $this->dom->first('[class*="price"]')) {
-            $score += 1;
-            $matched[] = 'блок цены';
+        if ($this->has_quantity_input()) {
+            $score += 2;
+            $matched[] = 'поле количества';
         }
 
-        if ($this->dom->first('[itemprop="sku"]') || $this->dom->first('[class*="sku"]') || $this->dom->first('[class*="artikul"]') || $this->dom->first('[class*="article"]')) {
-            $score += 1;
+        $prices = $this->price_nodes();
+        if ($prices['count'] > 0) {
+            $score += 2;
+            $matched[] = 'цена на странице';
+        }
+
+        if ($this->has_sku_marker()) {
+            $score += 2;
             $matched[] = 'артикул';
         }
 
-        // Галерея товара
-        if ($this->dom->first('[class*="product-gallery"]') || $this->dom->first('[class*="product-image"]') || $this->dom->first('[class*="product__image"]')) {
+        // --- Слабые признаки.
+        if (count($this->dom->tags('h1')) === 1) {
             $score += 1;
-            $matched[] = 'галерея товара';
+            $matched[] = 'один H1';
         }
 
-        // Признак обратный: на листинге много карточек, значит это не одна карточка.
-        $card_count = count($this->dom->find('[class*="product-card"]')) + count($this->dom->find('[class*="catalog-item"]')) + count($this->dom->find('li.product'));
-        if ($card_count >= 4) {
-            $score -= 3;
-            $matched[] = 'похоже на листинг (-)';
+        if ($this->dom->first('[class*="product-gallery"]') || $this->dom->first('[class*="product-image"]')
+            || $this->dom->first('[class*="product__image"]') || $this->dom->first('[class*="detail-gallery"]')
+            || $this->dom->first('[class*="thumbs"]')) {
+            $score += 1;
+            $matched[] = 'галерея';
         }
 
-        // Один H1 на странице — норма для карточки.
-        $h1 = $this->dom->tags('h1');
-        if (count($h1) === 1) { $score += 1; }
+        if ($this->dom->first('[class*="characteristic"]') || $this->dom->first('[class*="harakteristik"]')
+            || $this->dom->first('[class*="specification"]') || $this->dom->first('.shop_attributes')) {
+            $score += 1;
+            $matched[] = 'блок характеристик';
+        }
 
-        return array('score' => $score, 'matched' => $matched);
+        // --- Отрицательный признак: это витрина раздела, а не одна карточка.
+        //
+        // Считать карточки в лоб нельзя: на нормальной странице товара почти всегда
+        // есть блок «похожие товары», и раньше он один опускал оценку ниже порога.
+        // Поэтому листингом страница признается только по массовости —
+        // много цен и много кнопок покупки сразу — и только когда разметка
+        // не объявила товар явно.
+        $listing = $this->listing_evidence($prices['count'], $buy['count']);
+        if (!$strong && $listing['is_listing']) {
+            $score -= 5;
+            $matched[] = 'похоже на витрину раздела: ' . $listing['reason'] . ' (-)';
+        }
+
+        return array('score' => $score, 'matched' => $matched, 'strong' => $strong);
+    }
+
+    /**
+     * Кнопки и ссылки покупки. Ищем и по классам, и по тексту:
+     * на самописных сайтах класс может быть любым, а надпись — почти всегда
+     * «Купить», «В корзину», «Заказать» или их английский аналог.
+     *
+     * @return array array('count' => int, 'how' => string)
+     */
+    private function buy_controls() {
+        $by_class = 0;
+        $selectors = array(
+            'form.cart', 'form[action*="cart"]', 'form[action*="basket"]', 'form[action*="korzina"]',
+            'button[name="add-to-cart"]', 'input[name="add-to-cart"]',
+            '[class*="add-to-cart"]', '[class*="add_to_cart"]', '[class*="addtocart"]',
+            '[class*="buy"]', '[id*="buy"]', '[class*="kupit"]', '[id*="kupit"]',
+            '[class*="to-cart"]', '[class*="tocart"]', '[class*="v-korzinu"]',
+            '[class*="basket"]', '[class*="korzin"]', '[class*="zakaz"]', '[class*="order-btn"]',
+            '[data-product-id]', '[data-product]', '[data-id][class*="btn"]',
+        );
+        foreach ($selectors as $selector) {
+            $by_class += count($this->dom->find($selector));
+            if ($by_class > 20) { break; }
+        }
+
+        $by_text = 0;
+        $pattern = '~^(купить|в корзину|добавить в корзину|заказать|оформить заказ|положить в корзину|купить в 1 клик|быстрый заказ|add to cart|buy now|buy|order now|preorder)~iu';
+        foreach (array('button', 'a', 'input') as $tag) {
+            foreach ($this->dom->tags($tag) as $node) {
+                if (!$node instanceof DOMElement) { continue; }
+                $text = UWP_Dom::node_text($node);
+                if ($text === '') { $text = trim($node->getAttribute('value')); }
+                if ($text === '') { continue; }
+                if (mb_strlen($text) <= 40 && preg_match($pattern, $text)) { $by_text++; }
+                if ($by_text > 20) { break 2; }
+            }
+        }
+
+        $how = array();
+        if ($by_class) { $how[] = 'разметка'; }
+        if ($by_text) { $how[] = 'текст'; }
+
+        return array(
+            'count' => max($by_class, $by_text),
+            'text'  => $by_text,
+            'how'   => $how ? implode(' + ', $how) : '',
+        );
+    }
+
+    private function has_quantity_input() {
+        $selectors = array(
+            'input[name="quantity"]', 'input[name="qty"]', 'input[name*="quant"]',
+            '[class*="quantity"]', '[class*="kolichestvo"]', '[class*="counter"] input',
+            'input[type="number"]',
+        );
+        foreach ($selectors as $selector) {
+            if ($this->dom->first($selector)) { return true; }
+        }
+        return false;
+    }
+
+    private function has_sku_marker() {
+        if ($this->dom->first('[itemprop="sku"]') || $this->dom->first('[itemprop="mpn"]')) { return true; }
+        foreach (array('[class*="sku"]', '[class*="artikul"]', '[class*="article-num"]', '[class*="art-num"]', '[class*="kod-tovara"]') as $selector) {
+            if ($this->dom->first($selector)) { return true; }
+        }
+        return (bool) preg_match('~(артикул|код товара|кат\.?\s*номер)\s*[:№]~iu', wp_strip_all_tags($this->dom->raw_html()));
+    }
+
+    /**
+     * Узлы с разобранной ценой. Количество — главный разделитель
+     * карточки (одна-три цены) и витрины раздела (цена у каждого товара).
+     */
+    private function price_nodes() {
+        $found = 0;
+        $seen  = array();
+
+        foreach (array('[itemprop="price"]', '[class*="price"]', '[class*="cena"]', '[class*="cost"]', '[data-price]') as $selector) {
+            foreach ($this->dom->find($selector) as $node) {
+                if (!$node instanceof DOMElement) { continue; }
+
+                // Родительские обертки не считаем дважды.
+                $key = spl_object_hash($node);
+                if (isset($seen[$key])) { continue; }
+                $seen[$key] = true;
+
+                $text = UWP_Dom::node_text($node);
+                if (mb_strlen($text) > 200) { continue; }
+
+                $parsed = self::parse_price_string($text);
+                if ($parsed['price'] !== '') { $found++; }
+
+                if ($found > 40) { break 2; }
+            }
+        }
+
+        return array('count' => $found);
+    }
+
+    /**
+     * Насколько страница похожа на витрину раздела, а не на карточку.
+     */
+    private function listing_evidence($price_count, $buy_count) {
+        $cards = 0;
+        foreach (array('[class*="product-card"]', '[class*="catalog-item"]', '[class*="product-item"]', 'li.product', '[class*="tovar-item"]') as $selector) {
+            $cards += count($this->dom->find($selector));
+            if ($cards > 60) { break; }
+        }
+
+        // Витрина: цена повторяется у многих позиций и рядом с каждой — кнопка.
+        if ($price_count >= 5 && $buy_count >= 4) {
+            return array('is_listing' => true, 'reason' => 'цен ' . $price_count . ', кнопок покупки ' . $buy_count);
+        }
+        if ($cards >= 6 && $price_count >= 5) {
+            return array('is_listing' => true, 'reason' => 'карточек ' . $cards . ', цен ' . $price_count);
+        }
+        if ($cards >= 10) {
+            return array('is_listing' => true, 'reason' => 'карточек ' . $cards);
+        }
+
+        return array('is_listing' => false, 'reason' => '');
+    }
+
+    /**
+     * Отчет о распознавании для диагностики в админке.
+     */
+    public function detection_report() {
+        $ld      = $this->ld_product();
+        $signals = $this->product_signals($ld !== null);
+
+        return array(
+            'score'     => $signals['score'],
+            'threshold' => self::PRODUCT_SCORE_THRESHOLD,
+            'signals'   => $signals['matched'],
+            'title'     => $this->product_title($ld),
+        );
     }
 
     private function product_title($ld) {

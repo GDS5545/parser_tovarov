@@ -3,7 +3,7 @@
  * Plugin Name: Universal Woo Product Parser
  * Plugin URI:  https://github.com/gds5545/parser_tovarov
  * Description: Универсальный парсер каталогов. Обходит домен, указанный в настройках, распознает карточки товаров на любом движке (JSON-LD, микроразметка, OpenGraph, эвристики) и импортирует их в каталог WooCommerce с правильным деревом категорий. Работает в фоне короткими тиками — без 504 и зависаний.
- * Version:     2.0.0
+ * Version:     2.1.0
  * Author:      parser_tovarov
  * Requires at least: 6.0
  * Requires PHP: 7.4
@@ -12,7 +12,7 @@
 
 if (!defined('ABSPATH')) { exit; }
 
-define('UWP_VERSION', '2.0.0');
+define('UWP_VERSION', '2.1.0');
 define('UWP_FILE', __FILE__);
 define('UWP_DIR', plugin_dir_path(__FILE__));
 define('UWP_URL', plugin_dir_url(__FILE__));

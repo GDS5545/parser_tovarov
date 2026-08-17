@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) { exit; }
 class UWP_DB {
 
     const DB_VERSION_OPTION = 'uwp_parser_db_version';
-    const DB_VERSION        = '2.0.0';
+    const DB_VERSION        = '2.1.0';
 
     const KIND_PAGE    = 'page';
     const KIND_PRODUCT = 'product';

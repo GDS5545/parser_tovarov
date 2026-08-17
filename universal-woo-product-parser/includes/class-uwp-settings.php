@@ -27,7 +27,7 @@ class UWP_Settings {
             'root_category'     => '',
             'create_categories' => 1,
             'require_category'  => 0,
-            'post_status'       => 'draft',
+            'post_status'       => 'publish',
 
             // Что импортируем
             'import_prices'     => 1,
@@ -50,8 +50,10 @@ class UWP_Settings {
             'request_delay_ms'  => 500,
             'max_attempts'      => 3,
 
-            // Сеть
-            'user_agent'        => 'Mozilla/5.0 (compatible; UniversalWooProductParser/' . UWP_VERSION . '; +WordPress)',
+            // Сеть.
+            // User-Agent обычного браузера: на служебный UA парсера Cloudflare
+            // и модули безопасности хостингов отвечают 403, и обход встает.
+            'user_agent'        => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
             'proxy'             => '',
 
             // Ручные селекторы (нужны редко, только если авто-разбор промахнулся)

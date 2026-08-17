@@ -91,6 +91,19 @@
     color: #787c82;
 }
 
+.uwp-failures {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f1;
+    font-size: 12px;
+    color: #b32d2e;
+}
+
+.uwp-failure {
+    margin-top: 4px;
+    word-break: break-all;
+}
+
 /* Кнопки */
 .uwp-actions {
     display: flex;
