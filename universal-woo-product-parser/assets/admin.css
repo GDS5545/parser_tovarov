@@ -1,0 +1,262 @@
+.uwp {
+    max-width: 1100px;
+}
+
+.uwp-version {
+    font-size: 13px;
+    color: #667;
+    font-weight: 400;
+}
+
+.uwp-intro {
+    max-width: 760px;
+    font-size: 14px;
+    color: #3c434a;
+}
+
+/* Панель состояния */
+.uwp-panel {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 16px 0;
+}
+
+.uwp-status-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.uwp-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: #f0f0f1;
+    color: #50575e;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.uwp-badge[data-running="1"] {
+    background: #edfaef;
+    color: #00733f;
+}
+
+.uwp-heartbeat {
+    font-size: 12px;
+    color: #787c82;
+    word-break: break-all;
+}
+
+.uwp-progress {
+    height: 8px;
+    background: #f0f0f1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.uwp-progress-bar {
+    height: 100%;
+    width: 0;
+    background: #2271b1;
+    transition: width .4s ease;
+}
+
+.uwp-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 14px;
+}
+
+.uwp-metric {
+    display: flex;
+    flex-direction: column;
+    min-width: 96px;
+}
+
+.uwp-metric-value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #1d2327;
+}
+
+.uwp-metric-label {
+    font-size: 12px;
+    color: #787c82;
+}
+
+/* Кнопки */
+.uwp-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 18px 0;
+}
+
+.uwp-fresh {
+    font-size: 13px;
+    color: #50575e;
+}
+
+/* Вывод сообщений */
+.uwp-output {
+    margin: 12px 0;
+}
+
+.uwp-line {
+    padding: 6px 10px;
+    border-left: 3px solid #dcdcde;
+    background: #fff;
+    font-size: 13px;
+    margin-bottom: 2px;
+    word-break: break-word;
+}
+
+.uwp-line-ok { border-left-color: #00a32a; }
+.uwp-line-bad { border-left-color: #d63638; }
+.uwp-line-muted { color: #787c82; }
+
+/* Форма */
+.uwp-card {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 16px 18px;
+    margin: 16px 0;
+}
+
+.uwp-card h2 {
+    margin-top: 0;
+    font-size: 16px;
+}
+
+.uwp-card h3 {
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.uwp-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.uwp-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 782px) {
+    .uwp-grid,
+    .uwp-grid-3 { grid-template-columns: 1fr; }
+}
+
+.uwp-field {
+    margin-bottom: 12px;
+}
+
+.uwp-field label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.uwp-field input[type="text"],
+.uwp-field input[type="url"],
+.uwp-field input[type="number"],
+.uwp-field select,
+.uwp-field textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+.uwp-field input[type="number"] {
+    max-width: 160px;
+}
+
+.uwp-field textarea {
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+}
+
+.uwp-hint {
+    font-size: 12px;
+    color: #787c82;
+    margin: 4px 0 0;
+}
+
+.uwp-check {
+    display: block;
+    font-size: 13px;
+    margin: 6px 0;
+}
+
+.uwp-advanced summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.uwp-advanced[open] summary {
+    margin-bottom: 12px;
+}
+
+/* Проверка страницы */
+.uwp-inspect {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.uwp-inspect input {
+    flex: 1 1 420px;
+}
+
+.uwp-report {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 12px;
+    margin-top: 12px;
+    max-height: 460px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.uwp-report:empty {
+    display: none;
+}
+
+/* Журнал */
+.uwp-log {
+    max-height: 360px;
+    overflow: auto;
+    background: #1d2327;
+    color: #dcdcde;
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.uwp-log-line {
+    word-break: break-word;
+}
+
+.uwp-log-time {
+    color: #8c8f94;
+}
+
+.uwp-log-error { color: #ff8a80; }
+.uwp-log-warning { color: #ffd479; }
