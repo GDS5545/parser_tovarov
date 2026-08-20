@@ -1,0 +1,279 @@
+.pct {
+    --pct-accent: #e2231a;
+    --pct-text: #1f2430;
+    --pct-muted: #6b7280;
+    --pct-line: #e5e7eb;
+    --pct-soft: #f7f8fa;
+    box-sizing: border-box;
+    color: var(--pct-text);
+    font-size: 15px;
+    margin: 24px 0 48px;
+}
+.pct *, .pct *::before, .pct *::after { box-sizing: border-box; }
+
+/* Заголовок категории + бейдж актуализации (шаблон архива) */
+.pct-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.pct-title { margin: 0; }
+.pct-updated {
+    background: var(--pct-soft);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: var(--pct-muted);
+    white-space: nowrap;
+}
+.pct-updated strong { color: var(--pct-text); }
+
+/* Быстрые кнопки */
+.pct-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--pct-line);
+}
+.pct-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 18px;
+    border: 1px solid var(--pct-line);
+    border-radius: 6px;
+    color: var(--pct-text);
+    background: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: border-color .15s ease, color .15s ease;
+}
+.pct-chip:hover { border-color: var(--pct-accent); color: var(--pct-accent); }
+.pct-chip.is-active { border-color: var(--pct-accent); color: #fff; background: var(--pct-accent); }
+.pct-chip-more { color: var(--pct-accent); border-color: var(--pct-accent); background: #fff; }
+.pct-chip-hidden { display: none; }
+.pct-chips.is-expanded .pct-chip-hidden { display: inline-flex; }
+.pct-chips.is-expanded .pct-chip-more { display: none; }
+
+/* Фильтры */
+.pct-filter-wrap { margin-bottom: 28px; }
+.pct-filter-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+.pct-filter-icon { color: var(--pct-text); flex: none; }
+.pct-filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    align-items: center;
+}
+.pct-filter-select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--pct-line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--pct-text);
+    font-size: 14px;
+}
+.pct-filter-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 20px;
+    border: 1px solid var(--pct-accent);
+    border-radius: 6px;
+    background: var(--pct-accent);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+.pct-filter-reset {
+    justify-self: start;
+    color: var(--pct-accent);
+    text-decoration: none;
+    font-size: 14px;
+    align-self: center;
+}
+.pct-note {
+    background: var(--pct-soft);
+    border-radius: 8px;
+    padding: 16px;
+    color: var(--pct-muted);
+    margin-bottom: 24px;
+}
+
+/* Таблица */
+.pct-table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.pct-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+.pct-table th, .pct-table td {
+    padding: 16px 18px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--pct-line);
+}
+.pct-table thead th {
+    color: var(--pct-muted);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: none;
+    white-space: nowrap;
+}
+.pct-table tbody tr:hover td { background: var(--pct-soft); }
+.pct-col-name a { color: var(--pct-text); text-decoration: none; font-weight: 500; }
+.pct-col-name a:hover { color: var(--pct-accent); }
+.pct-col-price { white-space: nowrap; }
+.pct-price { font-weight: 700; color: var(--pct-text); }
+.pct-price-empty { color: var(--pct-muted); }
+.pct-dash { color: var(--pct-muted); }
+.pct-empty-row { text-align: center; color: var(--pct-muted); padding: 40px 16px; }
+
+.pct-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: inherit;
+    text-decoration: none;
+}
+.pct-sort-icon {
+    width: 8px;
+    height: 12px;
+    position: relative;
+    flex: none;
+}
+.pct-sort-icon::before, .pct-sort-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    opacity: .35;
+}
+.pct-sort-icon::before { top: 0; border-bottom: 4px solid var(--pct-muted); }
+.pct-sort-icon::after { bottom: 0; border-top: 4px solid var(--pct-muted); }
+.pct-sort.is-active.is-asc .pct-sort-icon::before { opacity: 1; border-bottom-color: var(--pct-accent); }
+.pct-sort.is-active.is-desc .pct-sort-icon::after { opacity: 1; border-top-color: var(--pct-accent); }
+
+/* Кнопки и количество */
+.pct-col-actions { text-align: right; white-space: nowrap; }
+.pct-action { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.pct-qty {
+    width: 64px;
+    min-height: 42px;
+    border: 1px solid var(--pct-line);
+    border-radius: 6px;
+    padding: 0 8px;
+    font-size: 14px;
+}
+.pct-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 20px;
+    border-radius: 6px;
+    border: 1px solid var(--pct-accent);
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.pct-btn-buy { background: var(--pct-accent); color: #fff; }
+.pct-btn-buy:hover { background: #c31c14; border-color: #c31c14; color: #fff; }
+.pct-btn-buy.loading { opacity: .6; pointer-events: none; }
+.pct-btn-request { background: #fff; color: var(--pct-accent); }
+.pct-btn-request:hover { background: var(--pct-accent); color: #fff; }
+
+/* Пагинация */
+.pct-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 24px;
+}
+.pct-pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--pct-line);
+    border-radius: 6px;
+    color: var(--pct-text);
+    text-decoration: none;
+    font-size: 14px;
+}
+.pct-pagination .page-numbers.current { background: var(--pct-accent); border-color: var(--pct-accent); color: #fff; }
+.pct-pagination .page-numbers.dots { border-color: transparent; }
+
+.pct-empty { color: var(--pct-muted); padding: 20px 0; }
+
+/* Модалка «Узнать цену» */
+.pct-modal { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; }
+.pct-modal[hidden] { display: none; }
+.pct-modal-overlay { position: absolute; inset: 0; background: rgba(15, 18, 25, .5); }
+.pct-modal-box {
+    position: relative;
+    background: #fff;
+    border-radius: 10px;
+    padding: 28px;
+    width: min(92vw, 420px);
+    box-shadow: 0 20px 60px rgba(15, 18, 25, .25);
+}
+.pct-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    border: 0;
+    background: none;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--pct-muted);
+}
+.pct-modal-title { margin: 0 0 6px; font-size: 20px; }
+.pct-modal-product { color: var(--pct-muted); margin: 0 0 18px; font-size: 14px; }
+.pct-field { display: block; font-size: 13px; color: var(--pct-muted); margin-bottom: 14px; }
+.pct-field input {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    margin-top: 6px;
+    padding: 0 12px;
+    border: 1px solid var(--pct-line);
+    border-radius: 6px;
+    font-size: 14px;
+    color: var(--pct-text);
+}
+.pct-modal-submit { width: 100%; }
+.pct-modal-status { min-height: 18px; font-size: 13px; margin: 10px 0 0; }
+.pct-modal-status.is-error { color: var(--pct-accent); }
+.pct-modal-status.is-success { color: #1b8a4b; }
+.pct-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+
+@media (max-width: 760px) {
+    .pct-filter-form { grid-template-columns: 1fr; }
+    .pct-table { min-width: 0; }
+    .pct-col-actions { text-align: left; }
+}
