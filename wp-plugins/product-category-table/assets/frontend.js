@@ -92,11 +92,143 @@
         });
     }
 
+    function initFloatingCart($root) {
+        var $widget = $('#pct-cart-widget');
+        if (!$widget.length) {
+            return;
+        }
+
+        var $toggle = $('#pct-cart-toggle');
+        var $drawer = $('#pct-cart-drawer');
+        var $count = $('#pct-cart-count');
+        var $items = $('#pct-cart-items');
+        var $total = $('#pct-cart-total');
+        var $form = $('#pct-cart-order-form');
+        var $status = $form.find('.pct-cart-status');
+
+        function applySummary(data) {
+            if (!data) {
+                return;
+            }
+            var count = data.count || 0;
+            $count.text(count).prop('hidden', count < 1);
+            if (typeof data.total === 'string') {
+                $total.text(data.total !== '' ? data.total : '—');
+            }
+            if (typeof data.items_html === 'string') {
+                $items.html(data.items_html);
+            }
+        }
+
+        function fetchCart() {
+            return $.post(PCT.ajax_url, {
+                action: 'pct_get_cart',
+                nonce: PCT.cart_nonce
+            }).done(function (response) {
+                if (response && response.success) {
+                    applySummary(response.data);
+                }
+            });
+        }
+
+        function openDrawer() {
+            $drawer.prop('hidden', false);
+            fetchCart();
+        }
+
+        function closeDrawer() {
+            $drawer.prop('hidden', true);
+        }
+
+        $toggle.on('click', function () {
+            if ($drawer.prop('hidden')) {
+                openDrawer();
+            } else {
+                closeDrawer();
+            }
+        });
+
+        $widget.on('click', '[data-pct-cart-close]', closeDrawer);
+
+        $(document).on('keydown', function (e) {
+            if (e.key === 'Escape' && !$drawer.prop('hidden')) {
+                closeDrawer();
+            }
+        });
+
+        // "Заказать" в таблице — стандартный ajax_add_to_cart WooCommerce
+        // (wc-add-to-cart.js). Он сам шлёт запрос и вешает событие ниже на body.
+        $(document.body).on('added_to_cart', function () {
+            fetchCart();
+        });
+
+        var qtyTimer = null;
+        $items.on('input', '.pct-cart-item-qty', function () {
+            var $input = $(this);
+            window.clearTimeout(qtyTimer);
+            qtyTimer = window.setTimeout(function () {
+                var qty = parseInt($input.val(), 10);
+                $.post(PCT.ajax_url, {
+                    action: 'pct_update_cart_item',
+                    nonce: PCT.cart_nonce,
+                    key: $input.data('key'),
+                    quantity: qty
+                }).done(function (response) {
+                    if (response && response.success) {
+                        applySummary(response.data);
+                    }
+                });
+            }, 400);
+        });
+
+        $items.on('click', '.pct-cart-item-remove', function () {
+            var key = $(this).data('key');
+            $.post(PCT.ajax_url, {
+                action: 'pct_remove_cart_item',
+                nonce: PCT.cart_nonce,
+                key: key
+            }).done(function (response) {
+                if (response && response.success) {
+                    applySummary(response.data);
+                }
+            });
+        });
+
+        $form.on('submit', function (e) {
+            e.preventDefault();
+            var $submit = $form.find('.pct-cart-submit');
+            $submit.prop('disabled', true);
+            $status.text('Оформляем…').removeClass('is-error is-success');
+
+            $.post(PCT.ajax_url, $form.serialize())
+                .done(function (response) {
+                    if (response && response.success) {
+                        $status.text((response.data && response.data.message) || 'Заказ оформлен.').addClass('is-success');
+                        applySummary(response.data);
+                        $form.trigger('reset');
+                        window.setTimeout(closeDrawer, 2000);
+                    } else {
+                        $status.text((response && response.data && response.data.message) || 'Не удалось оформить заказ.').addClass('is-error');
+                    }
+                })
+                .fail(function () {
+                    $status.text('Не удалось оформить заказ. Попробуйте ещё раз.').addClass('is-error');
+                })
+                .always(function () {
+                    $submit.prop('disabled', false);
+                });
+        });
+
+        // Показать актуальное количество сразу при загрузке любой страницы сайта.
+        fetchCart();
+    }
+
     $(function () {
         var $root = $(document);
         initAutoSubmit($root);
         initChips($root);
         initQuantitySync($root);
         initRequestModal($root);
+        initFloatingCart($root);
     });
 })(jQuery);

@@ -5,8 +5,9 @@ if (!defined('ABSPATH')) {
 
 /**
  * Единственный кастомный AJAX-обработчик плагина: заявка «Узнать цену» для товаров без
- * цены/остатка. Кнопка «Купить» использует стандартный ajax add-to-cart WooCommerce
- * (wc-add-to-cart.js), отдельный обработчик для этого не нужен.
+ * цены/остатка. Кнопка «Заказать» использует стандартный ajax add-to-cart WooCommerce
+ * (wc-add-to-cart.js) плюс плавающую корзину из class-pct-cart.php — отдельный
+ * обработчик добавления в корзину здесь не нужен.
  */
 class PCT_Ajax {
     public static function init($plugin) {

@@ -84,6 +84,43 @@ class PCT_Query {
     }
 
     /**
+     * Какие из зарегистрированных глобальных атрибутов WooCommerce (pa_*) реально
+     * назначены хотя бы одному товару в данном наборе ID. Для каждой таксономии — один
+     * лёгкий запрос "есть ли хоть один термин у этих object_ids" (LIMIT 1), а не перебор
+     * товаров. Количество таксономий = сколько атрибутов вообще заведено в магазине
+     * (обычно единицы-десятки), поэтому стоимость не зависит от размера категории.
+     * Результат кешируется по категории и сбрасывается при изменении товаров/категорий
+     * (см. PCT_Plugin::bump_cache_version()).
+     */
+    public static function detect_used_taxonomies($term_id, $product_ids) {
+        $cache_key = 'pct_used_tax_' . absint($term_id) . '_' . PCT_Plugin::instance()->cache_version();
+        $cached = get_transient($cache_key);
+        if ($cached !== false && is_array($cached)) {
+            return $cached;
+        }
+
+        $out = array();
+        if ($product_ids) {
+            $available = PCT_Plugin::instance()->get_available_attribute_taxonomies();
+            foreach ($available as $taxonomy => $label) {
+                $terms = get_terms(array(
+                    'taxonomy'   => $taxonomy,
+                    'object_ids' => $product_ids,
+                    'hide_empty' => true,
+                    'fields'     => 'ids',
+                    'number'     => 1,
+                ));
+                if (!is_wp_error($terms) && !empty($terms)) {
+                    $out[$taxonomy] = $label;
+                }
+            }
+        }
+
+        set_transient($cache_key, $out, 6 * HOUR_IN_SECONDS);
+        return $out;
+    }
+
+    /**
      * Термины таксономии, реально встречающиеся среди данного набора ID товаров.
      * get_terms(object_ids=>...) — это JOIN по term_relationships, а не перебор товаров.
      */

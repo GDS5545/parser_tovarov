@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Product Category Table
  * Plugin URI:  https://example.local/
- * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам, сортируемые колонки характеристик, кнопки «Купить» / «Узнать цену».
+ * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам (автоматически по каждой категории), сортируемые колонки характеристик, кнопки «Заказать» / «Узнать цену», плавающая корзина.
  * Version:     1.0.0
  * Author:      Claude
  * Text Domain: product-category-table
@@ -31,10 +31,11 @@ define('PCT_PLUGIN_URL', plugin_dir_url(__FILE__));
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-query.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-render.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-ajax.php';
+require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.0.0';
+    const VERSION = '1.1.0';
 
     private static $instance = null;
 
@@ -63,6 +64,7 @@ final class PCT_Plugin {
 
         PCT_Query::init();
         PCT_Ajax::init($this);
+        PCT_Cart::init();
 
         if ($this->get_option('auto_category', 'yes') === 'yes') {
             add_filter('template_include', array($this, 'template_include'), 99);
@@ -85,19 +87,20 @@ final class PCT_Plugin {
             'per_page'              => 20,
             'filter_attributes'     => array(),
             'column_attributes'     => array(),
-            'max_filters'           => 5,
-            'max_columns'           => 3,
+            'max_filters'           => 0,
+            'max_columns'           => 0,
             'chips_attribute'       => '',
             'chips_limit'           => 8,
             'price_prefix'          => 'от ',
             'price_unit'            => 'руб./кг',
-            'button_buy_label'      => 'Купить',
+            'button_buy_label'      => 'Заказать',
             'button_request_label'  => 'Узнать цену',
             'show_quantity'         => 'yes',
+            'floating_cart'         => 'yes',
             'request_email'         => get_option('admin_email'),
             'phone_required'        => 'yes',
             'catalog_updated_date'  => '',
-            'priority_attributes'   => 'marka, marka-stali, diametr-mm, diametr, gost-tu, gost, pokrytie, tekhnologiya-izgotovleniya, tehnologiya-izgotovleniya, tolshchina-mm, tolshchina, razmer',
+            'priority_attributes'   => 'marka, marka-stali, diametr-mm, diametr, gost-tu, gost, pokrytie, tekhnologiya-izgotovleniya, tehnologiya-izgotovleniya, tolshchina-mm, tolshchina, dlina-mm, dlina, shirina-mm, shirina, razmer',
         );
     }
 
@@ -156,8 +159,9 @@ final class PCT_Plugin {
         $out['per_page'] = max(5, min(200, absint($input['per_page'] ?? $defaults['per_page'])));
         $out['filter_attributes'] = $this->normalize_attribute_keys($input['filter_attributes'] ?? array());
         $out['column_attributes'] = $this->normalize_attribute_keys($input['column_attributes'] ?? array());
-        $out['max_filters'] = max(1, min(10, absint($input['max_filters'] ?? $defaults['max_filters'])));
-        $out['max_columns'] = max(1, min(8, absint($input['max_columns'] ?? $defaults['max_columns'])));
+        // 0 = без ограничения (показывать все реально найденные у товаров категории характеристики).
+        $out['max_filters'] = min(20, absint($input['max_filters'] ?? $defaults['max_filters']));
+        $out['max_columns'] = min(20, absint($input['max_columns'] ?? $defaults['max_columns']));
         $out['chips_attribute'] = sanitize_key($input['chips_attribute'] ?? '');
         $out['chips_limit'] = max(0, min(30, absint($input['chips_limit'] ?? $defaults['chips_limit'])));
         $out['price_prefix'] = sanitize_text_field($input['price_prefix'] ?? $defaults['price_prefix']);
@@ -165,6 +169,7 @@ final class PCT_Plugin {
         $out['button_buy_label'] = sanitize_text_field($input['button_buy_label'] ?? $defaults['button_buy_label']);
         $out['button_request_label'] = sanitize_text_field($input['button_request_label'] ?? $defaults['button_request_label']);
         $out['show_quantity'] = isset($input['show_quantity']) && $input['show_quantity'] === 'yes' ? 'yes' : 'no';
+        $out['floating_cart'] = isset($input['floating_cart']) && $input['floating_cart'] === 'yes' ? 'yes' : 'no';
         $out['request_email'] = sanitize_email($input['request_email'] ?? $defaults['request_email']);
         $out['phone_required'] = isset($input['phone_required']) && $input['phone_required'] === 'yes' ? 'yes' : 'no';
         $out['catalog_updated_date'] = sanitize_text_field($input['catalog_updated_date'] ?? '');
@@ -219,10 +224,32 @@ final class PCT_Plugin {
     }
 
     /**
-     * Итоговый список атрибутов-фильтров: явный выбор в настройках/шорткоде,
-     * иначе — первые по приоритету среди реально зарегистрированных pa_* таксономий.
+     * Упорядочивает обнаруженные у товаров категории атрибуты: сначала по списку
+     * приоритета из настроек, затем остальные — в их естественном (алфавитном) порядке.
      */
-    public function resolve_filter_taxonomies($explicit = array()) {
+    private function order_by_priority($detected) {
+        $ordered = array();
+        foreach ($this->get_priority_slugs() as $tax) {
+            if (isset($detected[$tax]) && !isset($ordered[$tax])) {
+                $ordered[$tax] = $detected[$tax];
+            }
+        }
+        foreach ($detected as $tax => $label) {
+            if (!isset($ordered[$tax])) {
+                $ordered[$tax] = $label;
+            }
+        }
+        return $ordered;
+    }
+
+    /**
+     * Список атрибутов-фильтров для категории: по умолчанию — ВСЕ атрибуты WooCommerce
+     * (pa_*), которые реально назначены хотя бы одному товару в этой категории (включая
+     * подкатегории). У разных категорий набор характеристик разный (Марка/Диаметр/ГОСТ у
+     * круга, Марка/Толщина/Покрытие у листа и т.д.) — фильтры подстраиваются сами.
+     * Явный список в настройках/шорткоде принудительно переопределяет автоопределение.
+     */
+    public function resolve_filter_taxonomies($term_id, $product_ids, $explicit = array()) {
         $explicit = $this->normalize_attribute_keys($explicit);
         $available = $this->get_available_attribute_taxonomies();
 
@@ -236,40 +263,31 @@ final class PCT_Plugin {
             return $out;
         }
 
-        $max = (int) $this->get_option('max_filters', 5);
-        $out = array();
-        foreach ($this->get_priority_slugs() as $tax) {
-            if (isset($available[$tax]) && !isset($out[$tax])) {
-                $out[$tax] = $available[$tax];
-            }
-            if (count($out) >= $max) {
-                break;
-            }
-        }
-        if (!$out) {
-            $out = array_slice($available, 0, $max, true);
-        }
-        return $out;
+        $detected = PCT_Query::detect_used_taxonomies($term_id, $product_ids);
+        $ordered = $this->order_by_priority($detected);
+
+        $max = (int) $this->get_option('max_filters', 0);
+        return $max > 0 ? array_slice($ordered, 0, $max, true) : $ordered;
     }
 
     public function resolve_column_taxonomies($explicit = array(), $filters = array()) {
         $explicit = $this->normalize_attribute_keys($explicit);
-        $available = $this->get_available_attribute_taxonomies();
-        $max = (int) $this->get_option('max_columns', 3);
+        $max = (int) $this->get_option('max_columns', 0);
 
         if ($explicit) {
+            $available = $this->get_available_attribute_taxonomies();
             $out = array();
             foreach ($explicit as $tax) {
                 if (isset($available[$tax])) {
                     $out[$tax] = $available[$tax];
                 }
             }
-            return array_slice($out, 0, $max, true);
+            return $max > 0 ? array_slice($out, 0, $max, true) : $out;
         }
 
-        // По умолчанию колонки = первые max_columns фильтров (как на анепе: Марка,
-        // Диаметр, ГОСТ/ТУ повторяют часть фильтров сверху таблицы).
-        return array_slice($filters, 0, $max, true);
+        // По умолчанию колонки таблицы = те же атрибуты, что обнаружены как фильтры
+        // (т.е. реально есть у товаров этой категории), при желании — с урезанием сверху.
+        return $max > 0 ? array_slice($filters, 0, $max, true) : $filters;
     }
 
     public function settings_page() {
@@ -292,7 +310,10 @@ final class PCT_Plugin {
         if (is_admin()) {
             return;
         }
-        if (!is_product_category() && !$this->page_has_shortcode()) {
+        $floating_cart = $this->get_option('floating_cart', 'yes') === 'yes';
+        // Плавающая корзина видна на всех страницах сайта (чтобы добавленные из категории
+        // товары не терялись при переходах), поэтому в этом режиме грузим ассеты везде.
+        if (!$floating_cart && !is_product_category() && !$this->page_has_shortcode()) {
             return;
         }
         $this->enqueue_assets();
@@ -321,8 +342,9 @@ final class PCT_Plugin {
 
         wp_enqueue_script('pct-frontend', PCT_PLUGIN_URL . 'assets/frontend.js', array('jquery'), self::VERSION, true);
         wp_localize_script('pct-frontend', 'PCT', array(
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'nonce'    => wp_create_nonce('pct_request_price'),
+            'ajax_url'   => admin_url('admin-ajax.php'),
+            'nonce'      => wp_create_nonce('pct_request_price'),
+            'cart_nonce' => wp_create_nonce('pct_cart'),
         ));
     }
 

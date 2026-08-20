@@ -29,7 +29,11 @@ class PCT_Render {
             $args['base_url'] = home_url('/');
         }
 
-        $filters = $plugin->resolve_filter_taxonomies($args['filter_attributes']);
+        // Список товаров этой категории (только ID) нужен и для чипов, и для авто-подбора
+        // фильтров — считаем один раз, результат уже закеширован в PCT_Query.
+        $branch_ids = PCT_Query::branch_product_ids($term_id);
+
+        $filters = $plugin->resolve_filter_taxonomies($term_id, $branch_ids, $args['filter_attributes']);
         $columns = $plugin->resolve_column_taxonomies($args['column_attributes'], $filters);
         $sortable = $filters + $columns;
 
@@ -50,7 +54,6 @@ class PCT_Render {
         echo '<div class="pct">';
 
         if ($args['show_chips']) {
-            $branch_ids = PCT_Query::branch_product_ids($term_id);
             $this->render_chips($branch_ids, $filters, $context);
         }
 
@@ -272,7 +275,7 @@ class PCT_Render {
         if (!$product) {
             return '';
         }
-        $buy_label = (string) $plugin->get_option('button_buy_label', 'Купить');
+        $buy_label = (string) $plugin->get_option('button_buy_label', 'Заказать');
         $request_label = (string) $plugin->get_option('button_request_label', 'Узнать цену');
         $show_qty = $plugin->get_option('show_quantity', 'yes') === 'yes';
 
