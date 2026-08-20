@@ -116,6 +116,49 @@ class PCT_Render {
     }
 
     /**
+     * Путь + хост без query-строки. Используется как action GET-формы: сами параметры
+     * (включая то, что определяет страницу — например ?product_cat=... на сайтах без ЧПУ)
+     * передаются скрытыми полями через render_state_hidden_inputs(), а не через query в action,
+     * которую браузер при GET-сабмите всё равно полностью отбрасывает.
+     */
+    private function strip_query($url) {
+        $parts = wp_parse_url($url);
+        if (!$parts || empty($parts['host'])) {
+            return $url;
+        }
+        $scheme = isset($parts['scheme']) ? $parts['scheme'] . '://' : '//';
+        $port = isset($parts['port']) ? ':' . $parts['port'] : '';
+        $path = isset($parts['path']) ? $parts['path'] : '/';
+        return $scheme . $parts['host'] . $port . $path;
+    }
+
+    /**
+     * Скрытые поля для всего, что было в query-строке текущего URL (кроме параметров,
+     * которыми управляет сама форма/пагинация — pct[...], pct_orderby, pct_order, pct_page).
+     * Без этого GET-сабмит формы фильтра теряет, например, ?product_cat=... — категория без
+     * ЧПУ иначе определяется браузером как "не указана", и WordPress отдаёт главную страницу
+     * вместо отфильтрованной категории.
+     */
+    private function render_state_hidden_inputs($url) {
+        $parts = wp_parse_url($url);
+        if (empty($parts['query'])) {
+            return;
+        }
+        parse_str($parts['query'], $query_vars);
+        unset($query_vars['pct'], $query_vars['pct_orderby'], $query_vars['pct_order'], $query_vars['pct_page']);
+
+        foreach ($query_vars as $key => $value) {
+            if (is_array($value)) {
+                foreach ($value as $v) {
+                    echo '<input type="hidden" name="' . esc_attr($key) . '[]" value="' . esc_attr($v) . '">';
+                }
+                continue;
+            }
+            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
+        }
+    }
+
+    /**
      * Строит ссылку на то же состояние таблицы, отражая только известные параметры
      * (фильтры/сортировку/страницу), а не произвольные значения из текущего $_GET —
      * так в ссылках не расползаются посторонние query-параметры.
@@ -197,7 +240,15 @@ class PCT_Render {
 
         echo '<div class="pct-filter-wrap">';
         echo '<div class="pct-filter-title">' . $this->funnel_icon() . '<span>Фильтр продукции</span></div>';
-        echo '<form class="pct-filter-form" method="get" action="' . esc_url($context['base_url']) . '">';
+        // Для GET-формы браузер при отправке ПОЛНОСТЬЮ заменяет query-строку action на поля
+        // самой формы (это стандартное поведение HTML, не баг конкретного браузера). Если
+        // категория открывается по URL вида ?product_cat=... (без ЧПУ, как на этом сайте), а
+        // не завести product_cat отдельным скрытым полем — отправка фильтра теряет категорию
+        // и WordPress не понимает, какую страницу показывать (в итоге отдаёт главную). Поэтому
+        // action указывает только на путь, а все параметры из текущего URL (кроме тех, что
+        // строит сама форма/пагинация) продублированы скрытыми полями.
+        echo '<form class="pct-filter-form" method="get" action="' . esc_url($this->strip_query($context['base_url'])) . '">';
+        $this->render_state_hidden_inputs($context['base_url']);
 
         if ($context['orderby'] !== 'title') {
             echo '<input type="hidden" name="pct_orderby" value="' . esc_attr($context['orderby']) . '">';

@@ -3,7 +3,7 @@
  * Plugin Name: Product Category Table
  * Plugin URI:  https://example.local/
  * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам (автоматически по каждой категории), сортируемые колонки характеристик, кнопки «Заказать» / «Узнать цену», плавающая корзина.
- * Version:     1.0.0
+ * Version:     1.2.2
  * Author:      Claude
  * Text Domain: product-category-table
  *
@@ -43,7 +43,7 @@ require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.2.1';
+    const VERSION = '1.2.2';
 
     private static $instance = null;
 
