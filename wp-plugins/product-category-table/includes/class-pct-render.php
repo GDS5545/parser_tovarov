@@ -62,7 +62,7 @@ class PCT_Render {
         }
 
         if ($args['show_filters']) {
-            $this->render_filters($term_id, $filters, $context);
+            $this->render_filters($term_id, $filters, $context, $branch_ids);
         }
 
         $query = PCT_Query::products_query($term_id, $selected, $orderby, $order, $page, $per_page);
@@ -231,7 +231,19 @@ class PCT_Render {
      * Фильтры
      * ------------------------------------------------------------------ */
 
-    private function render_filters($term_id, $filters, $context) {
+    /**
+     * $branch_ids — уже посчитанный (и закешированный в PCT_Query) список ID товаров всей
+     * категории, без учёта фильтров. Пока НИ ОДИН другой фильтр не выбран (обычная ситуация
+     * при первом открытии страницы), список товаров, подходящих под конкретный
+     * фильтр-дропдаун, СОВПАДАЕТ с этим списком — не нужно заново гонять по нему
+     * PCT_Query::ids_matching_filters() (полноценный WP_Query по всей ветке категории) для
+     * КАЖДОГО из фильтров. При категории с длинным списком реально различающихся атрибутов
+     * (десятки) без этого код выполнял десятки идентичных тяжёлых запросов по всей ветке
+     * категории на одну загрузку страницы — что на большой категории реально роняло сайт
+     * по памяти/времени. Пересчитывать по-честному нужно только когда пользователь уже
+     * выбрал хотя бы один ДРУГОЙ фильтр — тогда список опций сузился и его нужно знать точно.
+     */
+    private function render_filters($term_id, $filters, $context, $branch_ids = array()) {
         if (!$filters) {
             echo '<div class="pct-note">Фильтры не найдены. Проверьте, что у товаров назначены атрибуты WooCommerce (Марка, ГОСТ/ТУ и т.д.) как таксономии, а не локальные значения.</div>';
             return;
@@ -256,8 +268,13 @@ class PCT_Render {
             echo '<input type="hidden" name="pct_order" value="' . esc_attr($context['order']) . '">';
         }
 
+        $other_selected = array_filter($context['selected']);
+
         foreach ($filters as $taxonomy => $label) {
-            $option_ids = PCT_Query::ids_matching_filters($term_id, $context['selected'], $taxonomy);
+            $has_other_selected = array_diff_key($other_selected, array($taxonomy => true));
+            $option_ids = $has_other_selected
+                ? PCT_Query::ids_matching_filters($term_id, $context['selected'], $taxonomy)
+                : $branch_ids;
             $terms = PCT_Query::terms_used_by_products($taxonomy, $option_ids);
 
             echo '<select class="pct-filter-select" name="pct[' . esc_attr($taxonomy) . ']" data-pct-autosubmit>';

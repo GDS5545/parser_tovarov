@@ -3,7 +3,7 @@
  * Plugin Name: Product Category Table
  * Plugin URI:  https://example.local/
  * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам (автоматически по каждой категории), сортируемые колонки характеристик, кнопка «Заказать» с накоплением списка товаров и отправкой заявки (имя+телефон) лидом в Bitrix24.
- * Version:     1.3.0
+ * Version:     1.3.1
  * Author:      Claude
  * Text Domain: product-category-table
  *
@@ -42,7 +42,7 @@ require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.3.0';
+    const VERSION = '1.3.1';
 
     private static $instance = null;
 
