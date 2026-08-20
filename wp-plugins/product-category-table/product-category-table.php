@@ -15,9 +15,16 @@
  * категории. Поэтому категория с большим деревом подкатегорий и тысячами товаров не может
  * исчерпать лимit памяти PHP.
  *
- * Требование к товарам: характеристики (Марка, Диаметр, ГОСТ/ТУ и т.д.) должны быть
- * назначены как обычные атрибуты WooCommerce (pa_*) прямо на товар. Локальные (не-taxonomy)
- * атрибуты и значения, спрятанные только в вариациях, этот плагин не читает — см. README.md.
+ * Характеристики товара читаются в двух вариантах:
+ * - глобальные атрибуты WooCommerce (pa_*), назначенные прямо на товар — через
+ *   tax_query/get_terms, как и раньше;
+ * - локальные (не-taxonomy) атрибуты товара — то, что выводится на вкладке «Дополнительная
+ *   информация»/«Детали» карточки, но не привязано к глобальной таксономии. Такие значения
+ *   зеркалируются в отдельный postmeta классом PCT_Attributes (см. class-pct-attributes.php)
+ *   и после этого тоже фильтруются/сортируются обычным SQL (meta_query/orderby=meta_value),
+ *   а не перебором товаров.
+ * Значения, спрятанные только в вариациях (а не на родительском товаре), этот плагин не
+ * читает — см. README.md.
  */
 
 if (!defined('ABSPATH')) {
@@ -28,6 +35,7 @@ define('PCT_PLUGIN_FILE', __FILE__);
 define('PCT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('PCT_PLUGIN_URL', plugin_dir_url(__FILE__));
 
+require_once PCT_PLUGIN_DIR . 'includes/class-pct-attributes.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-query.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-render.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-ajax.php';
@@ -35,7 +43,7 @@ require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.1.0';
+    const VERSION = '1.2.0';
 
     private static $instance = null;
 
@@ -62,6 +70,7 @@ final class PCT_Plugin {
             return;
         }
 
+        PCT_Attributes::init();
         PCT_Query::init();
         PCT_Ajax::init($this);
         PCT_Cart::init();
@@ -132,6 +141,23 @@ final class PCT_Plugin {
         register_setting('pct_settings', self::OPTION_KEY, array($this, 'sanitize_options'));
     }
 
+    /**
+     * sanitize_key() вырезает двоеточие/другие небезопасные символы, но пропускает дефис —
+     * поэтому идентификаторы локальных атрибутов используют префикс "local-" (а не "local:"),
+     * чтобы пережить sanitize_key() и без проблем ходить в GET-параметрах (?pct[local-marka]=...).
+     */
+    private function sanitize_attribute_id($value) {
+        $value = (string) $value;
+        if ($value === '') {
+            return '';
+        }
+        if (strpos($value, 'local-') === 0) {
+            $tail = sanitize_key(substr($value, 6));
+            return $tail !== '' ? 'local-' . $tail : '';
+        }
+        return sanitize_key($value);
+    }
+
     private function normalize_attribute_keys($value) {
         if (is_string($value)) {
             $value = array_filter(array_map('trim', explode(',', $value)));
@@ -144,7 +170,7 @@ final class PCT_Plugin {
             if (is_array($key)) {
                 continue;
             }
-            $key = sanitize_key((string) $key);
+            $key = $this->sanitize_attribute_id((string) $key);
             if ($key !== '' && !in_array($key, $out, true)) {
                 $out[] = $key;
             }
@@ -162,7 +188,7 @@ final class PCT_Plugin {
         // 0 = без ограничения (показывать все реально найденные у товаров категории характеристики).
         $out['max_filters'] = min(20, absint($input['max_filters'] ?? $defaults['max_filters']));
         $out['max_columns'] = min(20, absint($input['max_columns'] ?? $defaults['max_columns']));
-        $out['chips_attribute'] = sanitize_key($input['chips_attribute'] ?? '');
+        $out['chips_attribute'] = $this->sanitize_attribute_id($input['chips_attribute'] ?? '');
         $out['chips_limit'] = max(0, min(30, absint($input['chips_limit'] ?? $defaults['chips_limit'])));
         $out['price_prefix'] = sanitize_text_field($input['price_prefix'] ?? $defaults['price_prefix']);
         $out['price_unit'] = sanitize_text_field($input['price_unit'] ?? $defaults['price_unit']);
@@ -186,6 +212,12 @@ final class PCT_Plugin {
         return (string) get_option('pct_cache_version', '1');
     }
 
+    /**
+     * Каждая запись приоритета даёт два кандидата — taxonomy-вариант (pa_marka) и
+     * локальный (local-marka), — потому что заранее не известно, как именно на конкретном
+     * сайте заведён этот атрибут. order_by_priority() использует тот кандидат, который
+     * реально обнаружен у товаров категории.
+     */
     public function get_priority_slugs() {
         $raw = (string) $this->get_option('priority_attributes', self::defaults()['priority_attributes']);
         $parts = array_filter(array_map('trim', explode(',', $raw)));
@@ -195,17 +227,19 @@ final class PCT_Plugin {
             if (!$part) {
                 continue;
             }
-            $slugs[] = strpos($part, 'pa_') === 0 ? $part : 'pa_' . $part;
+            $base = strpos($part, 'pa_') === 0 ? substr($part, 3) : $part;
+            $slugs[] = 'pa_' . $base;
+            $slugs[] = 'local-' . $base;
         }
         return array_values(array_unique($slugs));
     }
 
     /**
-     * Все зарегистрированные глобальные атрибуты WooCommerce (pa_*), доступные для выбора
-     * в настройках как фильтры/колонки. Локальные (не-taxonomy) атрибуты сюда не попадают —
-     * плагин их не поддерживает (см. README.md).
+     * Только зарегистрированные глобальные атрибуты WooCommerce (pa_*) — используется
+     * при автоопределении (PCT_Query::detect_used_attributes()), где локальные атрибуты
+     * проверяются отдельно через реестр PCT_Attributes.
      */
-    public function get_available_attribute_taxonomies() {
+    public function get_available_taxonomy_attributes() {
         $options = array();
         if (!function_exists('wc_get_attribute_taxonomies')) {
             return $options;
@@ -218,6 +252,20 @@ final class PCT_Plugin {
                     $options[$taxonomy] = wc_attribute_label($taxonomy) ?: $taxonomy;
                 }
             }
+        }
+        asort($options, SORT_NATURAL | SORT_FLAG_CASE);
+        return $options;
+    }
+
+    /**
+     * Глобальные атрибуты WooCommerce (pa_*) + известные локальные атрибуты товара
+     * (id вида "local-<ключ>", см. PCT_Attributes) — полный список для выбора в настройках
+     * и для проверки допустимости явно заданных id фильтров/колонок/chips.
+     */
+    public function get_available_attribute_taxonomies() {
+        $options = $this->get_available_taxonomy_attributes();
+        foreach (PCT_Attributes::local_registry() as $key => $label) {
+            $options['local-' . $key] = $label;
         }
         asort($options, SORT_NATURAL | SORT_FLAG_CASE);
         return $options;
@@ -263,7 +311,7 @@ final class PCT_Plugin {
             return $out;
         }
 
-        $detected = PCT_Query::detect_used_taxonomies($term_id, $product_ids);
+        $detected = PCT_Query::detect_used_attributes($term_id, $product_ids);
         $ordered = $this->order_by_priority($detected);
 
         $max = (int) $this->get_option('max_filters', 0);

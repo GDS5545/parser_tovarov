@@ -9,6 +9,8 @@ if (!current_user_can('manage_woocommerce')) {
 }
 
 $opts = $this->get_options();
+$taxonomy_attribute_options = $this->get_available_taxonomy_attributes();
+$local_attribute_options = PCT_Attributes::local_registry();
 $attribute_options = $this->get_available_attribute_taxonomies();
 
 $render_multiselect = function ($name, $selected, $placeholder = '') use ($attribute_options) {
@@ -25,11 +27,26 @@ $render_multiselect = function ($name, $selected, $placeholder = '') use ($attri
 ?>
 <div class="wrap">
     <h1>Product Category Table</h1>
-    <p>Таблица товаров WooCommerce для категорий. По умолчанию фильтры и колонки характеристик определяются <strong>автоматически для каждой категории отдельно</strong> — плагин смотрит, какие атрибуты WooCommerce (<code>pa_*</code>) реально назначены товарам именно в этой категории (у круга это, например, Марка/Диаметр/ГОСТ, у листа — Марка/Толщина/Покрытие), и показывает только их. Поля «Фильтры»/«Колонки таблицы» ниже нужны, только если хотите принудительно задать один и тот же список для всех категорий.</p>
+    <p>Таблица товаров WooCommerce для категорий. По умолчанию фильтры и колонки характеристик определяются <strong>автоматически для каждой категории отдельно</strong> — плагин смотрит, какие атрибуты товара реально назначены именно в этой категории (у круга это, например, Марка/Диаметр/ГОСТ, у листа — Марка/Толщина/Покрытие), и показывает только их. Поля «Фильтры»/«Колонки таблицы» ниже нужны, только если хотите принудительно задать один и тот же список для всех категорий.</p>
 
-    <?php if (empty($attribute_options)) : ?>
-        <div class="notice notice-warning"><p>В магазине пока нет ни одного глобального атрибута WooCommerce (Товары → Атрибуты). Без них фильтры и колонки характеристик будут пустыми.</p></div>
-    <?php endif; ?>
+    <div class="notice notice-info">
+        <p>
+            <strong>Найдено атрибутов:</strong>
+            глобальных WooCommerce (<code>pa_*</code>) — <?php echo (int) count($taxonomy_attribute_options); ?>,
+            локальных (атрибуты прямо на товаре, вкладка «Детали»/«Дополнительная информация») — <?php echo (int) count($local_attribute_options); ?>.
+            <?php if ($local_attribute_options) : ?>
+                <br>Локальные: <?php echo esc_html(implode(', ', $local_attribute_options)); ?>.
+            <?php endif; ?>
+        </p>
+        <?php if (empty($taxonomy_attribute_options) && empty($local_attribute_options)) : ?>
+            <p><strong>Ничего не найдено.</strong> Если товары точно уже сохранены с характеристиками — нажмите «Пересканировать все товары» ниже: локальные атрибуты подхватываются автоматически только при сохранении товара, а для уже импортированных нужен один разовый проход.</p>
+        <?php endif; ?>
+        <p>
+            <button type="button" class="button" id="pct-reindex-btn">Пересканировать все товары</button>
+            <span id="pct-reindex-status"></span>
+        </p>
+        <p class="description">Нужно один раз после установки/обновления плагина (или после импорта партии товаров парсером в обход обычного сохранения товара). Обрабатывает магазин пакетами по 200 товаров через AJAX — безопасно для больших каталогов, не выполняется одним долгим запросом.</p>
+    </div>
 
     <form method="post" action="options.php">
         <?php settings_fields('pct_settings'); ?>
@@ -114,7 +131,7 @@ $render_multiselect = function ($name, $selected, $placeholder = '') use ($attri
                 <th scope="row">Приоритет атрибутов</th>
                 <td>
                     <textarea name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[priority_attributes]" rows="3" class="large-text"><?php echo esc_textarea($opts['priority_attributes']); ?></textarea>
-                    <p class="description">Через запятую, используется только при авто-подборе фильтров/колонок (когда выше ничего явно не выбрано). Можно писать хвост slug без <code>pa_</code>.</p>
+                    <p class="description">Через запятую, используется только при авто-подборе фильтров/колонок (когда выше ничего явно не выбрано) — задаёт порядок. Пишите просто хвост slug, без <code>pa_</code>: атрибут будет найден и как глобальный <code>pa_marka</code>, и как локальный.</p>
                 </td>
             </tr>
         </table>
@@ -126,3 +143,43 @@ $render_multiselect = function ($name, $selected, $placeholder = '') use ($attri
     <p>Для конкретной категории: <code>[product_category_table category="krug-nerzhaveyushchij"]</code></p>
     <p>Для всех товаров: <code>[product_category_table category="all"]</code></p>
 </div>
+<script>
+(function ($) {
+    var $btn = $('#pct-reindex-btn');
+    var $status = $('#pct-reindex-status');
+
+    $btn.on('click', function () {
+        $btn.prop('disabled', true);
+        $status.text('Сканируем…');
+
+        function step(offset, processedTotal) {
+            $.post(ajaxurl, {
+                action: 'pct_reindex_batch',
+                nonce: '<?php echo esc_js(wp_create_nonce('pct_reindex')); ?>',
+                offset: offset
+            }).done(function (response) {
+                if (!response || !response.success) {
+                    $status.text('Ошибка: ' + ((response && response.data && response.data.message) || 'не удалось выполнить запрос.'));
+                    $btn.prop('disabled', false);
+                    return;
+                }
+                var data = response.data;
+                var total = processedTotal + data.processed;
+                $status.text('Обработано товаров: ' + total + '. Найдено локальных атрибутов: ' + data.attributes_found + '…');
+
+                if (data.done) {
+                    $status.text('Готово. Обработано товаров: ' + total + '. Найдено локальных атрибутов: ' + data.attributes_found + '. Обновите страницу категории, чтобы увидеть фильтры.');
+                    $btn.prop('disabled', false);
+                } else {
+                    step(data.next_offset, total);
+                }
+            }).fail(function () {
+                $status.text('Сбой запроса, попробуйте ещё раз.');
+                $btn.prop('disabled', false);
+            });
+        }
+
+        step(0, 0);
+    });
+})(jQuery);
+</script>

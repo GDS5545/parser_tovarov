@@ -78,9 +78,17 @@ class PCT_Render {
     private function get_selected_filters($filters) {
         $out = array();
         $raw = (isset($_GET['pct']) && is_array($_GET['pct'])) ? wp_unslash($_GET['pct']) : array();
-        foreach ($filters as $taxonomy => $label) {
-            $value = isset($raw[$taxonomy]) ? sanitize_title((string) $raw[$taxonomy]) : '';
-            $out[$taxonomy] = $value;
+        foreach ($filters as $id => $label) {
+            if (!isset($raw[$id]) || $raw[$id] === '') {
+                $out[$id] = '';
+                continue;
+            }
+            // У taxonomy-атрибутов значение — это slug термина. У локальных атрибутов
+            // (id вида "local-...") своих slug'ов нет — фильтр matches по точному значению
+            // из postmeta, поэтому оно только очищается, а не приводится к slug-формату.
+            $out[$id] = PCT_Query::is_local($id)
+                ? sanitize_text_field((string) $raw[$id])
+                : sanitize_title((string) $raw[$id]);
         }
         return $out;
     }
