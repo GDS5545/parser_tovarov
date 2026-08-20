@@ -98,26 +98,32 @@ $render_multiselect = function ($name, $selected, $placeholder = '') use ($attri
                 </td>
             </tr>
             <tr>
-                <th scope="row">Кнопки</th>
+                <th scope="row">Кнопка «Заказать»</th>
                 <td>
-                    <label>Текст кнопки заказа: <input type="text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[button_buy_label]" value="<?php echo esc_attr($opts['button_buy_label']); ?>" class="regular-text"></label><br>
-                    <label>Текст кнопки заявки (для товаров без цены/остатка): <input type="text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[button_request_label]" value="<?php echo esc_attr($opts['button_request_label']); ?>" class="regular-text"></label><br>
+                    <label>Текст кнопки: <input type="text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[button_buy_label]" value="<?php echo esc_attr($opts['button_buy_label']); ?>" class="regular-text"></label><br>
                     <label><input type="checkbox" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[show_quantity]" value="yes" <?php checked($opts['show_quantity'], 'yes'); ?>> показывать поле количества рядом с кнопкой заказа</label>
+                    <p class="description">Одна и та же кнопка для всех товаров, независимо от цены/наличия — в корзину WooCommerce она ничего не добавляет, а кладёт товар в список заявки (см. «Плавающий список» ниже).</p>
                 </td>
             </tr>
             <tr>
-                <th scope="row">Плавающая корзина</th>
+                <th scope="row">Плавающий список товаров</th>
                 <td>
-                    <label><input type="checkbox" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[floating_cart]" value="yes" <?php checked($opts['floating_cart'], 'yes'); ?>> показывать плавающую кнопку корзины на всех страницах сайта</label>
-                    <p class="description">Кнопка «<?php echo esc_html($opts['button_buy_label']); ?>» добавляет товар в обычную корзину WooCommerce без перезагрузки страницы. Покупатель может продолжать выбирать товары в других категориях — всё останется в корзине. По клику на плавающую кнопку открывается корзина, где можно изменить количество, удалить позицию и оформить заказ по имени и телефону (без полной формы оплаты/доставки WooCommerce — оформленные так заказы появляются в WooCommerce → Заказы).</p>
+                    <label><input type="checkbox" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[floating_cart]" value="yes" <?php checked($opts['floating_cart'], 'yes'); ?>> показывать плавающую кнопку на всех страницах сайта</label>
+                    <p class="description">Кнопка «<?php echo esc_html($opts['button_buy_label']); ?>» добавляет товар в список заявки, который хранится в браузере покупателя (localStorage) — без корзины WooCommerce и без запросов к серверу. Покупатель может продолжать выбирать товары в других категориях, менять количество и удалять позиции — всё копится в одном списке. По клику на плавающую кнопку открывается панель со списком и формой «Имя» + «Телефон» (оба поля обязательны). Отправка формы уходит одним лидом в Bitrix24 (см. ниже) либо письмом, если Bitrix не настроен.</p>
                 </td>
             </tr>
             <tr>
-                <th scope="row">Заявки «Узнать цену» и заказы</th>
+                <th scope="row">Bitrix24</th>
                 <td>
-                    <label>Email для заявок «Узнать цену»: <input type="email" class="regular-text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[request_email]" value="<?php echo esc_attr($opts['request_email']); ?>"></label><br>
-                    <label><input type="checkbox" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[phone_required]" value="yes" <?php checked($opts['phone_required'], 'yes'); ?>> телефон обязателен</label>
-                    <p class="description">Заказы из корзины уходят стандартным уведомлением WooCommerce «Новый заказ» на email из WooCommerce → Настройки → Email — это поле только для заявок «Узнать цену».</p>
+                    <label>URL входящего вебхука: <input type="url" class="regular-text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[bitrix_webhook_url]" value="<?php echo esc_attr($opts['bitrix_webhook_url']); ?>" placeholder="https://ваш-портал.bitrix24.ru/rest/1/xxxxxxxxxxxxxxxxxxxx/"></label>
+                    <p class="description">В Bitrix24: Настройки → Разработчикам → Другое → Входящий вебхук, права минимум «CRM». Каждая отправка формы создаёт в Bitrix24 лид (имя, телефон, список товаров в комментарии). Если поле оставить пустым — заявка вместо этого уходит на email ниже.</p>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Email для заявок</th>
+                <td>
+                    <input type="email" class="regular-text" name="<?php echo esc_attr(PCT_Plugin::OPTION_KEY); ?>[request_email]" value="<?php echo esc_attr($opts['request_email']); ?>">
+                    <p class="description">Используется, только если URL вебхука Bitrix24 выше не указан или Bitrix24 не ответил — запасной вариант через <code>wp_mail()</code> (если на сервере нет настроенного SMTP, поставьте отдельный SMTP-плагин, иначе письма может резать хостинг).</p>
                 </td>
             </tr>
             <tr>

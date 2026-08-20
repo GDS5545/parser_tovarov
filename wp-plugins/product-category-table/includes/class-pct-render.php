@@ -68,7 +68,6 @@ class PCT_Render {
         $query = PCT_Query::products_query($term_id, $selected, $orderby, $order, $page, $per_page);
         $this->render_table_rows($query, $columns, $context, $plugin);
         $this->render_pagination($query, $context);
-        $this->render_request_modal($plugin);
 
         echo '</div>';
 
@@ -334,33 +333,29 @@ class PCT_Render {
         return '<span class="pct-price">' . esc_html(trim($prefix . $formatted . ' ' . $unit)) . '</span>';
     }
 
+    /**
+     * Одна и та же кнопка «Заказать» для всех товаров, независимо от цены/остатка —
+     * она ничего не добавляет в корзину WooCommerce и не уходит по ссылке: JS
+     * (см. assets/frontend.js, initQuoteList/[data-pct-add]) добавляет товар в список
+     * заявки в localStorage браузера. Раздельная кнопка «Узнать цену» для товаров без
+     * цены/остатка убрана — весь сбор данных (имя, телефон) теперь происходит один раз,
+     * при отправке накопленного списка через плавающий виджет.
+     */
     private function render_action($product, $plugin) {
         if (!$product) {
             return '';
         }
         $buy_label = (string) $plugin->get_option('button_buy_label', 'Заказать');
-        $request_label = (string) $plugin->get_option('button_request_label', 'Узнать цену');
         $show_qty = $plugin->get_option('show_quantity', 'yes') === 'yes';
-
-        $purchasable = $product->is_purchasable() && $product->is_in_stock() && $product->get_price() !== '';
-
-        if (!$purchasable) {
-            return '<button type="button" class="pct-btn pct-btn-request" data-pct-request'
-                . ' data-product-id="' . esc_attr($product->get_id()) . '"'
-                . ' data-product-name="' . esc_attr($product->get_name()) . '">'
-                . esc_html($request_label) . '</button>';
-        }
 
         $html = '<span class="pct-action">';
         if ($show_qty) {
             $html .= '<input type="number" class="pct-qty" min="1" step="1" value="1" aria-label="Количество">';
         }
-        $html .= '<a href="' . esc_url($product->add_to_cart_url()) . '"'
-            . ' data-quantity="1"'
-            . ' data-product_id="' . esc_attr($product->get_id()) . '"'
-            . ' data-product_sku="' . esc_attr($product->get_sku()) . '"'
-            . ' class="pct-btn pct-btn-buy button product_type_' . esc_attr($product->get_type()) . ' add_to_cart_button ajax_add_to_cart">'
-            . esc_html($buy_label) . '</a>';
+        $html .= '<button type="button" class="pct-btn pct-btn-buy" data-pct-add'
+            . ' data-product-id="' . esc_attr($product->get_id()) . '"'
+            . ' data-product-name="' . esc_attr($product->get_name()) . '">'
+            . esc_html($buy_label) . '</button>';
         $html .= '</span>';
 
         return $html;
@@ -407,38 +402,6 @@ class PCT_Render {
         if ($links) {
             echo '<nav class="pct-pagination">' . implode(' ', $links) . '</nav>';
         }
-    }
-
-    /* ---------------------------------------------------------------------
-     * Модалка «Узнать цену»
-     * ------------------------------------------------------------------ */
-
-    private function render_request_modal($plugin) {
-        $phone_required = $plugin->get_option('phone_required', 'yes') === 'yes';
-        ?>
-        <div class="pct-modal" id="pct-request-modal" hidden>
-            <div class="pct-modal-overlay" data-pct-modal-close></div>
-            <div class="pct-modal-box" role="dialog" aria-modal="true" aria-labelledby="pct-modal-title">
-                <button type="button" class="pct-modal-close" data-pct-modal-close aria-label="Закрыть">&times;</button>
-                <h3 class="pct-modal-title" id="pct-modal-title">Узнать цену</h3>
-                <p class="pct-modal-product"></p>
-                <form id="pct-request-form">
-                    <input type="hidden" name="action" value="pct_request_price">
-                    <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('pct_request_price')); ?>">
-                    <input type="hidden" name="product_id" value="">
-                    <input type="text" name="pct_hp" class="pct-hp" tabindex="-1" autocomplete="off">
-                    <label class="pct-field">Имя
-                        <input type="text" name="name">
-                    </label>
-                    <label class="pct-field">Телефон<?php echo $phone_required ? ' *' : ''; ?>
-                        <input type="tel" name="phone" <?php echo $phone_required ? 'required' : ''; ?>>
-                    </label>
-                    <button type="submit" class="pct-btn pct-btn-buy pct-modal-submit">Отправить</button>
-                    <p class="pct-modal-status" aria-live="polite"></p>
-                </form>
-            </div>
-        </div>
-        <?php
     }
 
     private function funnel_icon() {

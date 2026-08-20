@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Product Category Table
  * Plugin URI:  https://example.local/
- * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам (автоматически по каждой категории), сортируемые колонки характеристик, кнопки «Заказать» / «Узнать цену», плавающая корзина.
- * Version:     1.2.2
+ * Description: Табличный вывод товаров WooCommerce в категориях: быстрые фильтры по атрибутам (автоматически по каждой категории), сортируемые колонки характеристик, кнопка «Заказать» с накоплением списка товаров и отправкой заявки (имя+телефон) лидом в Bitrix24.
+ * Version:     1.3.0
  * Author:      Claude
  * Text Domain: product-category-table
  *
@@ -38,12 +38,11 @@ define('PCT_PLUGIN_URL', plugin_dir_url(__FILE__));
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-attributes.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-query.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-render.php';
-require_once PCT_PLUGIN_DIR . 'includes/class-pct-ajax.php';
 require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.2.2';
+    const VERSION = '1.3.0';
 
     private static $instance = null;
 
@@ -72,7 +71,6 @@ final class PCT_Plugin {
 
         PCT_Attributes::init();
         PCT_Query::init();
-        PCT_Ajax::init($this);
         PCT_Cart::init();
 
         if ($this->get_option('auto_category', 'yes') === 'yes') {
@@ -103,11 +101,10 @@ final class PCT_Plugin {
             'price_prefix'          => 'от ',
             'price_unit'            => 'руб./кг',
             'button_buy_label'      => 'Заказать',
-            'button_request_label'  => 'Узнать цену',
             'show_quantity'         => 'yes',
             'floating_cart'         => 'yes',
             'request_email'         => get_option('admin_email'),
-            'phone_required'        => 'yes',
+            'bitrix_webhook_url'    => '',
             'catalog_updated_date'  => '',
             'priority_attributes'   => 'marka, marka-stali, diametr-mm, diametr, gost-tu, gost, pokrytie, tekhnologiya-izgotovleniya, tehnologiya-izgotovleniya, tolshchina-mm, tolshchina, dlina-mm, dlina, shirina-mm, shirina, razmer',
         );
@@ -193,11 +190,10 @@ final class PCT_Plugin {
         $out['price_prefix'] = sanitize_text_field($input['price_prefix'] ?? $defaults['price_prefix']);
         $out['price_unit'] = sanitize_text_field($input['price_unit'] ?? $defaults['price_unit']);
         $out['button_buy_label'] = sanitize_text_field($input['button_buy_label'] ?? $defaults['button_buy_label']);
-        $out['button_request_label'] = sanitize_text_field($input['button_request_label'] ?? $defaults['button_request_label']);
         $out['show_quantity'] = isset($input['show_quantity']) && $input['show_quantity'] === 'yes' ? 'yes' : 'no';
         $out['floating_cart'] = isset($input['floating_cart']) && $input['floating_cart'] === 'yes' ? 'yes' : 'no';
         $out['request_email'] = sanitize_email($input['request_email'] ?? $defaults['request_email']);
-        $out['phone_required'] = isset($input['phone_required']) && $input['phone_required'] === 'yes' ? 'yes' : 'no';
+        $out['bitrix_webhook_url'] = esc_url_raw(trim((string) ($input['bitrix_webhook_url'] ?? '')));
         $out['catalog_updated_date'] = sanitize_text_field($input['catalog_updated_date'] ?? '');
         $out['priority_attributes'] = sanitize_text_field($input['priority_attributes'] ?? $defaults['priority_attributes']);
         $this->bump_cache_version();
@@ -381,17 +377,9 @@ final class PCT_Plugin {
 
         wp_enqueue_style('pct-frontend', PCT_PLUGIN_URL . 'assets/frontend.css', array(), self::VERSION);
 
-        if (wp_script_is('wc-add-to-cart', 'registered')) {
-            wp_enqueue_script('wc-add-to-cart');
-        }
-        if (wp_script_is('wc-cart-fragments', 'registered')) {
-            wp_enqueue_script('wc-cart-fragments');
-        }
-
         wp_enqueue_script('pct-frontend', PCT_PLUGIN_URL . 'assets/frontend.js', array('jquery'), self::VERSION, true);
         wp_localize_script('pct-frontend', 'PCT', array(
             'ajax_url'   => admin_url('admin-ajax.php'),
-            'nonce'      => wp_create_nonce('pct_request_price'),
             'cart_nonce' => wp_create_nonce('pct_cart'),
         ));
     }

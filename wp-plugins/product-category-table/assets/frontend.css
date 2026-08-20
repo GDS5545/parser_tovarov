@@ -200,9 +200,7 @@
 }
 .pct-btn-buy { background: var(--pct-accent); color: #fff; }
 .pct-btn-buy:hover { background: #c31c14; border-color: #c31c14; color: #fff; }
-.pct-btn-buy.loading { opacity: .6; pointer-events: none; }
-.pct-btn-request { background: #fff; color: var(--pct-accent); }
-.pct-btn-request:hover { background: var(--pct-accent); color: #fff; }
+.pct-btn-buy.is-added { background: #1b8a4b; border-color: #1b8a4b; }
 
 /* Пагинация */
 .pct-pagination {
@@ -229,31 +227,6 @@
 
 .pct-empty { color: var(--pct-muted); padding: 20px 0; }
 
-/* Модалка «Узнать цену» */
-.pct-modal { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; }
-.pct-modal[hidden] { display: none; }
-.pct-modal-overlay { position: absolute; inset: 0; background: rgba(15, 18, 25, .5); }
-.pct-modal-box {
-    position: relative;
-    background: #fff;
-    border-radius: 10px;
-    padding: 28px;
-    width: min(92vw, 420px);
-    box-shadow: 0 20px 60px rgba(15, 18, 25, .25);
-}
-.pct-modal-close {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    border: 0;
-    background: none;
-    font-size: 22px;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--pct-muted);
-}
-.pct-modal-title { margin: 0 0 6px; font-size: 20px; }
-.pct-modal-product { color: var(--pct-muted); margin: 0 0 18px; font-size: 14px; }
 .pct-field { display: block; font-size: 13px; color: var(--pct-muted); margin-bottom: 14px; }
 .pct-field input {
     display: block;
@@ -266,10 +239,6 @@
     font-size: 14px;
     color: var(--pct-text);
 }
-.pct-modal-submit { width: 100%; }
-.pct-modal-status { min-height: 18px; font-size: 13px; margin: 10px 0 0; }
-.pct-modal-status.is-error { color: var(--pct-accent); }
-.pct-modal-status.is-success { color: #1b8a4b; }
 .pct-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
 
 @media (max-width: 760px) {
@@ -366,7 +335,6 @@
 .pct-cart-item-remove:hover { color: var(--pct-accent); }
 
 .pct-cart-drawer-foot { padding: 16px 20px 20px; border-top: 1px solid var(--pct-line); }
-.pct-cart-total { display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 15px; }
 .pct-cart-submit { width: 100%; }
 .pct-cart-status { min-height: 18px; font-size: 13px; margin: 10px 0 0; }
 .pct-cart-status.is-error { color: var(--pct-accent); }
