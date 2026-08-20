@@ -1,0 +1,414 @@
+/*
+ * ANEP Woo Category Table 3.4.0
+ * По умолчанию плагин не задает цвета/шрифты кнопок и таблицы: они наследуются от активной темы и Elementor Global Styles.
+ * Если в настройках выбран встроенный стиль ANEP, применяется блок .anep-wct-style-anep ниже.
+ */
+.anep-wct{font-family:inherit;color:inherit;margin:24px 0 50px}.anep-wct-chips{display:flex;flex-wrap:wrap;gap:.75em;margin:1.25em 0 2em}.anep-wct-chip{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.anep-wct-filter-wrap{margin:0 0 2em}.anep-wct-filter-title{margin:0 0 1em;display:flex;gap:.5em;align-items:center}.anep-wct-filter-icon{display:inline-flex;align-items:center;justify-content:center;line-height:1}.anep-wct-filter-form{display:grid;grid-template-columns:repeat(4,minmax(180px,1fr));gap:1em;align-items:center}.anep-wct-select-label{margin:0}.anep-wct-filter-select{width:100%;min-height:44px}.anep-wct-apply,.anep-wct-reset{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.anep-wct-table-wrap{overflow-x:auto}.anep-wct-table{width:100%;min-width:760px}.anep-wct-table th,.anep-wct-table td{text-align:left;vertical-align:middle}.anep-wct-name a{font-weight:inherit;color:inherit}.anep-wct-actions-col{width:230px}.anep-wct-actions{display:flex;justify-content:flex-end;gap:.75em;white-space:nowrap}.anep-wct-btn{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none}.anep-wct-empty{text-align:center;padding:2em!important}.anep-wct-pagination{margin:1.75em 0;text-align:center}.anep-wct-pagination ul{display:flex;justify-content:center;gap:.5em;list-style:none;margin:0;padding:0}.anep-wct-pagination a,.anep-wct-pagination span{display:inline-flex;min-width:38px;height:38px;align-items:center;justify-content:center;text-decoration:none}.anep-wct-note{margin:1em 0;padding:1em;border:1px solid currentColor;border-radius:6px;font-size:.95em}.elementor-widget-anep_wct_table .anep-wct{margin-top:0}.anep-wct-btn.is-loading{opacity:.7;cursor:wait}.anep-wct-btn.is-added{filter:brightness(.95)}.anep-wct-sortable{white-space:nowrap}.anep-wct-sort-link{display:inline-flex;align-items:center;gap:.4em;color:inherit;text-decoration:none}.anep-wct-sort-icon{font-size:.9em;line-height:1;opacity:.55}.anep-wct-sortable.is-active .anep-wct-sort-icon{opacity:1}.anep-wct-table tbody tr:hover td{transition:background-color .18s}
+
+
+.anep-wct-cart-summary{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:.75em;margin:0 0 1.25em}.anep-wct-cart-count{margin-right:auto}.anep-wct-qty-col{width:110px}.anep-wct-qty-input{width:86px;max-width:100%;min-height:38px;text-align:center}.anep-wct-actions .anep-wct-btn{white-space:nowrap}
+
+/* Модальное окно требует базового оформления, иначе тема не сможет корректно показать форму поверх страницы. */
+.anep-wct-modal{display:none;position:fixed;z-index:99999;inset:0}.anep-wct-modal.is-open{display:block}.anep-wct-modal-overlay{position:absolute;inset:0;background:rgba(25,30,38,.48)}.anep-wct-modal-box{position:relative;width:min(440px,calc(100vw - 32px));margin:8vh auto;background:Canvas;color:CanvasText;border-radius:12px;padding:28px;box-shadow:0 25px 80px rgba(0,0,0,.24)}.anep-wct-modal-close{position:absolute;right:14px;top:12px;border:0;background:transparent;font-size:30px;line-height:1;cursor:pointer;color:inherit;opacity:.7}.anep-wct-modal-close:hover{opacity:1}.anep-wct-modal-box h3{margin:0 0 8px}.anep-wct-modal-product{font-weight:700;margin:0 0 18px}.anep-wct-request-form label{display:block;margin:0 0 14px;font-weight:600}.anep-wct-request-form input,.anep-wct-request-form textarea{display:block;width:100%;margin-top:6px}.anep-wct-submit{width:100%;margin-top:4px}.anep-wct-form-result{margin-top:12px;font-size:14px}.anep-wct-form-result.is-error{color:#c51420}.anep-wct-form-result.is-success{color:#188038}
+
+
+/* v3.1 Elementor mode: this class intentionally does not set colors, fonts or button backgrounds.
+   It leaves visual styling to Elementor widget controls / archive template styles. */
+.anep-wct-style-elementor{font-family:inherit;color:inherit}
+.anep-wct-style-elementor .anep-wct-btn{font-family:inherit}
+.anep-wct-style-elementor .anep-wct-table th,.anep-wct-style-elementor .anep-wct-table td{font-family:inherit}
+
+/* Встроенный стиль ANEP — включается только если выбран в настройках. */
+.anep-wct.anep-wct-style-anep{--awt-red:#ff1f2d;--awt-dark:#242933;--awt-muted:#8d96a3;--awt-line:#e7ebf0;--awt-bg:#f7f8fa;color:var(--awt-dark)}.anep-wct-style-anep a{text-decoration:none}.anep-wct-style-anep .anep-wct-chips{gap:12px;margin:20px 0 54px}.anep-wct-style-anep .anep-wct-chip{min-height:43px;padding:0 18px;border:1px solid #dfe5ec;border-radius:4px;background:#fff;color:#2b3038;font-size:15px;line-height:1;transition:.18s}.anep-wct-style-anep .anep-wct-chip:hover{border-color:var(--awt-red);color:var(--awt-red);background:#fff}.anep-wct-style-anep .anep-wct-filter-wrap{margin:0 calc(50% - 50vw) 38px;padding:42px calc(50vw - 50%) 52px;background:var(--awt-bg);border-top:1px solid var(--awt-line);border-bottom:1px solid var(--awt-line)}.anep-wct-style-anep .anep-wct-filter-title{font-size:24px;margin:0 0 26px;font-weight:700}.anep-wct-style-anep .anep-wct-filter-icon{width:20px;height:20px;transform:rotate(90deg);font-size:22px;color:#20252c}.anep-wct-style-anep .anep-wct-filter-form{gap:18px 26px}.anep-wct-style-anep .anep-wct-filter-select{min-height:48px;border:1px solid #dce3ea;border-radius:4px;background:#fff;color:#343943;padding:0 18px;font-size:15px;outline:0;appearance:auto}.anep-wct-style-anep .anep-wct-filter-select:focus{border-color:var(--awt-red);box-shadow:0 0 0 1px var(--awt-red)}.anep-wct-style-anep .anep-wct-apply,.anep-wct-style-anep .anep-wct-reset{min-height:48px;border-radius:4px;font-size:15px}.anep-wct-style-anep .anep-wct-apply{border:1px solid var(--awt-red);background:var(--awt-red);color:#fff;padding:0 24px}.anep-wct-style-anep .anep-wct-reset{border:1px solid #dce3ea;background:#fff;color:#343943;padding:0 20px}.anep-wct-style-anep .anep-wct-table-wrap{background:#fff}.anep-wct-style-anep .anep-wct-table{border-collapse:collapse;background:#fff}.anep-wct-style-anep .anep-wct-table th,.anep-wct-style-anep .anep-wct-table td{padding:21px 18px;border-bottom:1px solid #e5eaf0}.anep-wct-style-anep .anep-wct-table th{color:#9aa1ab;font-size:14px;font-weight:600;white-space:nowrap}.anep-wct-style-anep .anep-wct-table td{font-size:15px;color:#2b3038}.anep-wct-style-anep .anep-wct-name a{font-weight:700;color:#2b3038}.anep-wct-style-anep .anep-wct-name a:hover{color:var(--awt-red)}.anep-wct-style-anep .anep-wct-btn{min-height:44px;padding:0 17px;border-radius:4px;border:1px solid transparent;font-size:14px;font-weight:700;line-height:1;transition:.18s}.anep-wct-style-anep .anep-wct-btn-outline{border-color:var(--awt-red);color:var(--awt-red);background:#fff}.anep-wct-style-anep .anep-wct-btn-outline:hover{background:#fff2f3;color:var(--awt-red)}.anep-wct-style-anep .anep-wct-btn-red{background:var(--awt-red);border-color:var(--awt-red);color:#fff}.anep-wct-style-anep .anep-wct-btn-red:hover{background:#e61724;border-color:#e61724;color:#fff}.anep-wct-style-anep .anep-wct-empty{color:var(--awt-muted)}.anep-wct-style-anep .anep-wct-pagination a,.anep-wct-style-anep .anep-wct-pagination span{border:1px solid #dce3ea;border-radius:4px;color:#303640;background:#fff}.anep-wct-style-anep .anep-wct-pagination .current{background:var(--awt-red);border-color:var(--awt-red);color:#fff}.anep-wct-style-anep .anep-wct-note{border-color:#f0d7a8;background:#fff8e8;color:#6f5200}.anep-wct-style-anep .anep-wct-sort-link:hover{color:var(--awt-red)}.anep-wct-style-anep .anep-wct-sort-icon{color:#a6afba;opacity:1}.anep-wct-style-anep .anep-wct-sortable.is-active .anep-wct-sort-icon{color:var(--awt-red)}.anep-wct-style-anep .anep-wct-price .amount{font-weight:700}.anep-wct-style-anep .anep-wct-modal-box{background:#fff;color:#242933}.anep-wct-style-anep .anep-wct-request-form input,.anep-wct-style-anep .anep-wct-request-form textarea{border:1px solid #dce3ea;border-radius:4px;padding:12px 14px;font-size:15px}
+
+
+.anep-wct-style-anep .anep-wct-cart-summary{padding:10px 0 18px;color:var(--awt-dark)}
+.anep-wct-style-anep .anep-wct-cart-link{border:1px solid #dce3ea;background:#fff;color:#343943;min-height:44px;padding:0 17px;border-radius:4px;font-size:14px;font-weight:700}
+.anep-wct-style-anep .anep-wct-checkout-link{background:var(--awt-red);border:1px solid var(--awt-red);color:#fff;min-height:44px;padding:0 17px;border-radius:4px;font-size:14px;font-weight:700}
+.anep-wct-style-anep .anep-wct-qty-input{width:86px;min-height:42px;border:1px solid #dce3ea;border-radius:4px;background:#fff;color:#2b3038;padding:6px 8px}
+
+@media(max-width:900px){.anep-wct-filter-form{grid-template-columns:repeat(2,minmax(160px,1fr))}.anep-wct-actions{justify-content:flex-start}.anep-wct-style-anep .anep-wct-filter-wrap{padding-top:30px;padding-bottom:34px}.anep-wct-style-anep .anep-wct-table th,.anep-wct-style-anep .anep-wct-table td{padding:16px 12px}}@media(max-width:560px){.anep-wct-cart-summary{justify-content:flex-start}.anep-wct-cart-count{width:100%;margin-right:0}.anep-wct-chips{gap:8px;margin-bottom:30px}.anep-wct-filter-form{grid-template-columns:1fr}.anep-wct-actions{flex-direction:column;gap:8px}.anep-wct-btn{width:100%}.anep-wct-table{min-width:690px}.anep-wct-style-anep .anep-wct-chip{min-height:38px;padding:0 13px;font-size:14px}.anep-wct-style-anep .anep-wct-filter-title{font-size:20px}}
+
+
+/* Свой стиль из админки. Использует CSS-переменные, которые задаются на корневом .anep-wct. */
+.anep-wct.anep-wct-style-custom{color:var(--awt-dark);background:var(--awt-bg-main);font-size:var(--awt-font-size)}
+.anep-wct-style-custom a{text-decoration:none}
+.anep-wct-style-custom .anep-wct-chips{gap:12px;margin:20px 0 34px}
+.anep-wct-style-custom .anep-wct-chip{min-height:42px;padding:0 var(--awt-btn-x);border:1px solid var(--awt-line);border-radius:var(--awt-radius);background:var(--awt-table-bg);color:var(--awt-dark);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-chip:hover{border-color:var(--awt-red);color:var(--awt-red)}
+.anep-wct-style-custom .anep-wct-filter-wrap{margin:0 0 28px;padding:28px;background:var(--awt-bg);border:1px solid var(--awt-line);border-radius:var(--awt-radius)}
+.anep-wct-style-custom .anep-wct-filter-title{font-size:calc(var(--awt-font-size) + 8px);margin:0 0 20px;font-weight:700;color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-filter-select{min-height:46px;border:1px solid var(--awt-line);border-radius:var(--awt-radius);background:var(--awt-table-bg);color:var(--awt-dark);padding:0 var(--awt-btn-x);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-filter-select:focus{border-color:var(--awt-red);box-shadow:0 0 0 1px var(--awt-red);outline:0}
+.anep-wct-style-custom .anep-wct-apply,.anep-wct-style-custom .anep-wct-reset,.anep-wct-style-custom .anep-wct-cart-link,.anep-wct-style-custom .anep-wct-checkout-link{min-height:46px;border-radius:var(--awt-radius);font-size:var(--awt-font-size);padding:0 var(--awt-btn-x)}
+.anep-wct-style-custom .anep-wct-apply,.anep-wct-style-custom .anep-wct-checkout-link{border:1px solid var(--awt-red);background:var(--awt-red);color:var(--awt-button-text)}
+.anep-wct-style-custom .anep-wct-reset,.anep-wct-style-custom .anep-wct-cart-link{border:1px solid var(--awt-line);background:var(--awt-table-bg);color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-cart-summary{padding:14px 0;color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-table-wrap{background:var(--awt-table-bg);border:1px solid var(--awt-line);border-radius:var(--awt-radius)}
+.anep-wct-style-custom .anep-wct-table{border-collapse:collapse;background:var(--awt-table-bg);min-width:var(--awt-table-min-width)}
+.anep-wct-style-custom .anep-wct-table th,.anep-wct-style-custom .anep-wct-table td{padding:var(--awt-cell-y) var(--awt-cell-x);border-bottom:1px solid var(--awt-line);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-table th{background:var(--awt-header-bg);color:var(--awt-header-color);font-weight:700;white-space:nowrap}
+.anep-wct-style-custom .anep-wct-table td{color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-table tbody tr:hover td{background:var(--awt-row-hover)}
+.anep-wct-style-custom .anep-wct-name a{font-weight:700;color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-name a:hover{color:var(--awt-red)}
+.anep-wct-style-custom .anep-wct-qty-input{width:var(--awt-qty-width);border:1px solid var(--awt-line);border-radius:var(--awt-radius);padding:6px 8px;background:var(--awt-table-bg);color:var(--awt-dark);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-btn{padding:var(--awt-btn-y) var(--awt-btn-x);border-radius:var(--awt-radius);border:1px solid transparent;font-size:var(--awt-font-size);font-weight:700;line-height:1.1;transition:.18s}
+.anep-wct-style-custom .anep-wct-btn-outline{border-color:var(--awt-red);color:var(--awt-red);background:var(--awt-table-bg)}
+.anep-wct-style-custom .anep-wct-btn-outline:hover{background:var(--awt-bg);color:var(--awt-red)}
+.anep-wct-style-custom .anep-wct-btn-red{background:var(--awt-red);border-color:var(--awt-red);color:var(--awt-button-text)}
+.anep-wct-style-custom .anep-wct-btn-red:hover{filter:brightness(.94);color:var(--awt-button-text)}
+.anep-wct-style-custom .anep-wct-empty{color:var(--awt-muted)}
+.anep-wct-style-custom .anep-wct-pagination a,.anep-wct-style-custom .anep-wct-pagination span{border:1px solid var(--awt-line);border-radius:var(--awt-radius);color:var(--awt-dark);background:var(--awt-table-bg)}
+.anep-wct-style-custom .anep-wct-pagination .current{background:var(--awt-red);border-color:var(--awt-red);color:var(--awt-button-text)}
+.anep-wct-style-custom .anep-wct-modal-box{background:var(--awt-table-bg);color:var(--awt-dark)}
+.anep-wct-style-custom .anep-wct-request-form input,.anep-wct-style-custom .anep-wct-request-form textarea{border:1px solid var(--awt-line);border-radius:var(--awt-radius);padding:12px 14px;font-size:var(--awt-font-size)}
+
+
+/* Custom Excel-like dropdown filters */
+.anep-wct-filter-form-custom{align-items:start}
+.anep-wct-filter-field{position:relative;min-width:0}
+.anep-wct-filter-toggle{width:100%;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer;font:inherit;color:inherit;background:inherit;border:1px solid currentColor;border-radius:4px;padding:0 14px;line-height:1.2}
+.anep-wct-filter-toggle-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.anep-wct-filter-toggle-icon{flex:0 0 auto;line-height:1;transition:transform .18s}
+.anep-wct-filter-field.is-open .anep-wct-filter-toggle-icon{transform:rotate(180deg)}
+.anep-wct-filter-panel{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:50;min-width:240px;background:#fff;color:#242933;border:1px solid #dce3ea;border-radius:4px;box-shadow:0 14px 35px rgba(16,24,40,.14);padding:12px}
+.anep-wct-filter-search{width:100%;min-height:42px;margin:0 0 10px;padding:0 12px;border:1px solid #dce3ea;border-radius:4px;background:#fff;color:#242933;font:inherit;box-sizing:border-box}
+.anep-wct-filter-options{display:flex;flex-direction:column;gap:4px;max-height:260px;overflow:auto;padding-right:2px}
+.anep-wct-filter-option{width:100%;display:flex;align-items:center;gap:10px;text-align:left;cursor:pointer;border:0;background:transparent;color:inherit;font:inherit;padding:8px 6px;border-radius:4px}
+.anep-wct-filter-option:hover{background:rgba(0,0,0,.045)}
+.anep-wct-filter-option.is-selected{font-weight:600}
+.anep-wct-filter-option.is-unavailable{display:none!important}
+.anep-wct-filter-check{width:18px;height:18px;flex:0 0 18px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #dce3ea;border-radius:4px;font-size:13px;line-height:1}
+.anep-wct-filter-option.is-selected .anep-wct-filter-check{border-color:currentColor}
+.anep-wct-filter-option-clear .anep-wct-filter-check{visibility:hidden}
+.anep-wct-active-filters{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:18px 0 0}
+.anep-wct-active-filter{display:inline-flex;align-items:center;gap:6px}
+.anep-wct-active-filter-label{font-weight:inherit;color:inherit}
+.anep-wct-active-filter-value{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 10px;border:1px solid #dce3ea;border-radius:4px;background:#fff;color:inherit;text-decoration:none;font:inherit;cursor:pointer}
+button.anep-wct-active-filter-value{appearance:none;-webkit-appearance:none}
+.anep-wct-active-filter-x{opacity:.75;font-weight:700}
+
+.anep-wct-style-anep .anep-wct-filter-toggle{min-height:48px;border:1px solid #dce3ea;border-radius:4px;background:#fff;color:#343943;padding:0 18px;font-size:15px;outline:0}
+.anep-wct-style-anep .anep-wct-filter-toggle:focus,.anep-wct-style-anep .anep-wct-filter-field.is-open .anep-wct-filter-toggle{border-color:var(--awt-red);box-shadow:0 0 0 1px var(--awt-red)}
+.anep-wct-style-anep .anep-wct-filter-toggle-icon{color:var(--awt-red)}
+.anep-wct-style-anep .anep-wct-filter-panel{border-color:#dce3ea;background:#fff;color:#343943;border-radius:4px;box-shadow:0 14px 30px rgba(32,37,44,.15)}
+.anep-wct-style-anep .anep-wct-filter-search{border-color:#dce3ea;border-radius:4px;font-size:15px}
+.anep-wct-style-anep .anep-wct-filter-option{font-size:15px;color:#6b7280}
+.anep-wct-style-anep .anep-wct-filter-option:hover{background:#fff2f3;color:#242933}
+.anep-wct-style-anep .anep-wct-filter-option.is-selected{color:#242933;font-weight:500}
+.anep-wct-style-anep .anep-wct-filter-option.is-selected .anep-wct-filter-check{background:var(--awt-red);border-color:var(--awt-red);color:#fff}
+.anep-wct-style-anep .anep-wct-active-filters{margin:18px 0 0;color:#343943}
+.anep-wct-style-anep .anep-wct-active-filter-value{border-color:#dce3ea;background:#fff;color:#8d96a3;min-height:32px;border-radius:4px;font-size:14px;text-decoration:none}
+.anep-wct-style-anep .anep-wct-active-filter-value:hover{border-color:var(--awt-red);color:var(--awt-red)}
+.anep-wct-style-anep .anep-wct-active-filter-x{color:var(--awt-red);opacity:1}
+
+.anep-wct-style-custom .anep-wct-filter-toggle{min-height:46px;border:1px solid var(--awt-line);border-radius:var(--awt-radius);background:var(--awt-table-bg);color:var(--awt-dark);padding:0 var(--awt-btn-x);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-filter-toggle:focus,.anep-wct-style-custom .anep-wct-filter-field.is-open .anep-wct-filter-toggle{border-color:var(--awt-red);box-shadow:0 0 0 1px var(--awt-red);outline:0}
+.anep-wct-style-custom .anep-wct-filter-toggle-icon{color:var(--awt-red)}
+.anep-wct-style-custom .anep-wct-filter-panel{background:var(--awt-table-bg);color:var(--awt-dark);border-color:var(--awt-line);border-radius:var(--awt-radius)}
+.anep-wct-style-custom .anep-wct-filter-search{background:var(--awt-table-bg);color:var(--awt-dark);border-color:var(--awt-line);border-radius:var(--awt-radius);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-filter-option{font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-filter-option:hover{background:var(--awt-bg)}
+.anep-wct-style-custom .anep-wct-filter-option.is-selected .anep-wct-filter-check{background:var(--awt-red);border-color:var(--awt-red);color:var(--awt-button-text)}
+.anep-wct-style-custom .anep-wct-active-filter-value{border-color:var(--awt-line);background:var(--awt-table-bg);color:var(--awt-dark);border-radius:var(--awt-radius);font-size:var(--awt-font-size)}
+.anep-wct-style-custom .anep-wct-active-filter-value:hover{border-color:var(--awt-red);color:var(--awt-red)}
+.anep-wct-style-custom .anep-wct-active-filter-x{color:var(--awt-red);opacity:1}
+
+@media(max-width:900px){.anep-wct-filter-panel{position:relative;top:auto;margin-top:8px;min-width:0}}
+
+/* v2.7 responsive fixes: total column limit is handled in PHP, layout is optimized here */
+.anep-wct-filter-form{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:start}
+.anep-wct-filter-form .anep-wct-apply,.anep-wct-filter-form .anep-wct-reset{min-height:44px}
+.anep-wct-table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.anep-wct-table{table-layout:auto;border-spacing:0}
+.anep-wct-table th,.anep-wct-table td{word-break:normal;overflow-wrap:anywhere}
+.anep-wct-table .anep-wct-actions,.anep-wct-actions-col{min-width:210px}
+.anep-wct-table .anep-wct-qty-col,.anep-wct-table .anep-wct-qty{min-width:88px;width:88px}
+.anep-wct-cart-summary{gap:12px}
+.anep-wct-cart-summary .button{white-space:nowrap}
+@media(min-width:901px){
+  .anep-wct-table th{position:sticky;top:0;z-index:2}
+  .anep-wct-table .anep-wct-actions{white-space:nowrap}
+}
+@media(max-width:760px){
+  .anep-wct{margin-top:16px}
+  .anep-wct-chips{display:flex;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;scroll-snap-type:x proximity}
+  .anep-wct-chip{flex:0 0 auto;scroll-snap-align:start}
+  .anep-wct-filter-wrap{padding:16px!important;margin-bottom:18px!important}
+  .anep-wct-filter-title{font-size:22px!important;line-height:1.2;margin-bottom:14px!important}
+  .anep-wct-filter-form{display:grid;grid-template-columns:1fr!important;gap:10px!important}
+  .anep-wct-filter-toggle,.anep-wct-filter-form .anep-wct-apply,.anep-wct-filter-form .anep-wct-reset{width:100%;min-height:46px}
+  .anep-wct-filter-panel{position:relative!important;top:auto!important;left:auto!important;right:auto!important;min-width:0!important;width:100%!important;margin-top:8px!important;box-sizing:border-box}
+  .anep-wct-active-filters{gap:8px;margin-top:14px}
+  .anep-wct-active-filter{width:auto;max-width:100%}
+  .anep-wct-active-filter-value{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .anep-wct-cart-summary{justify-content:stretch;align-items:stretch;margin:0 0 14px}
+  .anep-wct-cart-count{width:100%;margin:0;font-weight:600}
+  .anep-wct-cart-summary .button{flex:1 1 100%;width:100%;text-align:center;justify-content:center}
+  .anep-wct-table-wrap{overflow:visible;border:0!important;background:transparent!important}
+  .anep-wct-table,.anep-wct-style-custom .anep-wct-table{min-width:0!important;width:100%!important;border:0!important;background:transparent!important}
+  .anep-wct-table thead{display:none!important}
+  .anep-wct-table,.anep-wct-table tbody,.anep-wct-table tr,.anep-wct-table td{display:block;width:100%;box-sizing:border-box}
+  .anep-wct-table tr{margin:0 0 14px;border:1px solid var(--awt-line,#e2e8f0);border-radius:10px;overflow:hidden;background:var(--awt-table-bg,#fff);box-shadow:0 4px 14px rgba(15,23,42,.05)}
+  .anep-wct-table td{display:flex!important;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px!important;border:0!important;border-bottom:1px solid var(--awt-line,#edf1f5)!important;text-align:right;min-height:44px}
+  .anep-wct-table td:last-child{border-bottom:0!important}
+  .anep-wct-table td:before{content:attr(data-label);flex:0 0 42%;max-width:42%;font-weight:700;text-align:left;color:var(--awt-header-color,#4b5563)}
+  .anep-wct-table td.anep-wct-name{display:block!important;text-align:left;font-size:16px;line-height:1.35;background:var(--awt-bg,#f8fafc)}
+  .anep-wct-table td.anep-wct-name:before{display:block;max-width:none;margin-bottom:5px;font-size:12px;text-transform:uppercase;letter-spacing:.03em;opacity:.75}
+  .anep-wct-table td.anep-wct-empty{display:block!important;text-align:center;padding:18px!important}
+  .anep-wct-table td.anep-wct-empty:before{display:none!important}
+  .anep-wct-table td.anep-wct-qty{align-items:center}
+  .anep-wct-qty-input{width:96px!important;min-height:40px}
+  .anep-wct-table td.anep-wct-actions{display:flex!important;flex-direction:column;gap:8px;align-items:stretch;justify-content:stretch;text-align:center;background:var(--awt-bg,#f8fafc)}
+  .anep-wct-table td.anep-wct-actions:before{display:none!important}
+  .anep-wct-actions .anep-wct-btn{width:100%;min-height:42px;justify-content:center}
+}
+@media(max-width:420px){
+  .anep-wct-table td{flex-direction:column;text-align:left;gap:5px}
+  .anep-wct-table td:before{flex:0 0 auto;max-width:none;width:100%}
+  .anep-wct-qty-input{width:100%!important}
+}
+
+
+/* v2.9 mobile compact: on phones show product name + action buttons only. */
+@media(max-width:760px){
+  .anep-wct-mobile-compact .anep-wct-table-wrap{overflow:visible!important;border:0!important;background:transparent!important}
+  .anep-wct-mobile-compact .anep-wct-table,
+  .anep-wct-mobile-compact .anep-wct-table tbody,
+  .anep-wct-mobile-compact .anep-wct-table tr,
+  .anep-wct-mobile-compact .anep-wct-table td{display:block;width:100%;box-sizing:border-box}
+  .anep-wct-mobile-compact .anep-wct-table{min-width:0!important;border:0!important;background:transparent!important}
+  .anep-wct-mobile-compact .anep-wct-table thead{display:none!important}
+  .anep-wct-mobile-compact .anep-wct-table tr{margin:0;border:0!important;border-bottom:1px solid var(--awt-line,#e3e8ef)!important;border-radius:0!important;box-shadow:none!important;background:var(--awt-table-bg,#fff)!important;overflow:visible!important}
+  .anep-wct-mobile-compact .anep-wct-table td:not(.anep-wct-name):not(.anep-wct-actions):not(.anep-wct-empty){display:none!important}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-name{display:block!important;padding:20px 0 10px!important;border:0!important;background:transparent!important;text-align:left!important;font-size:18px;line-height:1.38;font-weight:700;min-height:0;color:inherit}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-name:before{display:none!important;content:none!important}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-name a{display:inline;color:inherit;text-decoration:none;font-weight:700}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-name a:hover{text-decoration:underline}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-actions{display:flex!important;flex-direction:row!important;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:10px!important;padding:10px 0 22px!important;border:0!important;background:transparent!important;text-align:left!important;white-space:normal!important;min-height:0}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-actions:before{display:none!important;content:none!important}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-actions .anep-wct-btn{width:auto!important;flex:0 1 auto;min-width:132px;min-height:44px;justify-content:center;white-space:nowrap;text-align:center}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-empty{display:block!important;text-align:center!important;padding:18px 12px!important;border:1px solid var(--awt-line,#e3e8ef)!important;border-radius:8px;background:var(--awt-table-bg,#fff)!important}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-empty:before{display:none!important;content:none!important}
+}
+@media(max-width:420px){
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-actions .anep-wct-btn{flex:1 1 calc(50% - 5px);min-width:0}
+  .anep-wct-mobile-compact .anep-wct-table td.anep-wct-name{font-size:17px}
+}
+
+/* v3.2: Elementor style bridge.
+   These rules read inline CSS variables from the Elementor widget settings, so archive-template styles work even if Elementor generated CSS is cached or overridden by theme/table styles. */
+.anep-wct.anep-wct-style-elementor{color:var(--awt-e-color,inherit)!important;background-color:var(--awt-e-bg,transparent)!important;margin:var(--awt-e-general-margin,24px 0 50px)!important;padding:var(--awt-e-general-padding,0)!important}
+.anep-wct-style-elementor .anep-wct-chips{gap:var(--awt-e-chip-gap,.75em)!important}
+.anep-wct-style-elementor .anep-wct-chip{color:var(--awt-e-chip-color,inherit)!important;background-color:var(--awt-e-chip-bg,transparent)!important;border:var(--awt-e-chip-border,inherit)!important;border-radius:var(--awt-e-chip-radius,inherit)!important;padding:var(--awt-e-chip-padding,inherit)!important}
+.anep-wct-style-elementor .anep-wct-chip:hover{color:var(--awt-e-chip-hover-color,var(--awt-e-chip-color,inherit))!important;background-color:var(--awt-e-chip-hover-bg,var(--awt-e-chip-bg,transparent))!important}
+.anep-wct-style-elementor .anep-wct-filter-wrap{background-color:var(--awt-e-filter-bg,transparent)!important;padding:var(--awt-e-filter-padding,0)!important}
+.anep-wct-style-elementor .anep-wct-filter-title{color:var(--awt-e-filter-title-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-filter-form{gap:var(--awt-e-filter-gap,1em)!important}
+.anep-wct-style-elementor .anep-wct-filter-select,
+.anep-wct-style-elementor .anep-wct-filter-toggle,
+.anep-wct-style-elementor .anep-wct-filter-search,
+.anep-wct-style-elementor .anep-wct-filter-panel{color:var(--awt-e-filter-color,inherit)!important;background-color:var(--awt-e-filter-field-bg,transparent)!important;border:var(--awt-e-filter-border,inherit)!important;border-radius:var(--awt-e-filter-radius,inherit)!important}
+.anep-wct-style-elementor .anep-wct-filter-select,
+.anep-wct-style-elementor .anep-wct-filter-toggle,
+.anep-wct-style-elementor .anep-wct-filter-search{padding:var(--awt-e-filter-field-padding,inherit)!important}
+.anep-wct-style-elementor .anep-wct-filter-option{color:var(--awt-e-filter-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-filter-option.is-selected .anep-wct-filter-check{background:var(--awt-red,currentColor)!important;border-color:var(--awt-red,currentColor)!important}
+.anep-wct-style-elementor .anep-wct-table-wrap,
+.anep-wct-style-elementor .anep-wct-table{background-color:var(--awt-e-table-bg,transparent)!important}
+.anep-wct-style-elementor .anep-wct-table{border:var(--awt-e-table-border,inherit)!important}
+.anep-wct-style-elementor .anep-wct-table thead th{background-color:var(--awt-e-header-bg,transparent)!important;color:var(--awt-e-header-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-table th{color:var(--awt-e-header-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-table td{color:var(--awt-e-body-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-table th,
+.anep-wct-style-elementor .anep-wct-table td{padding:var(--awt-e-cell-padding,inherit)!important;border-color:var(--awt-e-row-border-color,inherit)!important;border-bottom-color:var(--awt-e-row-border-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-table tbody tr:hover td{background-color:var(--awt-e-row-hover-bg,transparent)!important}
+.anep-wct-style-elementor .anep-wct-name a{color:var(--awt-e-name-color,inherit)!important}
+.anep-wct-style-elementor .anep-wct-name a:hover{color:var(--awt-e-name-hover-color,var(--awt-e-name-color,inherit))!important}
+.anep-wct-style-elementor .anep-wct-actions{gap:var(--awt-e-btn-gap,.75em)!important}
+.anep-wct-style-elementor .anep-wct-btn,
+.anep-wct-style-elementor .button.anep-wct-btn{padding:var(--awt-e-btn-padding,inherit)!important;border-radius:var(--awt-e-btn-radius,inherit)!important}
+.anep-wct-style-elementor .anep-wct-btn-outline,
+.anep-wct-style-elementor .button.anep-wct-btn-outline{color:var(--awt-e-price-btn-color,inherit)!important;background-color:var(--awt-e-price-btn-bg,transparent)!important;border-color:var(--awt-e-price-btn-border,currentColor)!important}
+.anep-wct-style-elementor .anep-wct-btn-red,
+.anep-wct-style-elementor .button.anep-wct-btn-red{color:var(--awt-e-buy-btn-color,inherit)!important;background-color:var(--awt-e-buy-btn-bg,var(--awt-red,transparent))!important;border-color:var(--awt-e-buy-btn-bg,var(--awt-red,currentColor))!important}
+.anep-wct-style-elementor .anep-wct-btn-red:hover,
+.anep-wct-style-elementor .button.anep-wct-btn-red:hover{background-color:var(--awt-e-buy-btn-hover-bg,var(--awt-e-buy-btn-bg,var(--awt-red,transparent)))!important;border-color:var(--awt-e-buy-btn-hover-bg,var(--awt-e-buy-btn-bg,var(--awt-red,currentColor)))!important}
+
+
+/* v3.3 Elementor-safe visual defaults.
+   Режим Elementor больше не должен превращать таблицу в «голый» HTML, если Elementor CSS-кеш
+   не применился или таблица выведена не тем экземпляром шаблона. Любые настройки Elementor,
+   переданные через inline CSS-переменные, имеют больший приоритет и переопределяют эти fallback-значения. */
+.anep-wct.anep-wct-style-elementor{
+  --awt-red:var(--e-global-color-primary,#ff1f2d);
+  --awt-e-color-fallback:#242933;
+  --awt-e-line-fallback:#dfe5ec;
+  --awt-e-soft-fallback:#f7f8fa;
+  --awt-e-field-fallback:#ffffff;
+  color:var(--awt-e-color,var(--awt-e-color-fallback))!important;
+  background-color:var(--awt-e-bg,transparent)!important;
+  margin:var(--awt-e-general-margin,24px 0 50px)!important;
+  padding:var(--awt-e-general-padding,0)!important;
+  box-sizing:border-box;
+}
+.anep-wct-style-elementor *,
+.anep-wct-style-elementor *:before,
+.anep-wct-style-elementor *:after{box-sizing:border-box}
+.anep-wct-style-elementor a{text-decoration:none}
+.anep-wct-style-elementor .anep-wct-chips{gap:var(--awt-e-chip-gap,10px)!important;margin:18px 0 30px!important}
+.anep-wct-style-elementor .anep-wct-chip{
+  min-height:40px!important;
+  padding:var(--awt-e-chip-padding,0 16px)!important;
+  border:var(--awt-e-chip-border,1px solid var(--awt-e-line-fallback))!important;
+  border-radius:var(--awt-e-chip-radius,4px)!important;
+  color:var(--awt-e-chip-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;
+  background-color:var(--awt-e-chip-bg,var(--awt-e-field-fallback))!important;
+  font-weight:600;
+}
+.anep-wct-style-elementor .anep-wct-chip:hover{
+  color:var(--awt-e-chip-hover-color,var(--awt-red))!important;
+  background-color:var(--awt-e-chip-hover-bg,var(--awt-e-field-fallback))!important;
+  border-color:var(--awt-red)!important;
+}
+.anep-wct-style-elementor .anep-wct-filter-wrap{
+  margin:0 0 28px!important;
+  padding:var(--awt-e-filter-padding,24px)!important;
+  background-color:var(--awt-e-filter-bg,var(--awt-e-soft-fallback))!important;
+  border:1px solid var(--awt-e-row-border-color,var(--awt-e-line-fallback))!important;
+  border-radius:8px!important;
+}
+.anep-wct-style-elementor .anep-wct-filter-title{
+  color:var(--awt-e-filter-title-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;
+  font-size:24px;
+  line-height:1.2;
+  margin:0 0 18px!important;
+  font-weight:700;
+}
+.anep-wct-style-elementor .anep-wct-filter-form{gap:var(--awt-e-filter-gap,16px)!important;align-items:start!important}
+.anep-wct-style-elementor .anep-wct-filter-select,
+.anep-wct-style-elementor .anep-wct-filter-toggle,
+.anep-wct-style-elementor .anep-wct-filter-search,
+.anep-wct-style-elementor .anep-wct-filter-panel{
+  color:var(--awt-e-filter-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;
+  background-color:var(--awt-e-filter-field-bg,var(--awt-e-field-fallback))!important;
+  border:var(--awt-e-filter-border,1px solid var(--awt-e-line-fallback))!important;
+  border-radius:var(--awt-e-filter-radius,4px)!important;
+}
+.anep-wct-style-elementor .anep-wct-filter-select,
+.anep-wct-style-elementor .anep-wct-filter-toggle,
+.anep-wct-style-elementor .anep-wct-filter-search{
+  min-height:48px!important;
+  padding:var(--awt-e-filter-field-padding,0 16px)!important;
+  box-shadow:none!important;
+  outline:0!important;
+}
+.anep-wct-style-elementor .anep-wct-filter-toggle:focus,
+.anep-wct-style-elementor .anep-wct-filter-field.is-open .anep-wct-filter-toggle{border-color:var(--awt-red)!important;box-shadow:0 0 0 1px var(--awt-red)!important}
+.anep-wct-style-elementor .anep-wct-filter-panel{box-shadow:0 14px 35px rgba(16,24,40,.14)!important;padding:12px!important}
+.anep-wct-style-elementor .anep-wct-filter-option{color:var(--awt-e-filter-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;border:0!important;background:transparent!important}
+.anep-wct-style-elementor .anep-wct-filter-option:hover{background:rgba(0,0,0,.045)!important}
+.anep-wct-style-elementor .anep-wct-filter-option.is-selected .anep-wct-filter-check{background:var(--awt-red)!important;border-color:var(--awt-red)!important;color:#fff!important}
+.anep-wct-style-elementor .anep-wct-active-filters{gap:12px 18px!important;margin:18px 0 0!important}
+.anep-wct-style-elementor .anep-wct-active-filter-value{min-height:32px!important;padding:0 10px!important;border:1px solid var(--awt-e-line-fallback)!important;border-radius:4px!important;background:#fff!important;color:var(--awt-e-filter-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;text-decoration:none!important}
+.anep-wct-style-elementor .anep-wct-active-filter-x{color:var(--awt-red)!important;opacity:1!important}
+.anep-wct-style-elementor .anep-wct-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  background-color:var(--awt-e-table-bg,var(--awt-e-field-fallback))!important;
+  border:0!important;
+}
+.anep-wct-style-elementor .anep-wct-table,
+.anep-wct-style-elementor table.anep-wct-table.shop_table{
+  width:100%!important;
+  min-width:760px;
+  border-collapse:collapse!important;
+  border-spacing:0!important;
+  border:var(--awt-e-table-border,1px solid var(--awt-e-row-border-color,var(--awt-e-line-fallback)))!important;
+  background-color:var(--awt-e-table-bg,var(--awt-e-field-fallback))!important;
+  margin:0!important;
+}
+.anep-wct-style-elementor .anep-wct-table thead th,
+.anep-wct-style-elementor table.anep-wct-table.shop_table thead th{
+  background-color:var(--awt-e-header-bg,var(--awt-e-field-fallback))!important;
+  color:var(--awt-e-header-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+}
+.anep-wct-style-elementor .anep-wct-table th,
+.anep-wct-style-elementor .anep-wct-table td,
+.anep-wct-style-elementor table.anep-wct-table.shop_table th,
+.anep-wct-style-elementor table.anep-wct-table.shop_table td{
+  padding:var(--awt-e-cell-padding,16px 18px)!important;
+  border:0!important;
+  border-bottom:1px solid var(--awt-e-row-border-color,var(--awt-e-line-fallback))!important;
+  border-right:1px solid var(--awt-e-row-border-color,var(--awt-e-line-fallback))!important;
+  text-align:left!important;
+  vertical-align:middle!important;
+  color:var(--awt-e-body-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;
+  line-height:1.35;
+}
+.anep-wct-style-elementor .anep-wct-table th:last-child,
+.anep-wct-style-elementor .anep-wct-table td:last-child{border-right:0!important}
+.anep-wct-style-elementor .anep-wct-table tbody tr:hover td{background-color:var(--awt-e-row-hover-bg,#fafafa)!important}
+.anep-wct-style-elementor .anep-wct-name a{color:var(--awt-e-name-color,var(--awt-e-color,var(--awt-e-color-fallback)))!important;font-weight:inherit;text-decoration:none!important}
+.anep-wct-style-elementor .anep-wct-name a:hover{color:var(--awt-e-name-hover-color,var(--awt-red))!important;text-decoration:none!important}
+.anep-wct-style-elementor .anep-wct-actions{display:flex!important;justify-content:flex-end!important;gap:var(--awt-e-btn-gap,10px)!important;white-space:nowrap!important;min-width:210px}
+.anep-wct-style-elementor .anep-wct-btn,
+.anep-wct-style-elementor .button.anep-wct-btn,
+.anep-wct-style-elementor button.anep-wct-btn{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:42px!important;
+  padding:var(--awt-e-btn-padding,10px 16px)!important;
+  border-radius:var(--awt-e-btn-radius,4px)!important;
+  border:1px solid transparent!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  cursor:pointer!important;
+  text-decoration:none!important;
+  box-shadow:none!important;
+}
+.anep-wct-style-elementor .anep-wct-btn-outline,
+.anep-wct-style-elementor .button.anep-wct-btn-outline,
+.anep-wct-style-elementor button.anep-wct-btn-outline{
+  color:var(--awt-e-price-btn-color,var(--awt-red))!important;
+  background-color:var(--awt-e-price-btn-bg,#fff)!important;
+  border:1px solid var(--awt-e-price-btn-border,var(--awt-red))!important;
+}
+.anep-wct-style-elementor .anep-wct-btn-red,
+.anep-wct-style-elementor .button.anep-wct-btn-red,
+.anep-wct-style-elementor button.anep-wct-btn-red{
+  color:var(--awt-e-buy-btn-color,#fff)!important;
+  background-color:var(--awt-e-buy-btn-bg,var(--awt-red))!important;
+  border:1px solid var(--awt-e-buy-btn-bg,var(--awt-red))!important;
+}
+.anep-wct-style-elementor .anep-wct-btn-red:hover,
+.anep-wct-style-elementor .button.anep-wct-btn-red:hover,
+.anep-wct-style-elementor button.anep-wct-btn-red:hover{
+  color:var(--awt-e-buy-btn-color,#fff)!important;
+  background-color:var(--awt-e-buy-btn-hover-bg,var(--awt-e-buy-btn-bg,var(--awt-red)))!important;
+  border-color:var(--awt-e-buy-btn-hover-bg,var(--awt-e-buy-btn-bg,var(--awt-red)))!important;
+}
+@media(max-width:760px){
+  .anep-wct-style-elementor .anep-wct-filter-wrap{padding:16px!important;border-radius:8px!important}
+  .anep-wct-style-elementor .anep-wct-filter-form{grid-template-columns:1fr!important;gap:10px!important}
+  .anep-wct-style-elementor .anep-wct-filter-toggle{width:100%!important}
+  .anep-wct-style-elementor .anep-wct-mobile-compact .anep-wct-table{min-width:0!important}
+  .anep-wct-style-elementor.anep-wct-mobile-compact .anep-wct-table{min-width:0!important}
+  .anep-wct-style-elementor.anep-wct-mobile-compact .anep-wct-table td.anep-wct-name{padding:18px 0 10px!important;border-right:0!important;border-bottom:0!important}
+  .anep-wct-style-elementor.anep-wct-mobile-compact .anep-wct-table td.anep-wct-actions{padding:10px 0 20px!important;border-right:0!important;border-bottom:1px solid var(--awt-e-row-border-color,var(--awt-e-line-fallback))!important}
+  .anep-wct-style-elementor.anep-wct-mobile-compact .anep-wct-actions{justify-content:flex-start!important;min-width:0!important}
+}
+
+
+/* v3.4 archive-template width guard and Elementor fallback override */
+.elementor-widget-anep_wct_table,.elementor-widget-anep_wct_table .elementor-widget-container,.anep-wct-elementor-shell{box-sizing:border-box;max-width:100%;width:100%;}
+.anep-wct-elementor-shell.awt-shell-boxed{max-width:var(--awt-shell-max-width,1200px);margin-left:auto;margin-right:auto;padding-left:var(--awt-shell-pad-x,0);padding-right:var(--awt-shell-pad-x,0);}
+.anep-wct-elementor-shell.awt-shell-full{max-width:none;width:100%;}
+.anep-wct-elementor-shell .anep-wct{max-width:100%;}
+.anep-wct-style-elementor .anep-wct-filter-form{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:var(--awt-e-filter-gap,16px)!important;}
+@media(max-width:760px){.anep-wct-elementor-shell.awt-shell-boxed{padding-left:var(--awt-shell-pad-x-mobile,12px);padding-right:var(--awt-shell-pad-x-mobile,12px);} .anep-wct-style-elementor .anep-wct-filter-form{grid-template-columns:1fr!important;}}
