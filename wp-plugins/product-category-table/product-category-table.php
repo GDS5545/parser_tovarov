@@ -43,7 +43,7 @@ require_once PCT_PLUGIN_DIR . 'includes/class-pct-cart.php';
 
 final class PCT_Plugin {
     const OPTION_KEY = 'pct_options';
-    const VERSION = '1.2.0';
+    const VERSION = '1.2.1';
 
     private static $instance = null;
 

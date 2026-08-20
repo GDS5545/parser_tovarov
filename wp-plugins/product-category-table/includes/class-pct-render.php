@@ -19,15 +19,19 @@ class PCT_Render {
 
         $args = wp_parse_args($args, array(
             'per_page'           => null,
-            'base_url'           => $term ? get_term_link($term) : $this->current_url_without_pct_args(),
+            // Форма фильтров, сортировка и пагинация всегда должны вести на страницу,
+            // которая СЕЙЧАС открыта, а не на "канонический" URL архива термина
+            // (get_term_link()). На сайтах, где категория собрана отдельной
+            // страницей/Elementor-страницей с шорткодом (а не через нативный архив
+            // WooCommerce), get_term_link() ведёт на другой, часто нерабочий адрес —
+            // и выбор фильтра вместо фильтрации уводил на этот чужой URL (в т.ч. на
+            // главную, если тот адрес редиректился на неё).
+            'base_url'           => $this->current_url_without_pct_args(),
             'filter_attributes'  => array(),
             'column_attributes'  => array(),
             'show_chips'         => true,
             'show_filters'       => true,
         ));
-        if (is_wp_error($args['base_url'])) {
-            $args['base_url'] = home_url('/');
-        }
 
         // Список товаров этой категории (только ID) нужен и для чипов, и для авто-подбора
         // фильтров — считаем один раз, результат уже закеширован в PCT_Query.
