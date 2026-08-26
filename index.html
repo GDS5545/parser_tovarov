@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AquaLine — системы очистки воды для дома</title>
+<meta name="description" content="AquaLine — фильтры и системы обратного осмоса для очистки воды в квартире и доме. Подбор, доставка, монтаж и сервисное обслуживание под ключ." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>💧</text></svg>" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header class="header">
+  <div class="container">
+    <a href="#top" class="logo">
+      <svg class="drop" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C12 2 4.5 11.5 4.5 16.2C4.5 20.7 8.02 22 12 22C15.98 22 19.5 20.7 19.5 16.2C19.5 11.5 12 2 12 2Z" fill="url(#g1)"/>
+        <defs><linearGradient id="g1" x1="4.5" y1="2" x2="19.5" y2="22" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#35D7E0"/><stop offset="1" stop-color="#5B8DEF"/>
+        </linearGradient></defs>
+      </svg>
+      Aqua<span>Line</span>
+    </a>
+
+    <nav class="nav">
+      <a href="#catalog">Каталог</a>
+      <a href="#advantages">Преимущества</a>
+      <a href="#how">Как это работает</a>
+      <a href="#about">О компании</a>
+      <a href="#reviews">Отзывы</a>
+      <a href="#faq">Вопросы</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+
+    <div class="header-actions">
+      <div class="header-phone">
+        <a href="tel:+77001234567">+7 700 123-45-67</a>
+        <small>Ежедневно, 9:00–20:00</small>
+      </div>
+      <button class="btn btn-primary btn-sm" data-open-modal>Заказать звонок</button>
+      <button class="burger" id="burgerBtn" aria-label="Меню">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6H21M3 12H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#catalog">Каталог</a>
+    <a href="#advantages">Преимущества</a>
+    <a href="#how">Как это работает</a>
+    <a href="#about">О компании</a>
+    <a href="#reviews">Отзывы</a>
+    <a href="#faq">Вопросы</a>
+    <a href="#contacts">Контакты</a>
+    <a href="tel:+77001234567">+7 700 123-45-67</a>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero-copy" data-animate>
+      <span class="eyebrow">Чистая вода с 2014 года</span>
+      <h1 class="hero-title">Вода, которой <em>можно доверять</em>, в каждом кране вашего дома</h1>
+      <p class="hero-text">Системы обратного осмоса, магистральные фильтры и станции умягчения воды. Подберём решение под ваш дом, установим за 1 день и возьмём сервис на себя.</p>
+      <div class="hero-cta">
+        <a href="#catalog" class="btn btn-primary">Подобрать фильтр</a>
+        <a href="#how" class="btn btn-ghost">Как проходит установка</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>12 400+</b><span>систем установлено</span></div>
+        <div><b>9 лет</b><span>на рынке Казахстана</span></div>
+        <div><b>4.9 / 5</b><span>средняя оценка клиентов</span></div>
+      </div>
+    </div>
+
+    <div class="hero-art" data-animate>
+      <svg viewBox="0 0 420 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="210" cy="420" rx="150" ry="20" fill="#35D7E0" opacity="0.08"/>
+        <rect x="120" y="60" width="180" height="330" rx="26" fill="#101c30" stroke="#26374f" stroke-width="2"/>
+        <rect x="140" y="90" width="140" height="60" rx="10" fill="#16243a"/>
+        <circle cx="210" cy="120" r="16" fill="url(#g2)"/>
+        <rect x="150" y="170" width="120" height="180" rx="14" fill="#0f1b2d"/>
+        <rect x="164" y="184" width="34" height="152" rx="17" fill="url(#g3)" opacity="0.9"/>
+        <rect x="206" y="184" width="34" height="152" rx="17" fill="url(#g3)" opacity="0.6"/>
+        <rect x="248" y="184" width="10" height="152" rx="5" fill="#233150"/>
+        <path d="M210 372C210 372 195 390 195 402C195 410.28 201.72 417 210 417C218.28 417 225 410.28 225 402C225 390 210 372 210 372Z" fill="url(#g2)"/>
+        <defs>
+          <linearGradient id="g2" x1="194" y1="104" x2="226" y2="136" gradientUnits="userSpaceOnUse"><stop stop-color="#35D7E0"/><stop offset="1" stop-color="#5B8DEF"/></linearGradient>
+          <linearGradient id="g3" x1="164" y1="184" x2="240" y2="336" gradientUnits="userSpaceOnUse"><stop stop-color="#35D7E0"/><stop offset="1" stop-color="#0f8fa3"/></linearGradient>
+        </defs>
+      </svg>
+      <div class="hero-badge"><span class="dot"></span>Гарантия 5 лет</div>
+      <div class="hero-badge b2"><span class="dot"></span>Монтаж за 1 день</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TRUST BAR ===================== -->
+<div class="trust">
+  <div class="container">
+    <span><strong>Сертифицировано</strong> СТ РК и ЕАС</span>
+    <span><strong>Оригинальные</strong> мембраны Filmtec / Dow</span>
+    <span><strong>Рассрочка</strong> 0% до 12 месяцев</span>
+    <span><strong>Сервис</strong> по всему Казахстану</span>
+  </div>
+</div>
+
+<!-- ===================== ADVANTAGES ===================== -->
+<section class="advantages" id="advantages">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Почему AquaLine</span>
+        <h2>Забота о воде, которую вы пьёте каждый день</h2>
+      </div>
+      <p>Мы занимаемся только очисткой воды — от подбора системы до сервиса — поэтому знаем, как сделать это без компромиссов.</p>
+    </div>
+
+    <div class="adv-grid">
+      <div class="adv-card" data-animate>
+        <div class="adv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <h3>Питьевая вода класса люкс</h3>
+        <p>Обратный осмос очищает воду до 99,9%, удаляя хлор, соли жёсткости, тяжёлые металлы и бактерии.</p>
+      </div>
+      <div class="adv-card" data-animate>
+        <div class="adv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a4 4 0 0 1-5.6 5.2L4 16.6V20h3.4l5.1-5.1a4 4 0 0 1 5.2-5.6l-2.6 2.6-2-2 2.6-2.6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Монтаж за один визит</h3>
+        <p>Наши инженеры устанавливают систему за 2–3 часа без штробления стен и без остановки водоснабжения дома.</p>
+      </div>
+      <div class="adv-card" data-animate>
+        <div class="adv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 22C12 22 20 18 20 11V5L12 2L4 5V11C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="1.8"/></svg>
+        </div>
+        <h3>Гарантия 5 лет</h3>
+        <p>Официальная гарантия на оборудование и бесплатная диагностика системы в течение всего срока службы.</p>
+      </div>
+      <div class="adv-card" data-animate>
+        <div class="adv-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7V12L15.5 14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Сервис по подписке</h3>
+        <p>Напоминаем о замене картриджей и приезжаем на плановое обслуживание — вам не нужно ничего запоминать.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CATALOG ===================== -->
+<section class="catalog" id="catalog">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Каталог</span>
+        <h2>Системы очистки воды под любую задачу</h2>
+      </div>
+      <p>От компактного фильтра под мойку до станции для всего дома с умягчением и обеззараживанием.</p>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-filter="all">Все системы</button>
+      <button class="tab-btn" data-filter="osmos">Обратный осмос</button>
+      <button class="tab-btn" data-filter="magistral">Магистральные</button>
+      <button class="tab-btn" data-filter="soft">Умягчение</button>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+
+      <article class="product-card" data-cat="osmos" data-animate>
+        <div class="product-media">
+          <span class="product-tag">Хит продаж</span>
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z" stroke="currentColor" stroke-width="1.4"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine RO-500</h3>
+          <div class="product-specs"><span>5 ступеней</span><span>500 л/сутки</span><span>минерализация</span></div>
+          <p class="spec">Компактная система обратного осмоса под мойку с баком на 8 литров и краном для чистой воды.</p>
+          <div class="product-price">
+            <div><b>119 900 ₸</b><small>рассрочка от 9 990 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="osmos" data-animate>
+        <div class="product-media">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z" stroke="currentColor" stroke-width="1.4"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine RO-700 Pro</h3>
+          <div class="product-specs"><span>6 ступеней</span><span>700 л/сутки</span><span>помпа</span></div>
+          <p class="spec">Усиленная станция с помпой для квартир с низким давлением воды. Увеличенный ресурс мембраны.</p>
+          <div class="product-price">
+            <div><b>159 900 ₸</b><small>рассрочка от 13 320 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="magistral" data-animate>
+        <div class="product-media">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 8H15M9 12H15M9 16H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine Magistral Duo</h3>
+          <div class="product-specs"><span>2 колбы</span><span>на весь дом</span><span>от ржавчины и песка</span></div>
+          <p class="spec">Механическая очистка всей воды в доме от частиц, ржавчины и хлора на вводе водоснабжения.</p>
+          <div class="product-price">
+            <div><b>64 900 ₸</b><small>рассрочка от 5 410 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="magistral" data-animate>
+        <div class="product-media">
+          <span class="product-tag">Новинка</span>
+          <svg viewBox="0 0 24 24" fill="none"><rect x="5" y="4" width="14" height="16" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M9 8H15M9 12H15M9 16H13" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine Magistral UV</h3>
+          <div class="product-specs"><span>3 колбы</span><span>УФ-обеззараживание</span><span>для скважин</span></div>
+          <p class="spec">Комплекс с УФ-лампой для полного обеззараживания воды из скважины или колодца.</p>
+          <div class="product-price">
+            <div><b>189 900 ₸</b><small>рассрочка от 15 830 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="soft" data-animate>
+        <div class="product-media">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C7 21 4 17.5 4 13.5C4 8.5 12 3 12 3C12 3 20 8.5 20 13.5C20 17.5 17 21 12 21Z" stroke="currentColor" stroke-width="1.4"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine Soft Home</h3>
+          <div class="product-specs"><span>умягчение</span><span>автопромывка</span><span>на весь дом</span></div>
+          <p class="spec">Ионообменная станция умягчения воды: защищает бойлер, стиральную машину и трубы от накипи.</p>
+          <div class="product-price">
+            <div><b>249 900 ₸</b><small>рассрочка от 20 830 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="soft" data-animate>
+        <div class="product-media">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C7 21 4 17.5 4 13.5C4 8.5 12 3 12 3C12 3 20 8.5 20 13.5C20 17.5 17 21 12 21Z" stroke="currentColor" stroke-width="1.4"/></svg>
+        </div>
+        <div class="product-body">
+          <h3>AquaLine Soft Compact</h3>
+          <div class="product-specs"><span>компакт</span><span>для квартир</span><span>ручная регенерация</span></div>
+          <p class="spec">Компактная кабина умягчения для квартир с ограниченным местом под мойкой или в санузле.</p>
+          <div class="product-price">
+            <div><b>134 900 ₸</b><small>рассрочка от 11 240 ₸/мес</small></div>
+            <a href="#contacts" class="btn btn-primary btn-sm">Купить</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="steps" id="how">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Процесс</span>
+        <h2>Как проходит покупка и установка</h2>
+      </div>
+      <p>От заявки до чистой воды в кране — в среднем 2–3 дня, включая доставку по городу.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card" data-animate>
+        <div class="step-num">01</div>
+        <h3>Заявка и подбор</h3>
+        <p>Оставляете заявку или звоните — консультант подберёт систему под состав воды и площадь дома.</p>
+      </div>
+      <div class="step-card" data-animate>
+        <div class="step-num">02</div>
+        <h3>Замер на месте</h3>
+        <p>Бесплатный выезд инженера для проверки давления, разводки труб и точки монтажа.</p>
+      </div>
+      <div class="step-card" data-animate>
+        <div class="step-num">03</div>
+        <h3>Монтаж под ключ</h3>
+        <p>Установка и настройка системы за 2–3 часа, тест на протечки и первый запуск при вас.</p>
+      </div>
+      <div class="step-card" data-animate>
+        <div class="step-num">04</div>
+        <h3>Сервис и картриджи</h3>
+        <p>Напоминаем о замене картриджей и приезжаем на плановое обслуживание по графику.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== COMPARE ===================== -->
+<section class="compare">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Сравнение</span>
+        <h2>Какая система подойдёт именно вам</h2>
+      </div>
+      <p>Если не уверены в выборе — сравните ключевые системы или закажите бесплатную консультацию.</p>
+    </div>
+
+    <div class="compare-table-wrap" data-animate>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Параметр</th>
+            <th>Magistral Duo</th>
+            <th>RO-500</th>
+            <th>Soft Home</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Очистка от механики и ржавчины</td>
+            <td class="check-yes">✓</td>
+            <td class="check-yes">✓</td>
+            <td class="check-yes">✓</td>
+          </tr>
+          <tr>
+            <td>Питьевая вода без солей и хлора</td>
+            <td class="check-no">—</td>
+            <td class="check-yes">✓</td>
+            <td class="check-no">—</td>
+          </tr>
+          <tr>
+            <td>Умягчение всей воды в доме</td>
+            <td class="check-no">—</td>
+            <td class="check-no">—</td>
+            <td class="check-yes">✓</td>
+          </tr>
+          <tr>
+            <td>Установка</td>
+            <td>На ввод в дом</td>
+            <td>Под мойкой</td>
+            <td>На ввод в дом</td>
+          </tr>
+          <tr>
+            <td>Средний ресурс картриджей</td>
+            <td>6–8 мес.</td>
+            <td>9–12 мес.</td>
+            <td>12–18 мес.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ===================== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-text" data-animate>
+      <span class="eyebrow">О компании</span>
+      <h2 class="section-head" style="margin-bottom:0;display:block;border:none;">AquaLine — вода без компромиссов с 2014 года</h2>
+      <p>Мы начинали с одной сервисной бригады в Алматы, а сегодня устанавливаем и обслуживаем системы очистки воды по всему Казахстану. Работаем только с проверенными брендами мембран и картриджей, а каждую систему тестируем перед отгрузкой.</p>
+      <a href="#contacts" class="btn btn-primary">Получить консультацию</a>
+    </div>
+    <div class="about-stats" data-animate>
+      <div class="stat"><b>12 400+</b><span>установленных систем</span></div>
+      <div class="stat"><b>9 лет</b><span>опыта на рынке</span></div>
+      <div class="stat"><b>18</b><span>городов присутствия</span></div>
+      <div class="stat"><b>4.9/5</b><span>рейтинг сервиса</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REVIEWS ===================== -->
+<section class="reviews" id="reviews">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Отзывы</span>
+        <h2>Что говорят клиенты о AquaLine</h2>
+      </div>
+      <p>Более 3 000 отзывов от владельцев квартир и частных домов по всей стране.</p>
+    </div>
+
+    <div class="review-grid">
+      <div class="review-card" data-animate>
+        <div class="review-stars">★★★★★</div>
+        <p>«Установили RO-500 за два часа, ничего не пришлось штробить. Вода стала действительно вкусной, дети перестали просить сок вместо воды».</p>
+        <div class="review-user">
+          <div class="review-avatar">А</div>
+          <div><b>Айгерим С.</b><span>Алматы, квартира</span></div>
+        </div>
+      </div>
+      <div class="review-card" data-animate>
+        <div class="review-stars">★★★★★</div>
+        <p>«Взяли Soft Home на частный дом — бойлер и стиральная машина теперь без накипи. Сервис сам напоминает про обслуживание, очень удобно».</p>
+        <div class="review-user">
+          <div class="review-avatar">Д</div>
+          <div><b>Дамир К.</b><span>Астана, частный дом</span></div>
+        </div>
+      </div>
+      <div class="review-card" data-animate>
+        <div class="review-stars">★★★★★</div>
+        <p>«Долго выбирали между магистральным фильтром и осмосом — консультант честно объяснил разницу и подобрал оба варианта под наш бюджет».</p>
+        <div class="review-user">
+          <div class="review-avatar">М</div>
+          <div><b>Мария П.</b><span>Шымкент, квартира</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FAQ ===================== -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-head" data-animate>
+      <div>
+        <span class="eyebrow">Вопросы и ответы</span>
+        <h2>Частые вопросы о фильтрах и монтаже</h2>
+      </div>
+      <p>Не нашли ответ на свой вопрос? Напишите нам — ответим в течение 15 минут в рабочее время.</p>
+    </div>
+
+    <div class="faq-list" data-animate>
+      <div class="faq-item open">
+        <div class="faq-q">Сколько по времени занимает установка?<span class="icon">＋</span></div>
+        <div class="faq-a"><p>В среднем монтаж занимает 2–3 часа: подключение к водопроводу, установка крана и первый запуск с проверкой на протечки.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Нужно ли менять картриджи и как часто?<span class="icon">＋</span></div>
+        <div class="faq-a"><p>Да, картриджи предварительной очистки меняются раз в 6–12 месяцев, мембрана обратного осмоса — раз в 2–3 года. Мы сами напоминаем о замене.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Подойдёт ли система для скважинной воды?<span class="icon">＋</span></div>
+        <div class="faq-a"><p>Да, для скважин и колодцев рекомендуем модели с УФ-обеззараживанием и дополнительной ступенью механической очистки — подберём на замере.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Есть ли рассрочка и гарантия?<span class="icon">＋</span></div>
+        <div class="faq-a"><p>Да, доступна рассрочка 0% до 12 месяцев без переплат, а на всё оборудование действует официальная гарантия до 5 лет.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA BANNER ===================== -->
+<div class="cta-banner" data-animate>
+  <div>
+    <h2>Не знаете, какая система подойдёт вашему дому?</h2>
+    <p>Оставьте заявку — перезвоним в течение 15 минут и подберём решение бесплатно, без обязательств.</p>
+  </div>
+  <button class="btn btn-primary" data-open-modal>Получить консультацию</button>
+</div>
+
+<!-- ===================== CONTACTS ===================== -->
+<section class="contacts" id="contacts">
+  <div class="container">
+    <div class="contact-info" data-animate>
+      <span class="eyebrow">Контакты</span>
+      <div class="info-row">
+        <div class="info-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M22 16.92V19.92C22 20.47 21.55 20.92 21 20.9C10.4 20.28 2.72 12.6 2.1 2C2.08 1.45 2.53 1 3.08 1H6.08C6.6 1 7.03 1.4 7.08 1.92C7.2 3.24 7.5 4.53 7.96 5.75C8.12 6.17 8.02 6.65 7.7 6.97L6.2 8.47C7.6 11.32 9.68 13.4 12.53 14.8L14.03 13.3C14.35 12.98 14.83 12.88 15.25 13.04C16.47 13.5 17.76 13.8 19.08 13.92C19.6 13.97 20 14.41 20 14.93V16.92" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div><b>Телефон</b><span><a href="tel:+77001234567">+7 700 123-45-67</a> — ежедневно с 9:00 до 20:00</span></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6L12 13L21 6" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div><b>Почта</b><span><a href="mailto:hello@aqualine.kz">hello@aqualine.kz</a></span></div>
+      </div>
+      <div class="info-row">
+        <div class="info-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 22C12 22 20 18 20 11V5L12 2L4 5V11C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div><b>Шоурум</b><span>г. Алматы, ул. Абая 150, офис 4 — и выезд по всему Казахстану</span></div>
+      </div>
+    </div>
+
+    <form class="contact-form" id="contactForm" data-animate>
+      <h3>Оставить заявку на подбор системы</h3>
+      <input type="text" name="name" placeholder="Ваше имя" required />
+      <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required />
+      <select name="type">
+        <option value="">Тип жилья</option>
+        <option value="flat">Квартира</option>
+        <option value="house">Частный дом</option>
+        <option value="office">Офис / бизнес</option>
+      </select>
+      <textarea name="comment" placeholder="Комментарий (необязательно)"></textarea>
+      <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+      <span class="form-status" id="formStatus"></span>
+      <span class="fine">Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных.</span>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="logo">
+          <svg class="drop" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C12 2 4.5 11.5 4.5 16.2C4.5 20.7 8.02 22 12 22C15.98 22 19.5 20.7 19.5 16.2C19.5 11.5 12 2 12 2Z" fill="url(#g4)"/>
+            <defs><linearGradient id="g4" x1="4.5" y1="2" x2="19.5" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#35D7E0"/><stop offset="1" stop-color="#5B8DEF"/></linearGradient></defs>
+          </svg>
+          Aqua<span>Line</span>
+        </a>
+        <p>Системы очистки воды для дома и бизнеса: подбор, монтаж и сервисное обслуживание по всему Казахстану.</p>
+        <div class="social-row">
+          <a href="#" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
+          <a href="#" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-3.6-6.7L20 4l-1.2 3.7A8 8 0 0 1 20 12Z" stroke="currentColor" stroke-width="1.6"/></svg></a>
+          <a href="#" aria-label="Telegram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 4L2.5 11.4l6 2.1M21 4L15 20l-6.5-6.5M21 4L8.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Каталог</h4>
+        <ul>
+          <li><a href="#catalog">Обратный осмос</a></li>
+          <li><a href="#catalog">Магистральные фильтры</a></li>
+          <li><a href="#catalog">Умягчение воды</a></li>
+          <li><a href="#catalog">Картриджи и запчасти</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Компания</h4>
+        <ul>
+          <li><a href="#about">О нас</a></li>
+          <li><a href="#reviews">Отзывы</a></li>
+          <li><a href="#how">Доставка и монтаж</a></li>
+          <li><a href="#faq">Вопросы</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="tel:+77001234567">+7 700 123-45-67</a></li>
+          <li><a href="mailto:hello@aqualine.kz">hello@aqualine.kz</a></li>
+          <li><a href="#contacts">г. Алматы, ул. Абая 150</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="year"></span> AquaLine. Все права защищены.</span>
+      <span>Сайт носит информационный характер и не является публичной офертой.</span>
+    </div>
+  </div>
+</footer>
+
+<button class="floating-cta" data-open-modal>
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M22 16.92V19.92C22 20.47 21.55 20.92 21 20.9C10.4 20.28 2.72 12.6 2.1 2C2.08 1.45 2.53 1 3.08 1H6.08C6.6 1 7.03 1.4 7.08 1.92C7.2 3.24 7.5 4.53 7.96 5.75C8.12 6.17 8.02 6.65 7.7 6.97L6.2 8.47C7.6 11.32 9.68 13.4 12.53 14.8L14.03 13.3C14.35 12.98 14.83 12.88 15.25 13.04C16.47 13.5 17.76 13.8 19.08 13.92C19.6 13.97 20 14.41 20 14.93V16.92" stroke="currentColor" stroke-width="1.6"/></svg>
+  Заказать звонок
+</button>
+
+<!-- ===================== MODAL ===================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" id="modalClose">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <h3 style="font-size:20px;font-weight:800;margin-bottom:6px;">Закажите обратный звонок</h3>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;">Перезвоним в течение 15 минут в рабочее время.</p>
+    <form class="contact-form" id="modalForm" style="padding:0;border:none;background:none;">
+      <input type="text" name="name" placeholder="Ваше имя" required />
+      <input type="tel" name="phone" placeholder="+7 (___) ___-__-__" required />
+      <button type="submit" class="btn btn-primary btn-block">Перезвоните мне</button>
+      <span class="form-status" id="modalStatus"></span>
+    </form>
+  </div>
+</div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
