@@ -1,0 +1,3283 @@
+{
+  "content": [
+    {
+      "id": "9f06504",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "20",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF",
+        "border_border": "solid",
+        "border_width": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "1",
+          "left": "0",
+          "isLinked": false
+        },
+        "border_color": "#D9E6F2",
+        "sticky": "top"
+      },
+      "elements": [
+        {
+          "id": "306e129",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "6a35fcb",
+              "elType": "widget",
+              "settings": {
+                "html": "<a href=\"#top\" style=\"display:flex;align-items:center;gap:10px;font-family:'Unbounded',sans-serif;font-weight:800;font-size:20px;color:#123A66;text-decoration:none;\"><svg width=\"42\" height=\"29\" viewBox=\"0 0 64 44\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4 14C16 2 28 2 38 12C48 22 56 22 60 14\" stroke=\"#29b6e8\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M2 24C14 14 26 14 36 22C46 30 54 30 62 22\" stroke=\"#1e88c9\" stroke-width=\"5\" stroke-linecap=\"round\"/><path d=\"M0 34C12 26 22 26 32 32C42 38 50 38 60 30\" stroke=\"#123a66\" stroke-width=\"5\" stroke-linecap=\"round\"/></svg>DaKaRaTech</a>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        },
+        {
+          "id": "dd71795",
+          "elType": "column",
+          "settings": {
+            "_column_size": 50,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "e141a52",
+              "elType": "widget",
+              "settings": {
+                "html": "<nav style=\"display:flex;gap:28px;font-family:'Manrope',sans-serif;font-weight:600;font-size:14.5px;color:#5B7290;\"><a href=\"#catalog\" style=\"color:inherit;text-decoration:none;\">Каталог</a><a href=\"#advantages\" style=\"color:inherit;text-decoration:none;\">Преимущества</a><a href=\"#how\" style=\"color:inherit;text-decoration:none;\">Как это работает</a><a href=\"#about\" style=\"color:inherit;text-decoration:none;\">О компании</a><a href=\"#reviews\" style=\"color:inherit;text-decoration:none;\">Отзывы</a><a href=\"#faq\" style=\"color:inherit;text-decoration:none;\">Вопросы</a><a href=\"#contacts\" style=\"color:inherit;text-decoration:none;\">Контакты</a></nav>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        },
+        {
+          "id": "67fcc2e",
+          "elType": "column",
+          "settings": {
+            "_column_size": 15,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "689a413",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style=\"text-align:right;margin:0;font-weight:800;\"><a href=\"tel:+77001234567\" style=\"color:#0E2C4F;text-decoration:none;\">+7 700 123-45-67</a><br><small style=\"font-weight:500;color:#5B7290;\">Ежедневно, 9:00–20:00</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        },
+        {
+          "id": "27ed010",
+          "elType": "column",
+          "settings": {
+            "_column_size": 10,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "258d2c1",
+              "elType": "widget",
+              "settings": {
+                "text": "Заказать звонок",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "align": "right",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "c457d23",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "90",
+          "right": "0",
+          "bottom": "110",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "fbc73ee",
+          "elType": "column",
+          "settings": {
+            "_column_size": 55,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "edfb4df",
+              "elType": "widget",
+              "settings": {
+                "title": "ЧИСТАЯ ВОДА С 2014 ГОДА",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "b7b2ecb",
+              "elType": "widget",
+              "settings": {
+                "title": "Вода, которой можно доверять, в каждом кране вашего дома",
+                "header_size": "h1",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 48,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_font_weight": "800",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "bf29e45",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Системы обратного осмоса, магистральные фильтры и станции умягчения воды. Подберём решение под ваш дом, установим за 1 день и возьмём сервис на себя.</p>",
+                "text_color": "#5B7290",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 17,
+                  "sizes": []
+                }
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "768aa4c",
+              "elType": "section",
+              "settings": {
+                "content_width": "boxed",
+                "padding": {
+                  "unit": "px",
+                  "top": "10",
+                  "right": "0",
+                  "bottom": "30",
+                  "left": "0",
+                  "isLinked": false
+                }
+              },
+              "elements": [
+                {
+                  "id": "e97d1fe",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null
+                  },
+                  "elements": [
+                    {
+                      "id": "878831e",
+                      "elType": "widget",
+                      "settings": {
+                        "text": "Подобрать фильтр",
+                        "link": {
+                          "url": "#catalog",
+                          "is_external": "",
+                          "nofollow": ""
+                        },
+                        "size": "md",
+                        "border_radius": {
+                          "unit": "px",
+                          "top": "999",
+                          "right": "999",
+                          "bottom": "999",
+                          "left": "999",
+                          "isLinked": true
+                        },
+                        "typography_typography": "custom",
+                        "typography_font_weight": "700",
+                        "background_color": "#1E88C9",
+                        "button_text_color": "#FFFFFF",
+                        "background_hover_color": "#123A66"
+                      },
+                      "elements": [],
+                      "widgetType": "button"
+                    }
+                  ]
+                },
+                {
+                  "id": "7a81433",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null
+                  },
+                  "elements": [
+                    {
+                      "id": "6ec2acc",
+                      "elType": "widget",
+                      "settings": {
+                        "text": "Как проходит установка",
+                        "link": {
+                          "url": "#how",
+                          "is_external": "",
+                          "nofollow": ""
+                        },
+                        "size": "md",
+                        "border_radius": {
+                          "unit": "px",
+                          "top": "999",
+                          "right": "999",
+                          "bottom": "999",
+                          "left": "999",
+                          "isLinked": true
+                        },
+                        "typography_typography": "custom",
+                        "typography_font_weight": "700",
+                        "background_color": "transparent",
+                        "button_text_color": "#0E2C4F",
+                        "border_border": "solid",
+                        "border_width": {
+                          "unit": "px",
+                          "top": "1",
+                          "right": "1",
+                          "bottom": "1",
+                          "left": "1",
+                          "isLinked": true
+                        },
+                        "border_color": "#D9E6F2"
+                      },
+                      "elements": [],
+                      "widgetType": "button"
+                    }
+                  ]
+                }
+              ],
+              "isInner": true
+            },
+            {
+              "id": "45841a3",
+              "elType": "section",
+              "settings": {
+                "content_width": "boxed",
+                "padding": {
+                  "unit": "px",
+                  "top": "100",
+                  "right": "0",
+                  "bottom": "100",
+                  "left": "0",
+                  "isLinked": false
+                }
+              },
+              "elements": [
+                {
+                  "id": "d1ae777",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 34,
+                    "_inline_size": null
+                  },
+                  "elements": [
+                    {
+                      "id": "106e0b2",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 12400,
+                        "prefix": "",
+                        "suffix": "+",
+                        "title": "систем установлено",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                },
+                {
+                  "id": "88e6c7c",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 33,
+                    "_inline_size": null
+                  },
+                  "elements": [
+                    {
+                      "id": "c87fabf",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 9,
+                        "prefix": "",
+                        "suffix": " лет",
+                        "title": "на рынке Казахстана",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                },
+                {
+                  "id": "1b4d0ff",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 33,
+                    "_inline_size": null
+                  },
+                  "elements": [
+                    {
+                      "id": "b38116f",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 4.9,
+                        "prefix": "",
+                        "suffix": "/5",
+                        "title": "средняя оценка клиентов",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                }
+              ],
+              "isInner": true
+            }
+          ]
+        },
+        {
+          "id": "d31520a",
+          "elType": "column",
+          "settings": {
+            "_column_size": 45,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "323206c",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"text-align:center;\"><svg viewBox=\"0 0 420 460\" width=\"100%\" style=\"max-width:420px\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><ellipse cx=\"210\" cy=\"420\" rx=\"150\" ry=\"20\" fill=\"#123a66\" opacity=\"0.08\"/><rect x=\"120\" y=\"60\" width=\"180\" height=\"330\" rx=\"26\" fill=\"#0e2c4f\" stroke=\"#1e4a7a\" stroke-width=\"2\"/><rect x=\"140\" y=\"90\" width=\"140\" height=\"60\" rx=\"10\" fill=\"#16385f\"/><circle cx=\"210\" cy=\"120\" r=\"16\" fill=\"#1e88c9\"/><rect x=\"150\" y=\"170\" width=\"120\" height=\"180\" rx=\"14\" fill=\"#0a233f\"/><rect x=\"164\" y=\"184\" width=\"34\" height=\"152\" rx=\"17\" fill=\"#29b6e8\" opacity=\"0.9\"/><rect x=\"206\" y=\"184\" width=\"34\" height=\"152\" rx=\"17\" fill=\"#1e88c9\" opacity=\"0.6\"/><rect x=\"248\" y=\"184\" width=\"10\" height=\"152\" rx=\"5\" fill=\"#1e4a7a\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "92fd587",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "22",
+          "right": "0",
+          "bottom": "22",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "30f0a5e",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "1f5b80b",
+              "elType": "widget",
+              "settings": {
+                "icon_list": [
+                  {
+                    "text": "Сертифицировано СТ РК и ЕАС",
+                    "selected_icon": {
+                      "value": "fa-certificate",
+                      "library": "fa-solid"
+                    },
+                    "_id": "97e23d1"
+                  },
+                  {
+                    "text": "Оригинальные мембраны Filmtec / Dow",
+                    "selected_icon": {
+                      "value": "fa-flask",
+                      "library": "fa-solid"
+                    },
+                    "_id": "9e89516"
+                  },
+                  {
+                    "text": "Рассрочка 0% до 12 месяцев",
+                    "selected_icon": {
+                      "value": "fa-credit-card",
+                      "library": "fa-solid"
+                    },
+                    "_id": "a301e7c"
+                  },
+                  {
+                    "text": "Сервис по всему Казахстану",
+                    "selected_icon": {
+                      "value": "fa-truck",
+                      "library": "fa-solid"
+                    },
+                    "_id": "feaf1f6"
+                  }
+                ],
+                "view": "inline",
+                "space_between": {
+                  "unit": "px",
+                  "size": 28
+                },
+                "icon_color": "#1E88C9",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "icon-list"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "03b2ac1",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "b85736b",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "64e8fd1",
+              "elType": "widget",
+              "settings": {
+                "title": "ПОЧЕМУ DAKARATECH",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "6d5e533",
+              "elType": "widget",
+              "settings": {
+                "title": "Забота о воде, которую вы пьёте каждый день",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "7f032f3",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Мы занимаемся только очисткой воды — от подбора системы до сервиса — поэтому знаем, как сделать это без компромиссов.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "7fc9c47",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "80",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "8d3083c",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "08a107f",
+              "elType": "widget",
+              "settings": {
+                "icon": {
+                  "value": "fa-tint",
+                  "library": "fa-solid"
+                },
+                "title_text": "Питьевая вода класса люкс",
+                "description_text": "Обратный осмос очищает воду до 99,9%, удаляя хлор, соли жёсткости, тяжёлые металлы и бактерии.",
+                "primary_color": "#1E88C9",
+                "title_color": "#0E2C4F",
+                "description_color": "#5B7290",
+                "position": "top",
+                "title_size": "h3"
+              },
+              "elements": [],
+              "widgetType": "icon-box"
+            }
+          ]
+        },
+        {
+          "id": "01fbc83",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "bdd28a9",
+              "elType": "widget",
+              "settings": {
+                "icon": {
+                  "value": "fa-wrench",
+                  "library": "fa-solid"
+                },
+                "title_text": "Монтаж за один визит",
+                "description_text": "Наши инженеры устанавливают систему за 2–3 часа без штробления стен и без остановки водоснабжения дома.",
+                "primary_color": "#1E88C9",
+                "title_color": "#0E2C4F",
+                "description_color": "#5B7290",
+                "position": "top",
+                "title_size": "h3"
+              },
+              "elements": [],
+              "widgetType": "icon-box"
+            }
+          ]
+        },
+        {
+          "id": "0e843be",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "d388000",
+              "elType": "widget",
+              "settings": {
+                "icon": {
+                  "value": "fa-shield-alt",
+                  "library": "fa-solid"
+                },
+                "title_text": "Гарантия 5 лет",
+                "description_text": "Официальная гарантия на оборудование и бесплатная диагностика системы в течение всего срока службы.",
+                "primary_color": "#1E88C9",
+                "title_color": "#0E2C4F",
+                "description_color": "#5B7290",
+                "position": "top",
+                "title_size": "h3"
+              },
+              "elements": [],
+              "widgetType": "icon-box"
+            }
+          ]
+        },
+        {
+          "id": "c2e62fe",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "cbd8b33",
+              "elType": "widget",
+              "settings": {
+                "icon": {
+                  "value": "fa-clock",
+                  "library": "fa-solid"
+                },
+                "title_text": "Сервис по подписке",
+                "description_text": "Напоминаем о замене картриджей и приезжаем на плановое обслуживание — вам не нужно ничего запоминать.",
+                "primary_color": "#1E88C9",
+                "title_color": "#0E2C4F",
+                "description_color": "#5B7290",
+                "position": "top",
+                "title_size": "h3"
+              },
+              "elements": [],
+              "widgetType": "icon-box"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "cd07070",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "fd32058",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "596c4f9",
+              "elType": "widget",
+              "settings": {
+                "title": "КАТАЛОГ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "5dc82bd",
+              "elType": "widget",
+              "settings": {
+                "title": "Системы очистки воды под любую задачу",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "e45bf71",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>От компактного фильтра под мойку до станции для всего дома с умягчением и обеззараживанием.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "4a0a3d7",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "26",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "27a5954",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "c15aa6d",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><span style=\"display:inline-block;background:#F2A93B;color:#241300;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;text-transform:uppercase;margin-bottom:10px;\">Хит продаж</span><br><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "f0feae4",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech RO-500",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "6a8b26a",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>5 ступеней · 500 л/сутки · минерализация</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "5267f64",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Компактная система обратного осмоса под мойку с баком на 8 литров и краном для чистой воды.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "70cec2e",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>119 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 9 990 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "b605286",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        },
+        {
+          "id": "cd7f627",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "43542a0",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "5b22c5f",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech RO-700 Pro",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "83e1718",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>6 ступеней · 700 л/сутки · помпа</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "1196ef0",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Усиленная станция с помпой для квартир с низким давлением воды. Увеличенный ресурс мембраны.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "ccf94a4",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>159 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 13 320 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "fde483b",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        },
+        {
+          "id": "2a26227",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "0428489",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "2464e55",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech Magistral Duo",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "573a0ff",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>2 колбы · на весь дом · от ржавчины и песка</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "7d68055",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Механическая очистка всей воды в доме от частиц, ржавчины и хлора на вводе водоснабжения.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "3015b7b",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>64 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 5 410 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "eb7ec09",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "43691bb",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "90",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "b111f72",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "b1fa650",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><span style=\"display:inline-block;background:#F2A93B;color:#241300;font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;text-transform:uppercase;margin-bottom:10px;\">Новинка</span><br><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "8c7c5b7",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech Magistral UV",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "6ce186b",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>3 колбы · УФ-обеззараживание · для скважин</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "ca334b6",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Комплекс с УФ-лампой для полного обеззараживания воды из скважины или колодца.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "ab7802e",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>189 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 15 830 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "3d9385b",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        },
+        {
+          "id": "9f1d80a",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "0dad96d",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "2d5ba83",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech Soft Home",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "ff384ed",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>умягчение · автопромывка · на весь дом</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "92cb422",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Ионообменная станция умягчения воды: защищает бойлер, стиральную машину и трубы от накипи.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "bce4f53",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>249 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 20 830 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "d818d31",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        },
+        {
+          "id": "cd7b727",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_border": "solid",
+            "border_width": {
+              "unit": "px",
+              "top": "1",
+              "right": "1",
+              "bottom": "1",
+              "left": "1",
+              "isLinked": true
+            },
+            "border_color": "#D9E6F2",
+            "border_radius": {
+              "unit": "px",
+              "top": "18",
+              "right": "18",
+              "bottom": "18",
+              "left": "18",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "0",
+              "right": "20",
+              "bottom": "24",
+              "left": "20",
+              "isLinked": false
+            }
+          },
+          "elements": [
+            {
+              "id": "b40aec1",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"background:#EAF4FB;border-radius:14px;padding:24px;text-align:center;\"><svg width=\"64\" height=\"64\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#1E88C9\" stroke-width=\"1.4\"><path d=\"M12 2C12 2 5 11 5 15.5C5 19.6 8.1 22 12 22C15.9 22 19 19.6 19 15.5C19 11 12 2 12 2Z\"/></svg></div>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            },
+            {
+              "id": "e3124d1",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech Soft Compact",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 19,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "c398b7c",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:13px;'>компакт · для квартир · ручная регенерация</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "98418d9",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='color:#5B7290;font-size:14px;'>Компактная кабина умягчения для квартир с ограниченным местом под мойкой или в санузле.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "fe363a5",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='font-weight:800;font-size:20px;margin:0;'>134 900 ₸ <small style='display:block;font-weight:500;font-size:12px;color:#5B7290;'>рассрочка от 11 240 ₸/мес</small></p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "8266f23",
+              "elType": "widget",
+              "settings": {
+                "text": "Купить",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "3bb9e5d",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "44285ec",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "cd8a742",
+              "elType": "widget",
+              "settings": {
+                "title": "ПРОЦЕСС",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "b4fbe83",
+              "elType": "widget",
+              "settings": {
+                "title": "Как проходит покупка и установка",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "e8ed5a7",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>От заявки до чистой воды в кране — в среднем 2–3 дня, включая доставку по городу.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "ae3c810",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "90",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "db0d533",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "95aede3",
+              "elType": "widget",
+              "settings": {
+                "title": "01",
+                "header_size": "div",
+                "title_color": "#29B6E8",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 42,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_font_weight": "800",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "ebbf196",
+              "elType": "widget",
+              "settings": {
+                "title": "Заявка и подбор",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 17,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "110335d",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Оставляете заявку или звоните — консультант подберёт систему под состав воды и площадь дома.</p>",
+                "text_color": "#5B7290",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14,
+                  "sizes": []
+                }
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        },
+        {
+          "id": "6321f46",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "3bd540d",
+              "elType": "widget",
+              "settings": {
+                "title": "02",
+                "header_size": "div",
+                "title_color": "#29B6E8",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 42,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_font_weight": "800",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "1df008d",
+              "elType": "widget",
+              "settings": {
+                "title": "Замер на месте",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 17,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "e79b815",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Бесплатный выезд инженера для проверки давления, разводки труб и точки монтажа.</p>",
+                "text_color": "#5B7290",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14,
+                  "sizes": []
+                }
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        },
+        {
+          "id": "71028ee",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "7dd4c9a",
+              "elType": "widget",
+              "settings": {
+                "title": "03",
+                "header_size": "div",
+                "title_color": "#29B6E8",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 42,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_font_weight": "800",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "df799f9",
+              "elType": "widget",
+              "settings": {
+                "title": "Монтаж под ключ",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 17,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "bae7cbb",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Установка и настройка системы за 2–3 часа, тест на протечки и первый запуск при вас.</p>",
+                "text_color": "#5B7290",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14,
+                  "sizes": []
+                }
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        },
+        {
+          "id": "23c8403",
+          "elType": "column",
+          "settings": {
+            "_column_size": 25,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "533cefd",
+              "elType": "widget",
+              "settings": {
+                "title": "04",
+                "header_size": "div",
+                "title_color": "#29B6E8",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 42,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_font_weight": "800",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "66f8e88",
+              "elType": "widget",
+              "settings": {
+                "title": "Сервис и картриджи",
+                "header_size": "h3",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 17,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "cc7a86e",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Напоминаем о замене картриджей и приезжаем на плановое обслуживание по графику.</p>",
+                "text_color": "#5B7290",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14,
+                  "sizes": []
+                }
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "c85aca5",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "763290a",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "6a5483c",
+              "elType": "widget",
+              "settings": {
+                "title": "СРАВНЕНИЕ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "7c0a83e",
+              "elType": "widget",
+              "settings": {
+                "title": "Какая система подойдёт именно вам",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "f74fad4",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Если не уверены в выборе — сравните ключевые системы или закажите бесплатную консультацию.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "8d5ff0e",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "90",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "ef2f52e",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "c80c213",
+              "elType": "widget",
+              "settings": {
+                "html": "\n<div style=\"overflow-x:auto;border:1px solid #D9E6F2;border-radius:16px;\">\n<table style=\"width:100%;border-collapse:collapse;min-width:640px;font-family:'Manrope',sans-serif;\">\n<thead>\n<tr style=\"background:#EAF4FB;\">\n<th style=\"text-align:left;padding:16px 20px;font-size:13px;text-transform:uppercase;color:#5B7290;\">Параметр</th>\n<th style=\"text-align:left;padding:16px 20px;font-size:13px;text-transform:uppercase;color:#5B7290;\">Magistral Duo</th>\n<th style=\"text-align:left;padding:16px 20px;font-size:13px;text-transform:uppercase;color:#5B7290;\">RO-500</th>\n<th style=\"text-align:left;padding:16px 20px;font-size:13px;text-transform:uppercase;color:#5B7290;\">Soft Home</th>\n</tr>\n</thead>\n<tbody>\n<tr><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;font-weight:700;\">Очистка от механики и ржавчины</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#1E88C9;font-weight:800;\">✓</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#1E88C9;font-weight:800;\">✓</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#1E88C9;font-weight:800;\">✓</td></tr>\n<tr><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;font-weight:700;\">Питьевая вода без солей и хлора</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#5B7290;\">—</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#1E88C9;font-weight:800;\">✓</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#5B7290;\">—</td></tr>\n<tr><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;font-weight:700;\">Умягчение всей воды в доме</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#5B7290;\">—</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#5B7290;\">—</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;color:#1E88C9;font-weight:800;\">✓</td></tr>\n<tr><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;font-weight:700;\">Установка</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">На ввод в дом</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">Под мойкой</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">На ввод в дом</td></tr>\n<tr><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;font-weight:700;\">Средний ресурс картриджей</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">6–8 мес.</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">9–12 мес.</td><td style=\"padding:16px 20px;border-top:1px solid #D9E6F2;\">12–18 мес.</td></tr>\n</tbody>\n</table>\n</div>\n"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "d5db608",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "100",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "00b11b6",
+          "elType": "column",
+          "settings": {
+            "_column_size": 50,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "eabe3c8",
+              "elType": "widget",
+              "settings": {
+                "title": "О КОМПАНИИ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "17024e3",
+              "elType": "widget",
+              "settings": {
+                "title": "DaKaRaTech — вода без компромиссов с 2014 года",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 32,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "3c0c46b",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Мы начинали с одной сервисной бригады в Алматы, а сегодня устанавливаем и обслуживаем системы очистки воды по всему Казахстану. Работаем только с проверенными брендами мембран и картриджей, а каждую систему тестируем перед отгрузкой.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            },
+            {
+              "id": "84ae13d",
+              "elType": "widget",
+              "settings": {
+                "text": "Получить консультацию",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        },
+        {
+          "id": "06e9c5e",
+          "elType": "column",
+          "settings": {
+            "_column_size": 50,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "284356d",
+              "elType": "section",
+              "settings": {
+                "content_width": "boxed",
+                "padding": {
+                  "unit": "px",
+                  "top": "100",
+                  "right": "0",
+                  "bottom": "100",
+                  "left": "0",
+                  "isLinked": false
+                }
+              },
+              "elements": [
+                {
+                  "id": "8d8466a",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null,
+                    "background_background": "classic",
+                    "background_color": "#EAF4FB",
+                    "border_radius": {
+                      "unit": "px",
+                      "top": "16",
+                      "right": "16",
+                      "bottom": "16",
+                      "left": "16",
+                      "isLinked": true
+                    },
+                    "padding": {
+                      "unit": "px",
+                      "top": "26",
+                      "right": "20",
+                      "bottom": "26",
+                      "left": "20",
+                      "isLinked": false
+                    }
+                  },
+                  "elements": [
+                    {
+                      "id": "516720e",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 12400,
+                        "prefix": "",
+                        "suffix": "+",
+                        "title": "установленных систем",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                },
+                {
+                  "id": "472392e",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null,
+                    "background_background": "classic",
+                    "background_color": "#EAF4FB",
+                    "border_radius": {
+                      "unit": "px",
+                      "top": "16",
+                      "right": "16",
+                      "bottom": "16",
+                      "left": "16",
+                      "isLinked": true
+                    },
+                    "padding": {
+                      "unit": "px",
+                      "top": "26",
+                      "right": "20",
+                      "bottom": "26",
+                      "left": "20",
+                      "isLinked": false
+                    }
+                  },
+                  "elements": [
+                    {
+                      "id": "8cc0d3e",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 9,
+                        "prefix": "",
+                        "suffix": " лет",
+                        "title": "опыта на рынке",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                },
+                {
+                  "id": "b59132e",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null,
+                    "background_background": "classic",
+                    "background_color": "#EAF4FB",
+                    "border_radius": {
+                      "unit": "px",
+                      "top": "16",
+                      "right": "16",
+                      "bottom": "16",
+                      "left": "16",
+                      "isLinked": true
+                    },
+                    "padding": {
+                      "unit": "px",
+                      "top": "26",
+                      "right": "20",
+                      "bottom": "26",
+                      "left": "20",
+                      "isLinked": false
+                    }
+                  },
+                  "elements": [
+                    {
+                      "id": "3aa2bd9",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 18,
+                        "prefix": "",
+                        "suffix": "",
+                        "title": "городов присутствия",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                },
+                {
+                  "id": "3401e02",
+                  "elType": "column",
+                  "settings": {
+                    "_column_size": 50,
+                    "_inline_size": null,
+                    "background_background": "classic",
+                    "background_color": "#EAF4FB",
+                    "border_radius": {
+                      "unit": "px",
+                      "top": "16",
+                      "right": "16",
+                      "bottom": "16",
+                      "left": "16",
+                      "isLinked": true
+                    },
+                    "padding": {
+                      "unit": "px",
+                      "top": "26",
+                      "right": "20",
+                      "bottom": "26",
+                      "left": "20",
+                      "isLinked": false
+                    }
+                  },
+                  "elements": [
+                    {
+                      "id": "63edc5b",
+                      "elType": "widget",
+                      "settings": {
+                        "starting_number": 0,
+                        "ending_number": 4.9,
+                        "prefix": "",
+                        "suffix": "/5",
+                        "title": "рейтинг сервиса",
+                        "number_color": "#1E88C9",
+                        "title_color": "#5B7290"
+                      },
+                      "elements": [],
+                      "widgetType": "counter"
+                    }
+                  ]
+                }
+              ],
+              "isInner": true
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "6d1564d",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "70b2078",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "db2ce0a",
+              "elType": "widget",
+              "settings": {
+                "title": "ОТЗЫВЫ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "c6f19fa",
+              "elType": "widget",
+              "settings": {
+                "title": "Что говорят клиенты о DaKaRaTech",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "79f9c57",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Более 3 000 отзывов от владельцев квартир и частных домов по всей стране.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "0220a87",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "90",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "e3b2843",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_radius": {
+              "unit": "px",
+              "top": "16",
+              "right": "16",
+              "bottom": "16",
+              "left": "16",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "10",
+              "right": "10",
+              "bottom": "10",
+              "left": "10",
+              "isLinked": true
+            }
+          },
+          "elements": [
+            {
+              "id": "ba6210c",
+              "elType": "widget",
+              "settings": {
+                "testimonial_content": "«Установили RO-500 за два часа, ничего не пришлось штробить. Вода стала действительно вкусной, дети перестали просить сок вместо воды».",
+                "testimonial_name": "Айгерим С.",
+                "testimonial_job": "Алматы, квартира",
+                "testimonial_image": {
+                  "url": "",
+                  "id": ""
+                },
+                "testimonial_alignment": "center"
+              },
+              "elements": [],
+              "widgetType": "testimonial"
+            }
+          ]
+        },
+        {
+          "id": "9f94b4e",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_radius": {
+              "unit": "px",
+              "top": "16",
+              "right": "16",
+              "bottom": "16",
+              "left": "16",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "10",
+              "right": "10",
+              "bottom": "10",
+              "left": "10",
+              "isLinked": true
+            }
+          },
+          "elements": [
+            {
+              "id": "4e98279",
+              "elType": "widget",
+              "settings": {
+                "testimonial_content": "«Взяли Soft Home на частный дом — бойлер и стиральная машина теперь без накипи. Сервис сам напоминает про обслуживание, очень удобно».",
+                "testimonial_name": "Дамир К.",
+                "testimonial_job": "Астана, частный дом",
+                "testimonial_image": {
+                  "url": "",
+                  "id": ""
+                },
+                "testimonial_alignment": "center"
+              },
+              "elements": [],
+              "widgetType": "testimonial"
+            }
+          ]
+        },
+        {
+          "id": "6173a03",
+          "elType": "column",
+          "settings": {
+            "_column_size": 33,
+            "_inline_size": null,
+            "background_background": "classic",
+            "background_color": "#FFFFFF",
+            "border_radius": {
+              "unit": "px",
+              "top": "16",
+              "right": "16",
+              "bottom": "16",
+              "left": "16",
+              "isLinked": true
+            },
+            "padding": {
+              "unit": "px",
+              "top": "10",
+              "right": "10",
+              "bottom": "10",
+              "left": "10",
+              "isLinked": true
+            }
+          },
+          "elements": [
+            {
+              "id": "4abef73",
+              "elType": "widget",
+              "settings": {
+                "testimonial_content": "«Долго выбирали между магистральным фильтром и осмосом — консультант честно объяснил разницу и подобрал оба варианта под наш бюджет».",
+                "testimonial_name": "Мария П.",
+                "testimonial_job": "Шымкент, квартира",
+                "testimonial_image": {
+                  "url": "",
+                  "id": ""
+                },
+                "testimonial_alignment": "center"
+              },
+              "elements": [],
+              "widgetType": "testimonial"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "1f2e94a",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "100",
+          "right": "0",
+          "bottom": "20",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "bef1a1c",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "4f628c1",
+              "elType": "widget",
+              "settings": {
+                "title": "ВОПРОСЫ И ОТВЕТЫ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "194b966",
+              "elType": "widget",
+              "settings": {
+                "title": "Частые вопросы о фильтрах и монтаже",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 34,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "b04c83c",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Не нашли ответ на свой вопрос? Напишите нам — ответим в течение 15 минут в рабочее время.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "259498c",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "10",
+          "right": "0",
+          "bottom": "90",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#FFFFFF"
+      },
+      "elements": [
+        {
+          "id": "fa20d83",
+          "elType": "column",
+          "settings": {
+            "_column_size": 80,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "af66946",
+              "elType": "widget",
+              "settings": {
+                "tabs": [
+                  {
+                    "tab_title": "Сколько по времени занимает установка?",
+                    "tab_content": "В среднем монтаж занимает 2–3 часа: подключение к водопроводу, установка крана и первый запуск с проверкой на протечки.",
+                    "_id": "b407320"
+                  },
+                  {
+                    "tab_title": "Нужно ли менять картриджи и как часто?",
+                    "tab_content": "Да, картриджи предварительной очистки меняются раз в 6–12 месяцев, мембрана обратного осмоса — раз в 2–3 года. Мы сами напоминаем о замене.",
+                    "_id": "e9f0087"
+                  },
+                  {
+                    "tab_title": "Подойдёт ли система для скважинной воды?",
+                    "tab_content": "Да, для скважин и колодцев рекомендуем модели с УФ-обеззараживанием и дополнительной ступенью механической очистки — подберём на замере.",
+                    "_id": "d0bcd95"
+                  },
+                  {
+                    "tab_title": "Есть ли рассрочка и гарантия?",
+                    "tab_content": "Да, доступна рассрочка 0% до 12 месяцев без переплат, а на всё оборудование действует официальная гарантия до 5 лет.",
+                    "_id": "b28cbb6"
+                  }
+                ],
+                "title_html_tag": "div",
+                "icon": {
+                  "value": "fas fa-plus",
+                  "library": "fa-solid"
+                },
+                "icon_active": {
+                  "value": "fas fa-minus",
+                  "library": "fa-solid"
+                }
+              },
+              "elements": [],
+              "widgetType": "accordion"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "f7bb8eb",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "50",
+          "right": "50",
+          "bottom": "50",
+          "left": "50",
+          "isLinked": true
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB",
+        "border_border": "solid",
+        "border_width": {
+          "unit": "px",
+          "top": "1",
+          "right": "1",
+          "bottom": "1",
+          "left": "1",
+          "isLinked": true
+        },
+        "border_color": "#1E88C9",
+        "border_radius": {
+          "unit": "px",
+          "top": "28",
+          "right": "28",
+          "bottom": "28",
+          "left": "28",
+          "isLinked": true
+        },
+        "margin": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "100",
+          "left": "0",
+          "isLinked": false
+        },
+        "width": {
+          "unit": "%",
+          "size": 92
+        }
+      },
+      "elements": [
+        {
+          "id": "0d86124",
+          "elType": "column",
+          "settings": {
+            "_column_size": 65,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "44865b7",
+              "elType": "widget",
+              "settings": {
+                "title": "Не знаете, какая система подойдёт вашему дому?",
+                "header_size": "h2",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 28,
+                  "sizes": []
+                },
+                "typography_font_family": "Unbounded",
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "46b4808",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p>Оставьте заявку — перезвоним в течение 15 минут и подберём решение бесплатно, без обязательств.</p>",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        },
+        {
+          "id": "1ce92cf",
+          "elType": "column",
+          "settings": {
+            "_column_size": 35,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "a4d2869",
+              "elType": "widget",
+              "settings": {
+                "text": "Получить консультацию",
+                "link": {
+                  "url": "#contacts",
+                  "is_external": "",
+                  "nofollow": ""
+                },
+                "size": "md",
+                "border_radius": {
+                  "unit": "px",
+                  "top": "999",
+                  "right": "999",
+                  "bottom": "999",
+                  "left": "999",
+                  "isLinked": true
+                },
+                "typography_typography": "custom",
+                "typography_font_weight": "700",
+                "align": "right",
+                "background_color": "#1E88C9",
+                "button_text_color": "#FFFFFF",
+                "background_hover_color": "#123A66"
+              },
+              "elements": [],
+              "widgetType": "button"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "204692e",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "100",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#F6FAFD"
+      },
+      "elements": [
+        {
+          "id": "50f8348",
+          "elType": "column",
+          "settings": {
+            "_column_size": 50,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "1e9e89e",
+              "elType": "widget",
+              "settings": {
+                "title": "КОНТАКТЫ",
+                "header_size": "div",
+                "title_color": "#1E88C9",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 2,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "555014e",
+              "elType": "widget",
+              "settings": {
+                "icon_list": [
+                  {
+                    "text": "Телефон: +7 700 123-45-67 — ежедневно с 9:00 до 20:00",
+                    "selected_icon": {
+                      "value": "fa-phone-alt",
+                      "library": "fa-solid"
+                    },
+                    "_id": "1c0d1f5"
+                  },
+                  {
+                    "text": "Почта: hello@dakaratech.kz",
+                    "selected_icon": {
+                      "value": "fa-envelope",
+                      "library": "fa-solid"
+                    },
+                    "_id": "5f6dbb2"
+                  },
+                  {
+                    "text": "Шоурум: г. Алматы, ул. Абая 150, офис 4 — и выезд по всему Казахстану",
+                    "selected_icon": {
+                      "value": "fa-map-marker-alt",
+                      "library": "fa-solid"
+                    },
+                    "_id": "d14c5bd"
+                  }
+                ],
+                "view": "traditional",
+                "space_between": {
+                  "unit": "px",
+                  "size": 12
+                },
+                "icon_color": "#1E88C9",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "icon-list"
+            }
+          ]
+        },
+        {
+          "id": "ef9f101",
+          "elType": "column",
+          "settings": {
+            "_column_size": 50,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "84c0f23",
+              "elType": "widget",
+              "settings": {
+                "html": "\n<form style=\"background:#EAF4FB;border:1px solid #D9E6F2;border-radius:18px;\npadding:32px;display:flex;flex-direction:column;gap:16px;font-family:'Manrope',sans-serif;\">\n<h3 style=\"margin:0;font-size:20px;font-weight:700;color:#0E2C4F;\">Оставить заявку на подбор системы</h3>\n<input type=\"text\" name=\"name\" placeholder=\"Ваше имя\" required style=\"width:100%;padding:14px 16px;\nborder-radius:10px;border:1px solid #D9E6F2;font-family:inherit;font-size:14.5px;\">\n<input type=\"tel\" name=\"phone\" placeholder=\"+7 (___) ___-__-__\" required style=\"width:100%;padding:14px 16px;\nborder-radius:10px;border:1px solid #D9E6F2;font-family:inherit;font-size:14.5px;\">\n<select name=\"type\" style=\"width:100%;padding:14px 16px;border-radius:10px;border:1px solid #D9E6F2;\nfont-family:inherit;font-size:14.5px;\">\n<option value=\"\">Тип жилья</option>\n<option value=\"flat\">Квартира</option>\n<option value=\"house\">Частный дом</option>\n<option value=\"office\">Офис / бизнес</option>\n</select>\n<textarea name=\"comment\" placeholder=\"Комментарий (необязательно)\" style=\"width:100%;padding:14px 16px;\nborder-radius:10px;border:1px solid #D9E6F2;font-family:inherit;font-size:14.5px;min-height:90px;\"></textarea>\n<button type=\"submit\" style=\"width:100%;padding:15px 28px;border-radius:999px;border:none;\nbackground:linear-gradient(135deg,#1E88C9,#123A66);color:#fff;font-weight:700;\nfont-size:15px;cursor:pointer;\">Отправить заявку</button>\n<span style=\"font-size:12px;color:#5B7290;\">Нажимая кнопку, вы соглашаетесь с политикой\nобработки персональных данных.</span>\n</form>\n"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "f40da0f",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "70",
+          "right": "0",
+          "bottom": "40",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB",
+        "border_border": "solid",
+        "border_width": {
+          "unit": "px",
+          "top": "1",
+          "right": "0",
+          "bottom": "0",
+          "left": "0",
+          "isLinked": false
+        },
+        "border_color": "#D9E6F2"
+      },
+      "elements": [
+        {
+          "id": "2ca8811",
+          "elType": "column",
+          "settings": {
+            "_column_size": 40,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "8d12782",
+              "elType": "widget",
+              "settings": {
+                "html": "<div style=\"font-family:'Unbounded',sans-serif;font-weight:800;font-size:20px;color:#123A66;\">DaKaRaTech</div><p style=\"font-family:'Manrope',sans-serif;color:#5B7290;font-size:14px;max-width:280px;\">Системы очистки воды для дома и бизнеса: подбор, монтаж и сервисное обслуживание по всему Казахстану.</p>"
+              },
+              "elements": [],
+              "widgetType": "html"
+            }
+          ]
+        },
+        {
+          "id": "560ec97",
+          "elType": "column",
+          "settings": {
+            "_column_size": 20,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "84ed9b6",
+              "elType": "widget",
+              "settings": {
+                "title": "КАТАЛОГ",
+                "header_size": "div",
+                "title_color": "#5B7290",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 1,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "68024a1",
+              "elType": "widget",
+              "settings": {
+                "icon_list": [
+                  {
+                    "text": "Обратный осмос",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "884bcd2"
+                  },
+                  {
+                    "text": "Магистральные фильтры",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "c2687e1"
+                  },
+                  {
+                    "text": "Умягчение воды",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "666e2ee"
+                  },
+                  {
+                    "text": "Картриджи и запчасти",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "29615ad"
+                  }
+                ],
+                "view": "traditional",
+                "space_between": {
+                  "unit": "px",
+                  "size": 12
+                },
+                "icon_color": "#1E88C9",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "icon-list"
+            }
+          ]
+        },
+        {
+          "id": "016ffec",
+          "elType": "column",
+          "settings": {
+            "_column_size": 20,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "a1e6649",
+              "elType": "widget",
+              "settings": {
+                "title": "КОМПАНИЯ",
+                "header_size": "div",
+                "title_color": "#5B7290",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 1,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "d5a36ef",
+              "elType": "widget",
+              "settings": {
+                "icon_list": [
+                  {
+                    "text": "О нас",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "d2de5f0"
+                  },
+                  {
+                    "text": "Отзывы",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "7334ae5"
+                  },
+                  {
+                    "text": "Доставка и монтаж",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "ecdf1ad"
+                  },
+                  {
+                    "text": "Вопросы",
+                    "selected_icon": {
+                      "value": "fa-chevron-right",
+                      "library": "fa-solid"
+                    },
+                    "_id": "f0238c6"
+                  }
+                ],
+                "view": "traditional",
+                "space_between": {
+                  "unit": "px",
+                  "size": 12
+                },
+                "icon_color": "#1E88C9",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "icon-list"
+            }
+          ]
+        },
+        {
+          "id": "03527a0",
+          "elType": "column",
+          "settings": {
+            "_column_size": 20,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "4b6fe75",
+              "elType": "widget",
+              "settings": {
+                "title": "КОНТАКТЫ",
+                "header_size": "div",
+                "title_color": "#5B7290",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 13,
+                  "sizes": []
+                },
+                "typography_font_weight": "700",
+                "typography_letter_spacing": {
+                  "unit": "px",
+                  "size": 1,
+                  "sizes": []
+                },
+                "typography_typography": "custom"
+              },
+              "elements": [],
+              "widgetType": "heading"
+            },
+            {
+              "id": "1e4902e",
+              "elType": "widget",
+              "settings": {
+                "icon_list": [
+                  {
+                    "text": "+7 700 123-45-67",
+                    "selected_icon": {
+                      "value": "fa-phone-alt",
+                      "library": "fa-solid"
+                    },
+                    "_id": "1a4a501"
+                  },
+                  {
+                    "text": "hello@dakaratech.kz",
+                    "selected_icon": {
+                      "value": "fa-envelope",
+                      "library": "fa-solid"
+                    },
+                    "_id": "5d3bfba"
+                  },
+                  {
+                    "text": "г. Алматы, ул. Абая 150",
+                    "selected_icon": {
+                      "value": "fa-map-marker-alt",
+                      "library": "fa-solid"
+                    },
+                    "_id": "8718315"
+                  }
+                ],
+                "view": "traditional",
+                "space_between": {
+                  "unit": "px",
+                  "size": 12
+                },
+                "icon_color": "#1E88C9",
+                "text_color": "#5B7290"
+              },
+              "elements": [],
+              "widgetType": "icon-list"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    },
+    {
+      "id": "3c4ffc0",
+      "elType": "section",
+      "settings": {
+        "content_width": "boxed",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "0",
+          "bottom": "30",
+          "left": "0",
+          "isLinked": false
+        },
+        "background_background": "classic",
+        "background_color": "#EAF4FB"
+      },
+      "elements": [
+        {
+          "id": "0973f50",
+          "elType": "column",
+          "settings": {
+            "_column_size": 100,
+            "_inline_size": null
+          },
+          "elements": [
+            {
+              "id": "5d05c6d",
+              "elType": "widget",
+              "settings": {
+                "editor": "<p style='text-align:center;color:#5B7290;font-size:13px;'>© 2026 DaKaRaTech. Все права защищены. Сайт носит информационный характер и не является публичной офертой.</p>"
+              },
+              "elements": [],
+              "widgetType": "text-editor"
+            }
+          ]
+        }
+      ],
+      "isInner": false
+    }
+  ],
+  "page_settings": [],
+  "version": "0.4",
+  "title": "DaKaRaTech — Главная (лендинг)",
+  "type": "page"
+}
