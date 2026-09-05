@@ -19,6 +19,7 @@ use Uws\Admin\Pages\MappingsPage;
 use Uws\Admin\Pages\ProductsPage;
 use Uws\Admin\Pages\QueuePage;
 use Uws\Admin\Pages\SettingsPage;
+use Uws\Admin\Pages\SiteTemplatesPage;
 use Uws\Security\Capabilities;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -55,6 +56,7 @@ class Menu {
 			'uws-queue'           => array( __( 'Queue', 'universal-woo-scraper' ), new QueuePage() ),
 			'uws-products'        => array( __( 'Products', 'universal-woo-scraper' ), new ProductsPage() ),
 			'uws-mappings'        => array( __( 'Mappings', 'universal-woo-scraper' ), new MappingsPage() ),
+			'uws-site-templates'  => array( __( 'Site Templates', 'universal-woo-scraper' ), new SiteTemplatesPage() ),
 			'uws-attributes'      => array( __( 'Attributes', 'universal-woo-scraper' ), new AttributesPage() ),
 			'uws-settings'        => array( __( 'Settings', 'universal-woo-scraper' ), new SettingsPage() ),
 			'uws-ai-settings'     => array( __( 'AI Settings', 'universal-woo-scraper' ), new AiSettingsPage() ),

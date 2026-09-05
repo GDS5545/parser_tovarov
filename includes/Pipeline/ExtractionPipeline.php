@@ -13,11 +13,13 @@
 namespace Uws\Pipeline;
 
 use Uws\Ai\AiExtractor;
+use Uws\Database\SourceRepository;
 use Uws\Dto\ProductData;
 use Uws\Extractors\BreadcrumbExtractor;
 use Uws\Extractors\DomExtractor;
 use Uws\Extractors\ImageExtractor;
 use Uws\Extractors\JsonLdExtractor;
+use Uws\Extractors\ManualSelectorExtractor;
 use Uws\Extractors\MetaExtractor;
 use Uws\Extractors\ProductDataMerger;
 use Uws\Extractors\ProductExtractorInterface;
@@ -43,15 +45,20 @@ class ExtractionPipeline {
 	/** @var AiExtractor|null */
 	private $ai_extractor;
 
+	/** @var SourceRepository */
+	private $sources;
+
 	/**
 	 * @param ScraperEngineInterface            $engine
 	 * @param ProductExtractorInterface[]|null  $extractors  Defaults to the built-in
-	 *                                                        non-AI extractors (Stages 4-6, 9).
+	 *                                                        non-AI extractors (Stages 4-6, 9, 47).
 	 * @param AiExtractor|null                  $ai_extractor Defaults to AiExtractor::from_settings()
 	 *                                                        (null if AI is disabled/unconfigured).
+	 * @param SourceRepository|null             $sources
 	 */
-	public function __construct( ScraperEngineInterface $engine, array $extractors = null, AiExtractor $ai_extractor = null ) {
+	public function __construct( ScraperEngineInterface $engine, array $extractors = null, AiExtractor $ai_extractor = null, SourceRepository $sources = null ) {
 		$this->engine       = $engine;
+		$this->sources      = $sources ?: new SourceRepository();
 		$this->extractors   = null !== $extractors ? $extractors : $this->default_extractors();
 		$this->merger       = new ProductDataMerger();
 		$this->ai_extractor = null !== $ai_extractor ? $ai_extractor : AiExtractor::from_settings( get_option( 'uws_settings', array() ) );
@@ -62,6 +69,7 @@ class ExtractionPipeline {
 	 */
 	private function default_extractors() {
 		$extractors = array(
+			new ManualSelectorExtractor( $this->sources ),
 			new JsonLdExtractor(),
 			new MetaExtractor(),
 			new SpecificationExtractor(),
@@ -92,7 +100,10 @@ class ExtractionPipeline {
 			return $page;
 		}
 
-		$data             = $this->merger->merge( $page, $this->extractors );
+		$domain     = (string) ( wp_parse_url( ! empty( $page['final_url'] ) ? $page['final_url'] : $url, PHP_URL_HOST ) ?: '' );
+		$extractors = $this->extractors_for_domain( $domain );
+
+		$data             = $this->merger->merge( $page, $extractors );
 		$data->source_url = ! empty( $page['final_url'] ) ? $page['final_url'] : $url;
 
 		$result = array( 'data' => $data, 'page' => $page );
@@ -105,5 +116,51 @@ class ExtractionPipeline {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * When a Site Template (spec §47) configures a manual selector for a
+	 * list-shaped field (images, specifications → attributes), the
+	 * corresponding generic extractor is excluded for this domain rather
+	 * than merged alongside it: those fields are additive across
+	 * extractors by design (spec §64), so without this a manually-pointed
+	 * product photo would still get diluted by whatever the generic
+	 * ImageExtractor also finds elsewhere on the page. Scalar fields
+	 * (name, price, ...) don't need this — ManualSelectorExtractor's
+	 * confidence of 1.0 already wins those on its own.
+	 *
+	 * @param string $domain
+	 * @return ProductExtractorInterface[]
+	 */
+	private function extractors_for_domain( $domain ) {
+		if ( '' === $domain ) {
+			return $this->extractors;
+		}
+
+		$template = $this->sources->find( $domain );
+		if ( ! $template || empty( $template->selectors ) ) {
+			return $this->extractors;
+		}
+
+		$exclude = array();
+		if ( ! empty( $template->selectors['images'] ) ) {
+			$exclude[] = ImageExtractor::class;
+		}
+		if ( ! empty( $template->selectors['specifications'] ) ) {
+			$exclude[] = SpecificationExtractor::class;
+		}
+
+		if ( empty( $exclude ) ) {
+			return $this->extractors;
+		}
+
+		return array_values(
+			array_filter(
+				$this->extractors,
+				function ( ProductExtractorInterface $extractor ) use ( $exclude ) {
+					return ! in_array( get_class( $extractor ), $exclude, true );
+				}
+			)
+		);
 	}
 }

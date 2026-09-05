@@ -89,6 +89,24 @@ This ordering directly implements spec requirement "AI only as fallback,
 never as the primary path" — most conventional stores should resolve
 entirely through 1–8, so the AI API is never called for the common case.
 
+**Extractor 0, above JSON-LD: `ManualSelectorExtractor` (spec §47, "Site
+Templates").** Real-site testing (a 1C-Bitrix "e-shop" module store)
+surfaced that no amount of general heuristics reliably finds the right
+image/description/specifications on every CMS — that site's product photo
+lived under `/uploadedFiles/eshopimages/…`, a path convention specific to
+that one Bitrix module, indistinguishable by pattern from an unrelated
+same-domain photo block elsewhere on the page. Rather than keep adding
+site-specific heuristics that only help one platform, `WooCommerce →
+Universal Scraper → Site Templates` lets a merchant save per-domain XPath
+overrides (name/SKU/brand/price/description/specifications/images/
+categories) — get an XPath from any browser's DevTools ("Copy XPath"),
+no CSS-selector translation layer needed. Once saved, this extractor runs
+first (priority 200) with confidence 1.0, so an explicit human instruction
+always wins over every automatic guess; for the two fields that are
+additive-not-override (images, specifications→attributes),
+`ExtractionPipeline` excludes the corresponding generic extractor
+entirely for that domain rather than mixing its findings in.
+
 ## 3. Directory layout (WordPress plugin, PSR-4 autoloaded)
 
 ```
@@ -133,9 +151,15 @@ class/interface responsibility; no God classes.
 All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 `Database\Installer`:
 
-- **uws_sources** — one row per site domain: detected capabilities
-  (has JSON-LD, has WooCommerce REST, product URL pattern, selector
-  template), i.e. the "Site Profile" (spec §47–48).
+- **uws_sources** — one row per site domain, the "Site Profile" (spec
+  §47–48). Today `Database\SourceRepository` uses its `profile` JSON
+  column for exactly one thing: the manual per-field XPath overrides
+  saved on the Site Templates admin page and applied by
+  `ManualSelectorExtractor`. The `has_json_ld`/`has_product_schema`/
+  `product_url_pattern` columns are reserved for auto-detection (spec
+  §48, "on first visit to a new domain, record what was found") — that
+  detection isn't built yet, so those columns exist but nothing writes
+  to them.
 - **uws_jobs** — the scrape/import queue: url, type (single/category/bulk),
   status (`pending|processing|completed|failed|retry|cancelled`), attempts,
   next_retry_at, payload (JSON), result (JSON), timestamps.

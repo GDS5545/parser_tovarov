@@ -81,6 +81,12 @@ if ( ! function_exists( 'wp_json_encode' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_option' ) ) {
+	function get_option( $key, $default = false ) {
+		return $GLOBALS['uws_test_options'][ $key ] ?? $default;
+	}
+}
+
 if ( ! function_exists( 'apply_filters' ) ) {
 	function apply_filters( $tag, $value ) {
 		return $value;

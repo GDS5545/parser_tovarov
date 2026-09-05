@@ -36,4 +36,20 @@ class HtmlDocument {
 	public static function text( \DOMNode $node ) {
 		return trim( preg_replace( '/\s+/u', ' ', $node->textContent ) );
 	}
+
+	/**
+	 * @param \DOMElement $node
+	 * @return string The node's inner markup (its children serialized back
+	 *                 to HTML), used where formatting must survive — e.g. a
+	 *                 manually-selected description container (spec §3:
+	 *                 "не уничтожать HTML там, где он нужен") — rather than
+	 *                 flattening it to plain text like self::text() does.
+	 */
+	public static function inner_html( \DOMElement $node ) {
+		$html = '';
+		foreach ( $node->childNodes as $child ) {
+			$html .= $node->ownerDocument->saveHTML( $child );
+		}
+		return trim( $html );
+	}
 }

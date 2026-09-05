@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.7.0
+Stable tag: 0.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,19 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.8.0 =
+* Site Templates (spec §47): WooCommerce → Universal Scraper → Site
+  Templates lets you save per-domain XPath overrides for name/SKU/brand/
+  price/description/specifications/images/categories — get one from any
+  browser's DevTools ("Copy XPath"). `ManualSelectorExtractor` applies
+  these with the highest priority of any extractor (confidence 1.0,
+  always wins over JSON-LD/automatic guesses); for images and
+  specifications it also excludes the generic extractor entirely for
+  that domain so a manually-pointed product photo isn't diluted by
+  unrelated same-domain images elsewhere on the page. Added after
+  real-site testing (a 1C-Bitrix "e-shop" store) showed no amount of
+  general heuristics reliably finds the right content on every CMS.
 
 = 0.7.0 =
 * Russian translation (`languages/universal-woo-scraper-ru_RU.mo`) — all

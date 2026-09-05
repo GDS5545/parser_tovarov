@@ -544,3 +544,51 @@ msgstr ""
 msgid "Add image URL"
 msgstr ""
 
+msgid "Specifications table/list container"
+msgstr ""
+
+msgid "Images (an <img>, or a container — every descendant <img> is used)"
+msgstr ""
+
+msgid "Categories/breadcrumb links"
+msgstr ""
+
+msgid "Site Templates"
+msgstr ""
+
+msgid "For a site whose markup the automatic extractors can't read correctly, tell the plugin exactly where each field lives with an XPath expression. Get one from your browser's DevTools: right-click the element on the page → Copy → \"Copy XPath\" (Chrome/Edge) or \"XPath\" (Firefox). Any field left blank here keeps using automatic detection."
+msgstr ""
+
+msgid "Domain"
+msgstr ""
+
+msgid "Editing an existing template. To rename the domain, delete this one and create a new one."
+msgstr ""
+
+msgid "Save template"
+msgstr ""
+
+msgid "Add template"
+msgstr ""
+
+msgid "Configured domains"
+msgstr ""
+
+msgid "Fields overridden"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete this site template?"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Site template saved for %s."
+msgstr ""
+
+msgid "Site template deleted."
+msgstr ""
+

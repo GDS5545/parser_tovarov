@@ -548,3 +548,51 @@ msgstr "https://…/правильное-фото-товара.jpg"
 msgid "Add image URL"
 msgstr "Добавить URL изображения"
 
+msgid "Specifications table/list container"
+msgstr "Контейнер таблицы/списка характеристик"
+
+msgid "Images (an <img>, or a container — every descendant <img> is used)"
+msgstr "Изображения (тег <img> или контейнер — используются все вложенные <img>)"
+
+msgid "Categories/breadcrumb links"
+msgstr "Ссылки категорий/хлебных крошек"
+
+msgid "Site Templates"
+msgstr "Шаблоны сайтов"
+
+msgid "For a site whose markup the automatic extractors can't read correctly, tell the plugin exactly where each field lives with an XPath expression. Get one from your browser's DevTools: right-click the element on the page → Copy → \"Copy XPath\" (Chrome/Edge) or \"XPath\" (Firefox). Any field left blank here keeps using automatic detection."
+msgstr "Если разметку сайта автоматические экстракторы не могут прочитать правильно, укажите плагину точное расположение каждого поля через XPath-выражение. Получить его можно в DevTools браузера: щёлкните правой кнопкой по элементу на странице → Копировать → «Copy XPath» (Chrome/Edge) или «XPath» (Firefox). Любое оставленное пустым поле продолжает определяться автоматически."
+
+msgid "Domain"
+msgstr "Домен"
+
+msgid "Editing an existing template. To rename the domain, delete this one and create a new one."
+msgstr "Редактирование существующего шаблона. Чтобы изменить домен, удалите этот шаблон и создайте новый."
+
+msgid "Save template"
+msgstr "Сохранить шаблон"
+
+msgid "Add template"
+msgstr "Добавить шаблон"
+
+msgid "Configured domains"
+msgstr "Настроенные домены"
+
+msgid "Fields overridden"
+msgstr "Переопределённые поля"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Delete this site template?"
+msgstr "Удалить этот шаблон сайта?"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Site template saved for %s."
+msgstr "Шаблон сайта сохранён для %s."
+
+msgid "Site template deleted."
+msgstr "Шаблон сайта удалён."
+
