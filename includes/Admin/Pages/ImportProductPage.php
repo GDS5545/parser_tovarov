@@ -71,7 +71,7 @@ class ImportProductPage {
 					</tr>
 					<tr>
 						<th><label for="uws-f-categories"><?php esc_html_e( 'Categories', 'universal-woo-scraper' ); ?></label></th>
-						<td><input type="text" id="uws-f-categories" class="regular-text uws-confidence-field" data-field="categories" placeholder="Equipment, Pumps, Water Pumps" /></td>
+						<td><input type="text" id="uws-f-categories" class="regular-text uws-confidence-field" data-field="categories" placeholder="<?php esc_attr_e( '(none detected — type comma-separated category names here if needed)', 'universal-woo-scraper' ); ?>" /></td>
 					</tr>
 					<tr>
 						<th><label for="uws-f-short-description"><?php esc_html_e( 'Short description', 'universal-woo-scraper' ); ?></label></th>

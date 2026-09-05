@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! function_exists( 'wp_parse_url' ) ) {
-	function wp_parse_url( $url ) {
-		return parse_url( $url ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	function wp_parse_url( $url, $component = -1 ) {
+		return parse_url( $url, $component ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 	}
 }
 

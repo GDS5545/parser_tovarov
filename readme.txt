@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.6.0
+Stable tag: 0.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,21 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.6.1 =
+* Fixed a real-site regression found during testing: `ImageExtractor` was
+  pulling in a WhatsApp click-to-chat badge, language-switcher flag icons,
+  partner/payment logos, and third-party tracking pixels (Mail.ru/Yandex
+  counters) as if they were product photos — and could even pick one of
+  them as the *main* image when it happened to appear before the real
+  photo in the page's HTML. Images are now required to be on the same
+  registrable domain as the page (a CDN subdomain is fine; an unrelated
+  domain like a messenger/analytics widget is not), filtered against an
+  expanded site-chrome keyword list, and checked against declared
+  icon-sized `width`/`height` attributes.
+* Categories preview field's placeholder text no longer looks like real
+  scraped category names (was a literal "Equipment, Pumps, Water Pumps"
+  example, confusing when the field is actually empty).
 
 = 0.6.0 =
 * Added `Scraper\HttpEngine`: a plain-`wp_remote_get()` fallback engine
