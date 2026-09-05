@@ -1,0 +1,166 @@
+<?php
+/**
+ * CRUD access to wp_uws_jobs. All queries are parameterized via
+ * $wpdb->prepare(); no raw string interpolation of caller input.
+ *
+ * @package Uws\Queue
+ */
+
+namespace Uws\Queue;
+
+use Uws\Database\Tables;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class JobRepository {
+
+	const STATUSES = array( 'pending', 'processing', 'completed', 'failed', 'retry', 'cancelled' );
+
+	/**
+	 * @param string $url
+	 * @param string $type single|category|bulk
+	 * @param array<string,mixed> $payload
+	 * @param int    $priority Lower runs first.
+	 * @return int Inserted job ID.
+	 */
+	public function enqueue( $url, $type = 'single', array $payload = array(), $priority = 10 ) {
+		global $wpdb;
+
+		$now = current_time( 'mysql', true );
+
+		$wpdb->insert(
+			Tables::jobs(),
+			array(
+				'type'       => $type,
+				'url'        => $url,
+				'status'     => 'pending',
+				'priority'   => $priority,
+				'payload'    => wp_json_encode( $payload ),
+				'created_by' => get_current_user_id(),
+				'created_at' => $now,
+				'updated_at' => $now,
+			),
+			array( '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
+		);
+
+		return (int) $wpdb->insert_id;
+	}
+
+	/**
+	 * @param int $limit
+	 * @return array<int,object> Jobs whose status is pending/retry and due now, oldest+highest priority first.
+	 */
+	public function fetch_due( $limit = 5 ) {
+		global $wpdb;
+		$table = Tables::jobs();
+		$now   = current_time( 'mysql', true );
+
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$table}
+				 WHERE status IN ('pending','retry')
+				 AND (next_retry_at IS NULL OR next_retry_at <= %s)
+				 ORDER BY priority ASC, id ASC
+				 LIMIT %d",
+				$now,
+				$limit
+			)
+		); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is a controlled identifier from Tables::jobs().
+	}
+
+	/**
+	 * @param int    $id
+	 * @param string $status One of self::STATUSES.
+	 * @param array<string,mixed> $extra Extra columns to set (result, error_message, next_retry_at, attempts).
+	 */
+	public function update_status( $id, $status, array $extra = array() ) {
+		global $wpdb;
+
+		if ( ! in_array( $status, self::STATUSES, true ) ) {
+			return;
+		}
+
+		$data   = array_merge( array( 'status' => $status, 'updated_at' => current_time( 'mysql', true ) ), $extra );
+		$format = array_fill( 0, count( $data ), '%s' );
+
+		$wpdb->update( Tables::jobs(), $data, array( 'id' => $id ), $format, array( '%d' ) );
+	}
+
+	/**
+	 * @param int $id
+	 * @return object|null
+	 */
+	public function find( $id ) {
+		global $wpdb;
+		$table = Tables::jobs();
+
+		return $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+	}
+
+	/**
+	 * @param string|null $status Filter, or null for all.
+	 * @param int         $page   1-based.
+	 * @param int         $per_page
+	 * @return array<int,object>
+	 */
+	public function paginate( $status = null, $page = 1, $per_page = 20 ) {
+		global $wpdb;
+		$table  = Tables::jobs();
+		$offset = max( 0, ( $page - 1 ) * $per_page );
+
+		if ( $status ) {
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM {$table} WHERE status = %s ORDER BY id DESC LIMIT %d OFFSET %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					$status,
+					$per_page,
+					$offset
+				)
+			);
+		}
+
+		return $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$table} ORDER BY id DESC LIMIT %d OFFSET %d", $per_page, $offset ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+	}
+
+	/**
+	 * @param int $id
+	 */
+	public function cancel( $id ) {
+		$this->update_status( $id, 'cancelled' );
+	}
+
+	/**
+	 * Resets a failed job back to pending so it is picked up on the next tick.
+	 *
+	 * @param int $id
+	 */
+	public function retry( $id ) {
+		global $wpdb;
+		$wpdb->update(
+			Tables::jobs(),
+			array(
+				'status'        => 'pending',
+				'next_retry_at' => null,
+				'updated_at'    => current_time( 'mysql', true ),
+			),
+			array( 'id' => $id ),
+			array( '%s', '%s', '%s' ),
+			array( '%d' )
+		);
+	}
+
+	/**
+	 * @param string $status_not_in Comma list is not accepted; call once per status if needed.
+	 */
+	public function clear_completed() {
+		global $wpdb;
+		$table = Tables::jobs();
+		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE status IN ('completed','cancelled')" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+	}
+}

@@ -1,0 +1,61 @@
+.uws-wrap .uws-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 1.25em 1.5em;
+	margin: 1em 0;
+	max-width: 900px;
+}
+
+.uws-stat-grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1em;
+	margin: 1.5em 0;
+}
+
+.uws-stat-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 1em 1.5em;
+	min-width: 140px;
+	display: flex;
+	flex-direction: column;
+}
+
+.uws-stat-number {
+	font-size: 1.8em;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.uws-stat-label {
+	color: #646970;
+	font-size: 0.9em;
+}
+
+.uws-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 0.85em;
+	background: #f0f0f1;
+	color: #1d2327;
+}
+
+.uws-badge-completed { background: #d4f4dd; color: #1a7a34; }
+.uws-badge-failed { background: #fbe4e4; color: #a01e1e; }
+.uws-badge-processing { background: #fff3cd; color: #8a6d1a; }
+.uws-badge-pending, .uws-badge-retry { background: #e5edff; color: #1d4ed8; }
+.uws-badge-cancelled { background: #f0f0f1; color: #646970; }
+
+#uws-preview-json {
+	white-space: pre-wrap;
+	word-break: break-word;
+	background: #f6f7f7;
+	padding: 1em;
+	border-radius: 4px;
+	max-height: 480px;
+	overflow: auto;
+}
