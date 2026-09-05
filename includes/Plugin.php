@@ -11,8 +11,10 @@ namespace Uws;
 
 use Uws\Admin\Menu;
 use Uws\Database\Installer;
+use Uws\Queue\Dispatcher;
 use Uws\Queue\QueueRunner;
 use Uws\Rest\RestApi;
+use Uws\Scraper\PlaywrightHttpEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -37,6 +39,8 @@ class Plugin {
 
 		add_filter( 'cron_schedules', array( $this, 'register_cron_schedule' ) );
 		add_action( 'uws_process_queue', array( new QueueRunner(), 'run_due_jobs' ) );
+		add_action( 'uws_queue_tick', array( new Dispatcher(), 'handle_tick' ), 10, 2 );
+		add_filter( 'uws_scraper_engine', array( $this, 'register_scraper_engine' ) );
 
 		if ( is_admin() ) {
 			( new Menu() )->register();
@@ -57,6 +61,29 @@ class Plugin {
 			'display'  => __( 'Every minute (Universal Woo Scraper queue)', 'universal-woo-scraper' ),
 		);
 		return $schedules;
+	}
+
+	/**
+	 * Default implementation of the 'uws_scraper_engine' filter: returns a
+	 * PlaywrightHttpEngine bound to the configured worker URL, or null if
+	 * none is set yet — callers (AnalyzeController, Dispatcher) treat null
+	 * as "no worker configured" rather than crashing.
+	 *
+	 * @param \Uws\Scraper\ScraperEngineInterface|null $engine Passed through
+	 *        unchanged if another filter callback already supplied one.
+	 * @return \Uws\Scraper\ScraperEngineInterface|null
+	 */
+	public function register_scraper_engine( $engine ) {
+		if ( null !== $engine ) {
+			return $engine;
+		}
+
+		$settings = get_option( 'uws_settings', array() );
+		if ( empty( $settings['worker_url'] ) ) {
+			return null;
+		}
+
+		return new PlaywrightHttpEngine( $settings['worker_url'], $settings['worker_api_key'] ?? '' );
 	}
 
 	/**

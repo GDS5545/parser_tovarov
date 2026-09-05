@@ -56,4 +56,38 @@ if ( ! function_exists( 'is_wp_error' ) ) {
 	}
 }
 
-require_once __DIR__ . '/../includes/Security/UrlValidator.php';
+if ( ! function_exists( 'sanitize_title' ) ) {
+	// Approximates WordPress's sanitize_title() closely enough for tests:
+	// lowercases, keeps unicode letters/digits, turns everything else into
+	// single hyphens. Real sanitize_title() also transliterates accented
+	// Latin characters, which is irrelevant to the Cyrillic/plain-ASCII
+	// cases exercised here.
+	function sanitize_title( $title ) {
+		$title = mb_strtolower( trim( $title ) );
+		$title = preg_replace( '/[^\p{L}\p{N}]+/u', '-', $title );
+		return trim( $title, '-' );
+	}
+}
+
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	function wp_strip_all_tags( $text ) {
+		return trim( strip_tags( $text ) );
+	}
+}
+
+if ( ! function_exists( 'wp_json_encode' ) ) {
+	function wp_json_encode( $data ) {
+		return json_encode( $data ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+}
+
+if ( ! function_exists( 'apply_filters' ) ) {
+	function apply_filters( $tag, $value ) {
+		return $value;
+	}
+}
+
+// Composer's PSR-4 autoloader (Uws\ => includes/) covers every plugin
+// class from here on, so individual test files don't need to hand-require
+// the classes they exercise.
+require_once __DIR__ . '/../vendor/autoload.php';

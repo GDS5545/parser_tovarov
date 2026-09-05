@@ -58,6 +58,15 @@ priority wins on conflict, and every field gets a confidence score:
 9. `AiExtractor` — **only** runs for fields still missing/low-confidence
    after 1–8, with a size-capped, pre-cleaned text/HTML payload
 
+Implemented so far: 1, 2, 4, 5, 7, 8 (registered by `ExtractionPipeline`,
+priority order enforced by `ProductDataMerger`, which lets each extractor's
+declared priority win on scalar-field conflicts while attributes/images
+accumulate from every extractor rather than overwrite). `EmbeddedJsonExtractor`
+(3), `VariationExtractor` (6), and `AiExtractor` (9) are not built yet — a
+page whose data only lives in a framework's inline JSON state or in
+variation option groups will come back with lower-confidence/partial
+fields rather than nothing, but won't be fully resolved until those land.
+
 This ordering directly implements spec requirement "AI only as fallback,
 never as the primary path" — most conventional stores should resolve
 entirely through 1–8, so the AI API is never called for the common case.
@@ -70,18 +79,24 @@ uninstall.php                  Table/option cleanup on uninstall
 composer.json                  PSR-4: Uws\ => includes/
 includes/
   Plugin.php                   Wires everything together on plugins_loaded
-  Support/                     Small shared helpers (Options, Capabilities, Assets)
+  Support/                     HtmlDocument (DOMXPath helper), UrlResolver
   Database/                    dbDelta schema + repositories for the 5 uws_* tables
   Security/                    Nonce/capability guards, SSRF-safe UrlValidator
   Rest/                        REST controllers under /wp-json/uws/v1/*
   Admin/                       Menu registration + page controllers
   Scraper/                     ScraperEngineInterface + PlaywrightHttpEngine (Stage 3)
-  Extractors/                  ProductExtractorInterface + concrete extractors (Stage 4+)
-  Normalizer/                  Attribute/unit/value normalization (Stage 7)
-  Mappers/                     Category & attribute mapping persistence (Stage 10)
-  Woocommerce/                 ProductImporter using WC_Product* CRUD (Stage 8)
-  Ai/                          AiExtractor + provider clients (Stage 12)
-  Dto/                         ProductData and related value objects
+  Pipeline/                    ExtractionPipeline — fetch + run extractors + merge
+  Extractors/                  ProductExtractorInterface + concrete extractors + ProductDataMerger
+  Normalizer/                  PriceParser, AttributeNormalizer + synonym/unit dictionaries (Stage 7)
+  Mappers/                     Category & attribute mapping persistence (Stage 10, not yet populated)
+  Woocommerce/                 ProductImporter, CategoryResolver, AttributeResolver, ImageImporter (Stage 8)
+  Ai/                          AiExtractor + provider clients (Stage 12, not yet built)
+  Dto/                         ProductData / ProductAttribute value objects
+worker/                        Node.js + Express + Playwright scraper service (Stage 3)
+  src/server.js                 HTTP API: /health /fetch /discover
+  src/browserPool.js             Lazy shared Chromium instance, per-request contexts
+  src/pageFetcher.js              Navigation, popup dismissal, JSON-LD/console/network capture, pagination
+  src/ssrfGuard.js                Defense-in-depth URL/host validation
 admin/pages/                   PHP view templates rendered by Admin\Pages\*
 assets/                        Admin CSS/JS (vanilla; no build step required for MVP)
 templates/                     Reusable partials (preview cards, tables)
@@ -130,24 +145,23 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 
 | # | Stage | Status |
 |---|-------|--------|
-| 1 | Architecture + project structure | ✅ this commit |
-| 2 | WordPress plugin foundation (DB, security, admin/REST scaffold) | ✅ this commit |
-| 3 | Playwright worker | ⏳ next |
-| 4 | URL analyzer | planned |
-| 5 | Product extraction | planned |
-| 6 | Image extraction | planned |
-| 7 | Attribute normalization | planned |
-| 8 | WooCommerce importer | planned |
-| 9 | Variable products | planned |
-| 10 | Categories + mappings | planned |
-| 11 | Queue (worker loop, retries, rate limiting) | planned |
-| 12 | AI extraction | planned |
-| 13 | Synchronization | planned |
-| 14 | Admin UI (full preview/editor) | planned |
-| 15 | Tests | planned |
-| 16 | Packaging + installation docs | planned |
+| 1 | Architecture + project structure | ✅ done |
+| 2 | WordPress plugin foundation (DB, security, admin/REST scaffold) | ✅ done |
+| 3 | Playwright worker (`worker/`, Express + Chromium, `/fetch` `/discover` `/health`) | ✅ done |
+| 4 | URL analyzer (`ExtractionPipeline`, engine wired via `uws_scraper_engine`) | ✅ done |
+| 5 | Product extraction (JSON-LD, meta, specification tables, breadcrumbs, DOM heuristics, priority merge) | ✅ done |
+| 6 | Image extraction (`img`/lazy attrs/srcset/og:image, download via Media Library, dedupe by source URL) | ✅ done |
+| 7 | Attribute normalization (`AttributeNormalizer` + synonym/unit dictionaries, smart/strict modes) | ✅ done (dictionary is a starter set, not exhaustive) |
+| 8 | WooCommerce importer (`ProductImporter`, real `WC_Product_Simple`/`WC_Product_Attribute` CRUD) | ✅ done — simple products only |
+| 9 | Variable products | ⏳ not started — importer detects and reports the case rather than silently dropping variations |
+| 10 | Categories + mappings | ◐ partial — categories resolve/create live via `CategoryResolver`; the persisted `uws_mappings` review/override UI (spec §10, source-label ≠ target-label editing) isn't built |
+| 11 | Queue (worker loop, retries, rate limiting) | ✅ done — cron-driven `Dispatcher`, exponential backoff, category→single fan-out |
+| 12 | AI extraction | ⏳ not started |
+| 13 | Synchronization | ◐ partial — re-scraping upserts `uws_product_links` and can update an existing product, but there's no diff/changed-fields review UI yet |
+| 14 | Admin UI (full preview/editor) | ◐ partial — Import Product has an editable, confidence-highlighted preview; Bulk/Queue/Logs/Products are functional but plain |
+| 15 | Tests | ◐ partial — PHPUnit covers `UrlValidator`, `PriceParser`, `AttributeNormalizer`, and an extractor-merge integration test; worker has `node --test` coverage for its SSRF guard. No WP-integration/WooCommerce test harness yet |
+| 16 | Packaging + installation docs | ⏳ not started (`INSTALL.md` covers manual setup; no installer script or Docker image yet) |
 
-Each stage is a separate commit; the REST `analyze`/`import` endpoints
-return a clear `501 not_implemented` with a human-readable message until
-the extraction pipeline (Stages 3–8) lands — they are not mocked to return
-fake success.
+`/import` still refuses to silently overwrite an existing product: a
+match by source URL/SKU/GTIN/MPN returns `409 duplicate` with
+`update`/`duplicate`/`skip` as the caller's explicit choices (spec §26).

@@ -85,8 +85,13 @@ class Menu {
 				'restUrl' => esc_url_raw( rest_url( 'uws/v1' ) ),
 				'nonce'   => wp_create_nonce( 'wp_rest' ),
 				'i18n'    => array(
-					'analyzing' => __( 'Analyzing…', 'universal-woo-scraper' ),
-					'error'     => __( 'Error', 'universal-woo-scraper' ),
+					'analyzing'      => __( 'Analyzing…', 'universal-woo-scraper' ),
+					'analyzeProduct' => __( 'Analyze Product', 'universal-woo-scraper' ),
+					'importing'      => __( 'Importing…', 'universal-woo-scraper' ),
+					'imported'       => __( 'Imported as product #', 'universal-woo-scraper' ),
+					'duplicateFound' => __( 'This product was already imported (product #', 'universal-woo-scraper' ),
+					'mainImage'      => __( 'main', 'universal-woo-scraper' ),
+					'error'          => __( 'Error', 'universal-woo-scraper' ),
 				),
 			)
 		);

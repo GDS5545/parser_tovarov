@@ -50,6 +50,22 @@
 .uws-badge-pending, .uws-badge-retry { background: #e5edff; color: #1d4ed8; }
 .uws-badge-cancelled { background: #f0f0f1; color: #646970; }
 
+.uws-confidence-high { border-left: 4px solid #1a7a34 !important; }
+.uws-confidence-medium { border-left: 4px solid #8a6d1a !important; }
+.uws-confidence-low { border-left: 4px solid #a01e1e !important; }
+
+.uws-attribute-row {
+	display: flex;
+	gap: 0.5em;
+	margin-bottom: 0.4em;
+	align-items: center;
+}
+
+#uws-images-list label {
+	margin-bottom: 0.3em;
+	word-break: break-all;
+}
+
 #uws-preview-json {
 	white-space: pre-wrap;
 	word-break: break-word;

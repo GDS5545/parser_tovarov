@@ -1,9 +1,9 @@
 <?php
 /**
- * Universal Scraper → Import Product: single-URL "Analyze" form (spec §44).
- * Posts to /wp-json/uws/v1/analyze via assets/js/admin.js; the REST
- * response (or its honest 501 until Stage 3's worker is connected) is
- * rendered into #uws-preview by that same script.
+ * Universal Scraper → Import Product: single-URL "Analyze" form (spec §44)
+ * followed by an editable Preview (spec §24–25) with an Import button.
+ * All the interactive behavior lives in assets/js/admin.js, which calls
+ * /wp-json/uws/v1/analyze then /wp-json/uws/v1/import.
  *
  * @package Uws\Admin\Pages
  */
@@ -20,7 +20,7 @@ class ImportProductPage {
 		?>
 		<div class="wrap uws-wrap">
 			<h1><?php esc_html_e( 'Import Product', 'universal-woo-scraper' ); ?></h1>
-			<p><?php esc_html_e( 'Paste the URL of a single product page. The scraper worker will open it in a real browser, extract structured data, and show you a preview before anything is imported.', 'universal-woo-scraper' ); ?></p>
+			<p><?php esc_html_e( 'Paste the URL of a single product page. The scraper worker opens it in a real browser and extracts structured data; nothing is created in WooCommerce until you review the preview below and click Import.', 'universal-woo-scraper' ); ?></p>
 
 			<form id="uws-analyze-form" class="uws-card">
 				<label for="uws-product-url"><strong><?php esc_html_e( 'Product URL', 'universal-woo-scraper' ); ?></strong></label>
@@ -30,12 +30,62 @@ class ImportProductPage {
 				</p>
 			</form>
 
+			<div id="uws-error" class="notice notice-error" hidden><p id="uws-error-message"></p></div>
+
 			<div id="uws-preview" class="uws-card" hidden>
 				<h2><?php esc_html_e( 'Preview', 'universal-woo-scraper' ); ?></h2>
-				<pre id="uws-preview-json"></pre>
-			</div>
 
-			<div id="uws-error" class="notice notice-error" hidden><p id="uws-error-message"></p></div>
+				<table class="form-table">
+					<tr>
+						<th><label for="uws-f-name"><?php esc_html_e( 'Name', 'universal-woo-scraper' ); ?></label></th>
+						<td><input type="text" id="uws-f-name" class="regular-text uws-confidence-field" data-field="name" /></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-sku"><?php esc_html_e( 'SKU', 'universal-woo-scraper' ); ?></label></th>
+						<td><input type="text" id="uws-f-sku" class="regular-text uws-confidence-field" data-field="sku" /></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-brand"><?php esc_html_e( 'Brand', 'universal-woo-scraper' ); ?></label></th>
+						<td><input type="text" id="uws-f-brand" class="regular-text uws-confidence-field" data-field="brand" /></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-regular-price"><?php esc_html_e( 'Regular price', 'universal-woo-scraper' ); ?></label></th>
+						<td>
+							<input type="text" id="uws-f-regular-price" class="regular-text uws-confidence-field" data-field="regular_price" />
+							<input type="text" id="uws-f-currency" placeholder="<?php esc_attr_e( 'Currency', 'universal-woo-scraper' ); ?>" style="width:6em;" data-field="currency" />
+						</td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-sale-price"><?php esc_html_e( 'Sale price', 'universal-woo-scraper' ); ?></label></th>
+						<td><input type="text" id="uws-f-sale-price" data-field="sale_price" /></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-categories"><?php esc_html_e( 'Categories', 'universal-woo-scraper' ); ?></label></th>
+						<td><input type="text" id="uws-f-categories" class="regular-text uws-confidence-field" data-field="categories" placeholder="Equipment, Pumps, Water Pumps" /></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-short-description"><?php esc_html_e( 'Short description', 'universal-woo-scraper' ); ?></label></th>
+						<td><textarea id="uws-f-short-description" rows="3" style="width:100%;" data-field="short_description"></textarea></td>
+					</tr>
+					<tr>
+						<th><label for="uws-f-description"><?php esc_html_e( 'Description', 'universal-woo-scraper' ); ?></label></th>
+						<td><textarea id="uws-f-description" rows="8" style="width:100%;" data-field="description"></textarea></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Attributes', 'universal-woo-scraper' ); ?></th>
+						<td><div id="uws-attributes-list"></div></td>
+					</tr>
+					<tr>
+						<th><?php esc_html_e( 'Images', 'universal-woo-scraper' ); ?></th>
+						<td><div id="uws-images-list"></div></td>
+					</tr>
+				</table>
+
+				<p>
+					<button type="button" class="button button-primary" id="uws-import-btn"><?php esc_html_e( 'Import', 'universal-woo-scraper' ); ?></button>
+					<span id="uws-import-status"></span>
+				</p>
+			</div>
 		</div>
 		<?php
 	}

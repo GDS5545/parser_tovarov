@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.2.0
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,15 +25,20 @@ worker service, reached over HTTP through `Scraper\ScraperEngineInterface`
 
 = Current status =
 
-Stages 1–2 of 16 are complete: project architecture, custom database
-tables (`wp_uws_sources`, `wp_uws_jobs`, `wp_uws_logs`, `wp_uws_mappings`,
-`wp_uws_product_links`), the admin menu (Dashboard, Import Product, Bulk
-Import, Queue, Products, Mappings, Attributes, Settings, AI Settings,
-Browser Settings, Logs), the `/wp-json/uws/v1/*` REST API, the SSRF-safe
-URL validator, and the queue's cron tick. The `/analyze` and `/import`
-endpoints correctly report "not implemented yet" (HTTP 501) until the
-Playwright worker (Stage 3) and extraction/import pipeline (Stages 4–8)
-are connected — nothing fakes success ahead of that.
+Stages 1–8 and 11 of 16 are working end to end: paste a product URL,
+Analyze fetches it through the Playwright worker (`worker/`), runs it
+through the extraction pipeline (JSON-LD → meta tags → specification
+tables → images → breadcrumbs → DOM heuristics), and shows an editable,
+confidence-highlighted preview. Import creates a real WooCommerce simple
+product (categories, global attributes, downloaded images, duplicate
+detection by URL/SKU/GTIN/MPN) via WooCommerce's own CRUD. Bulk/category
+URLs go through the same pipeline via a cron-driven queue with retries.
+
+Not yet built: variable products (Stage 9 — the importer reports this
+case rather than dropping it silently), the persisted category/attribute
+mapping review UI (Stage 10), AI fallback extraction (Stage 12), a
+sync/diff review UI (Stage 13), and installer packaging (Stage 16). See
+`ARCHITECTURE.md` for the full stage-by-stage status table.
 
 == Installation ==
 
@@ -44,6 +49,12 @@ are connected — nothing fakes success ahead of that.
    Scraper Worker URL once it is deployed (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.3.0 =
+* Stages 3-8 + 11: Playwright worker, extraction pipeline (JSON-LD/meta/
+  specification tables/images/breadcrumbs/DOM), attribute normalization,
+  WooCommerce simple-product importer, editable confidence-highlighted
+  preview UI, and a working cron-driven queue with retries.
 
 = 0.2.0 =
 * Stage 2: WordPress plugin foundation — database schema, admin UI

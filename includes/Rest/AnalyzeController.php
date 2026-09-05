@@ -1,16 +1,19 @@
 <?php
 /**
- * POST /wp-json/uws/v1/analyze — validates the submitted URL and hands off
- * to whichever ScraperEngineInterface implementation Stage 3 registers via
- * the 'uws_scraper_engine' filter. No engine is registered yet, so this
- * honestly reports 501 rather than faking a result (spec §82: no
- * TODO-stub functions pretending to work).
+ * POST /wp-json/uws/v1/analyze — fetches the URL through whichever
+ * ScraperEngineInterface Plugin::boot() registered (PlaywrightHttpEngine,
+ * once Browser Settings has a worker URL) and runs it through
+ * ExtractionPipeline (JSON-LD → meta → specification tables → images →
+ * breadcrumbs → DOM heuristics). Returns the merged ProductData for the
+ * admin Preview screen — nothing is written to WooCommerce here; that only
+ * happens when the user confirms via POST /import.
  *
  * @package Uws\Rest
  */
 
 namespace Uws\Rest;
 
+use Uws\Pipeline\ExtractionPipeline;
 use Uws\Security\UrlValidator;
 use WP_Error;
 use WP_REST_Request;
@@ -42,24 +45,34 @@ class AnalyzeController {
 
 		if ( ! $engine instanceof \Uws\Scraper\ScraperEngineInterface ) {
 			return new WP_Error(
-				'uws_not_implemented',
-				__( 'No scraper worker is configured yet. Set the worker URL under Universal Scraper → Browser Settings once the Playwright worker (Stage 3) is deployed.', 'universal-woo-scraper' ),
+				'uws_worker_not_configured',
+				__( 'No scraper worker is configured yet. Set the worker URL under Universal Scraper → Browser Settings.', 'universal-woo-scraper' ),
 				array( 'status' => 501 )
 			);
 		}
 
-		$page = $engine->fetch_page( $url );
-		if ( is_wp_error( $page ) ) {
-			$page->add_data( array( 'status' => 502 ) );
-			return $page;
+		$settings = get_option( 'uws_settings', array() );
+		$options  = array( 'screenshot' => ! empty( $settings['debug_mode'] ) );
+
+		$pipeline = new ExtractionPipeline( $engine );
+		$result   = $pipeline->analyze( $url, $options );
+
+		if ( is_wp_error( $result ) ) {
+			$result->add_data( array( 'status' => 502 ) );
+			return $result;
 		}
 
-		return new WP_REST_Response(
-			array(
-				'message' => __( 'Page fetched. Extraction pipeline is not wired in yet (Stages 4–8).', 'universal-woo-scraper' ),
-				'page'    => $page,
-			),
-			200
-		);
+		$response = $result['data']->to_array();
+
+		if ( ! empty( $settings['debug_mode'] ) ) {
+			$response['debug'] = array(
+				'status_code'     => $result['page']['status_code'] ?? null,
+				'console_errors'  => $result['page']['console_errors'] ?? array(),
+				'network_errors'  => $result['page']['network_errors'] ?? array(),
+				'has_screenshot'  => ! empty( $result['page']['screenshot_base64'] ),
+			);
+		}
+
+		return new WP_REST_Response( $response, 200 );
 	}
 }

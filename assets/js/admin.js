@@ -10,6 +10,12 @@
 		return;
 	}
 
+	// Holds the last /analyze response so the Import button can rebuild
+	// the full ProductData shape (including fields with no dedicated
+	// input, like gtin/mpn/stock_status) from it plus whatever the user
+	// edited in the visible fields.
+	var lastAnalyzeResult = null;
+
 	function restRequest( path, method, body ) {
 		return fetch( uwsAdmin.restUrl + path, {
 			method: method,
@@ -20,11 +26,7 @@
 			body: body ? JSON.stringify( body ) : undefined,
 		} ).then( function ( response ) {
 			return response.json().then( function ( data ) {
-				if ( ! response.ok ) {
-					var message = data && data.message ? data.message : uwsAdmin.i18n.error;
-					throw new Error( message );
-				}
-				return data;
+				return { ok: response.ok, status: response.status, data: data };
 			} );
 		} );
 	}
@@ -39,6 +41,178 @@
 		box.hidden = false;
 	}
 
+	function confidenceClass( value ) {
+		if ( typeof value !== 'number' ) {
+			return '';
+		}
+		if ( value >= 0.85 ) {
+			return 'uws-confidence-high';
+		}
+		if ( value >= 0.5 ) {
+			return 'uws-confidence-medium';
+		}
+		return 'uws-confidence-low';
+	}
+
+	function applyConfidenceStyling( result ) {
+		document.querySelectorAll( '.uws-confidence-field' ).forEach( function ( field ) {
+			var name = field.getAttribute( 'data-field' );
+			var confidence = result.confidence ? result.confidence[ name ] : undefined;
+			field.classList.remove( 'uws-confidence-high', 'uws-confidence-medium', 'uws-confidence-low' );
+			var cls = confidenceClass( confidence );
+			if ( cls ) {
+				field.classList.add( cls );
+			}
+		} );
+	}
+
+	function renderAttributes( attributes ) {
+		var container = document.getElementById( 'uws-attributes-list' );
+		container.innerHTML = '';
+
+		( attributes || [] ).forEach( function ( attribute, index ) {
+			var row = document.createElement( 'div' );
+			row.className = 'uws-attribute-row';
+			row.innerHTML =
+				'<input type="text" class="uws-attr-key" value="' + escapeHtml( attribute.attribute_key || '' ) + '" style="width:35%;" />' +
+				'<input type="text" class="uws-attr-value" value="' + escapeHtml( attribute.value_raw || '' ) + '" style="width:45%;" />' +
+				'<button type="button" class="button uws-attr-remove" data-index="' + index + '">&times;</button>';
+			container.appendChild( row );
+		} );
+
+		container.querySelectorAll( '.uws-attr-remove' ).forEach( function ( button ) {
+			button.addEventListener( 'click', function () {
+				button.closest( '.uws-attribute-row' ).remove();
+			} );
+		} );
+	}
+
+	function renderImages( images ) {
+		var container = document.getElementById( 'uws-images-list' );
+		container.innerHTML = '';
+
+		( images || [] ).forEach( function ( image, index ) {
+			var row = document.createElement( 'label' );
+			row.style.display = 'block';
+			row.innerHTML =
+				'<input type="checkbox" class="uws-image-include" data-index="' + index + '" checked /> ' +
+				escapeHtml( image.url ) + ( image.is_main ? ' (' + ( window.uwsAdmin.i18n.mainImage || 'main' ) + ')' : '' );
+			container.appendChild( row );
+		} );
+	}
+
+	function escapeHtml( value ) {
+		var div = document.createElement( 'div' );
+		div.textContent = value == null ? '' : String( value );
+		return div.innerHTML;
+	}
+
+	function populatePreview( result ) {
+		lastAnalyzeResult = result;
+
+		document.getElementById( 'uws-f-name' ).value = result.name || '';
+		document.getElementById( 'uws-f-sku' ).value = result.sku || '';
+		document.getElementById( 'uws-f-brand' ).value = result.brand || '';
+		document.getElementById( 'uws-f-regular-price' ).value = result.regular_price || '';
+		document.getElementById( 'uws-f-sale-price' ).value = result.sale_price || '';
+		document.getElementById( 'uws-f-currency' ).value = result.currency || '';
+		document.getElementById( 'uws-f-categories' ).value = ( result.categories || [] ).join( ', ' );
+		document.getElementById( 'uws-f-short-description' ).value = result.short_description || '';
+		document.getElementById( 'uws-f-description' ).value = result.description || '';
+
+		renderAttributes( result.attributes );
+		renderImages( result.images );
+		applyConfidenceStyling( result );
+
+		document.getElementById( 'uws-preview' ).hidden = false;
+	}
+
+	function collectEditedData() {
+		var base = lastAnalyzeResult ? JSON.parse( JSON.stringify( lastAnalyzeResult ) ) : {};
+
+		base.name = document.getElementById( 'uws-f-name' ).value;
+		base.sku = document.getElementById( 'uws-f-sku' ).value;
+		base.brand = document.getElementById( 'uws-f-brand' ).value;
+		base.regular_price = document.getElementById( 'uws-f-regular-price' ).value;
+		base.sale_price = document.getElementById( 'uws-f-sale-price' ).value;
+		base.currency = document.getElementById( 'uws-f-currency' ).value;
+		base.categories = document.getElementById( 'uws-f-categories' ).value
+			.split( ',' )
+			.map( function ( s ) { return s.trim(); } )
+			.filter( Boolean );
+		base.short_description = document.getElementById( 'uws-f-short-description' ).value;
+		base.description = document.getElementById( 'uws-f-description' ).value;
+
+		base.attributes = Array.prototype.map.call(
+			document.querySelectorAll( '#uws-attributes-list .uws-attribute-row' ),
+			function ( row ) {
+				return {
+					attribute_key: row.querySelector( '.uws-attr-key' ).value,
+					value_raw: row.querySelector( '.uws-attr-value' ).value,
+					source: 'user',
+				};
+			}
+		).filter( function ( attribute ) {
+			return attribute.attribute_key && attribute.value_raw;
+		} );
+
+		var includedImages = [];
+		document.querySelectorAll( '#uws-images-list .uws-image-include' ).forEach( function ( checkbox ) {
+			if ( checkbox.checked ) {
+				var index = Number( checkbox.getAttribute( 'data-index' ) );
+				if ( base.images && base.images[ index ] ) {
+					includedImages.push( base.images[ index ] );
+				}
+			}
+		} );
+		base.images = includedImages;
+
+		return base;
+	}
+
+	function submitImport( action ) {
+		var status = document.getElementById( 'uws-import-status' );
+		var button = document.getElementById( 'uws-import-btn' );
+		var data = collectEditedData();
+
+		button.disabled = true;
+		status.textContent = uwsAdmin.i18n.importing || 'Importing…';
+
+		restRequest( '/import', 'POST', { data: data, action: action || 'create' } ).then( function ( result ) {
+			button.disabled = false;
+
+			if ( 409 === result.status && 'duplicate' === result.data.status ) {
+				var choice = window.prompt(
+					( uwsAdmin.i18n.duplicateFound || 'This product was already imported (product #' ) +
+						result.data.existing.product_id +
+						'). Type "update", "duplicate", or "skip":',
+					'update'
+				);
+				if ( choice && [ 'update', 'duplicate', 'skip' ].indexOf( choice ) !== -1 ) {
+					submitImport( choice );
+				} else {
+					status.textContent = '';
+				}
+				return;
+			}
+
+			if ( ! result.ok ) {
+				status.textContent = '';
+				showError( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error );
+				return;
+			}
+
+			if ( 'imported' === result.data.status ) {
+				status.textContent = ( uwsAdmin.i18n.imported || 'Imported as product #' ) + result.data.product_id + '.';
+				if ( result.data.warnings && result.data.warnings.length ) {
+					status.textContent += ' ' + result.data.warnings.join( ' ' );
+				}
+			} else {
+				status.textContent = result.data.status;
+			}
+		} );
+	}
+
 	function initAnalyzeForm() {
 		var form = document.getElementById( 'uws-analyze-form' );
 		if ( ! form ) {
@@ -51,7 +225,6 @@
 			var urlInput = document.getElementById( 'uws-product-url' );
 			var button = document.getElementById( 'uws-analyze-btn' );
 			var preview = document.getElementById( 'uws-preview' );
-			var previewJson = document.getElementById( 'uws-preview-json' );
 			var errorBox = document.getElementById( 'uws-error' );
 
 			if ( errorBox ) {
@@ -65,20 +238,25 @@
 			button.textContent = uwsAdmin.i18n.analyzing;
 
 			restRequest( '/analyze', 'POST', { url: urlInput.value } )
-				.then( function ( data ) {
-					if ( preview && previewJson ) {
-						previewJson.textContent = JSON.stringify( data, null, 2 );
-						preview.hidden = false;
+				.then( function ( result ) {
+					if ( ! result.ok ) {
+						showError( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error );
+						return;
 					}
-				} )
-				.catch( function ( error ) {
-					showError( error.message );
+					populatePreview( result.data );
 				} )
 				.finally( function () {
 					button.disabled = false;
-					button.textContent = wp && wp.i18n ? wp.i18n.__( 'Analyze Product', 'universal-woo-scraper' ) : 'Analyze Product';
+					button.textContent = uwsAdmin.i18n.analyzeProduct || 'Analyze Product';
 				} );
 		} );
+
+		var importButton = document.getElementById( 'uws-import-btn' );
+		if ( importButton ) {
+			importButton.addEventListener( 'click', function () {
+				submitImport( 'create' );
+			} );
+		}
 	}
 
 	function initBulkImport() {
@@ -112,12 +290,10 @@
 
 				Promise.all(
 					urls.map( function ( url ) {
-						return restRequest( '/jobs', 'POST', { url: url, type: 'single' } ).catch( function () {
-							return null;
-						} );
+						return restRequest( '/jobs', 'POST', { url: url, type: 'single' } );
 					} )
 				).then( function ( results ) {
-					var queued = results.filter( Boolean ).length;
+					var queued = results.filter( function ( r ) { return r.ok; } ).length;
 					showResult( queued + ' / ' + urls.length + ' URLs queued.' );
 					bulkButton.disabled = false;
 				} );
@@ -131,16 +307,14 @@
 					return;
 				}
 				categoryButton.disabled = true;
-				restRequest( '/jobs', 'POST', { url: input.value, type: 'category' } )
-					.then( function ( data ) {
-						showResult( 'Category job #' + data.id + ' queued.' );
-					} )
-					.catch( function ( error ) {
-						showResult( error.message );
-					} )
-					.finally( function () {
-						categoryButton.disabled = false;
-					} );
+				restRequest( '/jobs', 'POST', { url: input.value, type: 'category' } ).then( function ( result ) {
+					categoryButton.disabled = false;
+					if ( result.ok ) {
+						showResult( 'Category job #' + result.data.id + ' queued.' );
+					} else {
+						showResult( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error );
+					}
+				} );
 			} );
 		}
 	}
@@ -152,14 +326,14 @@
 				var action = button.classList.contains( 'uws-job-cancel' ) ? 'cancel' : 'retry';
 
 				button.disabled = true;
-				restRequest( '/jobs/' + id + '/' + action, 'POST' )
-					.then( function () {
+				restRequest( '/jobs/' + id + '/' + action, 'POST' ).then( function ( result ) {
+					if ( result.ok ) {
 						window.location.reload();
-					} )
-					.catch( function ( error ) {
-						alert( error.message ); // eslint-disable-line no-alert
+					} else {
+						alert( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error ); // eslint-disable-line no-alert
 						button.disabled = false;
-					} );
+					}
+				} );
 			} );
 		} );
 	}

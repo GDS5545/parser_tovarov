@@ -43,7 +43,10 @@ class JobsController {
 			return $valid;
 		}
 
-		$id = $this->jobs->enqueue( $url, $request->get_param( 'type' ) ?: 'single' );
+		$options = $request->get_param( 'options' );
+		$payload = is_array( $options ) ? array( 'discover_options' => $options ) : array();
+
+		$id = $this->jobs->enqueue( $url, $request->get_param( 'type' ) ?: 'single', $payload );
 
 		return new WP_REST_Response( array( 'id' => $id ), 201 );
 	}

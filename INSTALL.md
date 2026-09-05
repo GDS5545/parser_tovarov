@@ -17,17 +17,18 @@
 ## 2. Scraper worker (Playwright) — Stage 3, deployed separately
 
 The worker is a standalone Node.js service; it does not run inside
-WordPress and does not need PHP. It is being built in Stage 3 of the
-roadmap in `ARCHITECTURE.md`. Once available, deployment will be:
+WordPress and does not need PHP.
 
 ```bash
 cd worker
 npm install
-npx playwright install chromium
-npm start          # or: node index.js
+npx playwright install chromium --with-deps
+cp .env.example .env   # set WORKER_API_KEY to a long random secret
+npm start
 ```
 
-Then, in WordPress, go to **WooCommerce → Universal Scraper → Browser
+See `worker/README.md` for the full API and its security notes. Then, in
+WordPress, go to **WooCommerce → Universal Scraper → Browser
 Settings** and set:
 
 - **Worker URL** — e.g. `https://scraper-worker.example.com`
@@ -40,24 +41,31 @@ jobs** to stay within a reasonable rate against any single target site
 ## 3. Verifying the connection
 
 `WooCommerce → Universal Scraper → Import Product`, paste a product URL,
-click **Analyze Product**. Until a worker URL is configured (or before
-Stage 3 ships), this correctly returns:
+click **Analyze Product**. With the worker running and its URL/API key
+set in Browser Settings, this fetches the page, runs it through the
+extraction pipeline, and shows an editable preview (name, SKU, price,
+categories, attributes, images) with low-confidence fields outlined in
+red/amber so you know what to double check before importing. Click
+**Import** to create the WooCommerce product; a source URL/SKU/GTIN/MPN
+match against an already-imported product returns a prompt to update,
+duplicate, or skip rather than silently overwriting anything.
 
-> No scraper worker is configured yet. Set the worker URL under Universal
-> Scraper → Browser Settings once the Playwright worker (Stage 3) is
-> deployed.
+If no worker URL is configured, Analyze correctly returns "No scraper
+worker is configured yet" instead of crashing or faking a result.
 
-That response — not a crash, not a fake product preview — is the expected
-behavior at this stage.
-
-## 4. Running the PHP test suite
+## 4. Running the test suites
 
 ```bash
 composer install
 vendor/bin/phpunit
+
+cd worker && npm install && npm test
 ```
 
-Stage 15 will extend this with WooCommerce-integration tests
-(`WP_UnitTestCase` against a real `wp-env`/`wp-cli` scaffold with mock
-HTML fixtures, spec §78) once there is importer/extractor behavior to
-exercise; today's suite covers the SSRF-safe `UrlValidator`.
+`phpunit` covers `UrlValidator` (SSRF), `PriceParser`, `AttributeNormalizer`,
+and an extractor-merge integration test (JSON-LD price outranking a DOM
+guess, specification tables becoming attributes, breadcrumbs becoming
+categories). `npm test` covers the worker's own SSRF guard. Stage 15 adds
+a full WP-integration harness (`wp-env`/`wp-cli`, mock HTML fixtures per
+spec §78) against a real WooCommerce install; today's suites are unit-level
+and don't require WordPress or a browser to run.

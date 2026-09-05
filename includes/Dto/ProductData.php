@@ -85,6 +85,45 @@ class ProductData {
 	 *                              REST responses and uws_jobs.result storage).
 	 */
 	public function to_array() {
-		return get_object_vars( $this );
+		$vars                = get_object_vars( $this );
+		$vars['attributes']  = array_map(
+			function ( ProductAttribute $attribute ) {
+				return get_object_vars( $attribute );
+			},
+			$this->attributes
+		);
+		return $vars;
+	}
+
+	/**
+	 * Rebuilds a ProductData from the array shape to_array() produces —
+	 * used by ImportController to reconstruct the DTO a user edited in the
+	 * admin Preview screen and posted back.
+	 *
+	 * @param array<string,mixed> $input
+	 * @return self
+	 */
+	public static function from_array( array $input ) {
+		$data = new self();
+
+		foreach ( get_object_vars( $data ) as $field => $default ) {
+			if ( 'attributes' === $field || ! array_key_exists( $field, $input ) ) {
+				continue;
+			}
+			$data->$field = $input[ $field ];
+		}
+
+		if ( ! empty( $input['attributes'] ) && is_array( $input['attributes'] ) ) {
+			foreach ( $input['attributes'] as $row ) {
+				if ( empty( $row['attribute_key'] ) ) {
+					continue;
+				}
+				$attribute            = new ProductAttribute( (string) $row['attribute_key'], (string) ( $row['value_raw'] ?? '' ), (string) ( $row['source'] ?? 'user' ) );
+				$attribute->confidence = isset( $row['confidence'] ) ? (float) $row['confidence'] : 1.0;
+				$data->attributes[]    = $attribute;
+			}
+		}
+
+		return $data;
 	}
 }

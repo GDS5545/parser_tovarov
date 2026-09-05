@@ -1,0 +1,19 @@
+{
+  "name": "uws-scraper-worker",
+  "version": "0.1.0",
+  "description": "Browser automation worker for Universal WooCommerce Product Scraper & Importer. Fetches a page with real Chromium, returns raw rendered HTML/JSON-LD/console+network diagnostics; never talks to WordPress or WooCommerce directly.",
+  "private": true,
+  "type": "commonjs",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "playwright": "^1.47.0"
+  }
+}
