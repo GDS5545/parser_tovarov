@@ -3,7 +3,7 @@
  * Plugin Name:       Universal WooCommerce Product Scraper & Importer
  * Plugin URI:        https://github.com/gds5545/parser_tovarov
  * Description:       Analyzes any product/category page with a real browser worker, extracts structured product data, and imports it into WooCommerce with attribute normalization, category mapping, and sync.
- * Version:           0.5.0
+ * Version:           0.6.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * WC requires at least: 7.0
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Do not load directly.
 }
 
-define( 'UWS_VERSION', '0.5.0' );
+define( 'UWS_VERSION', '0.6.0' );
 define( 'UWS_PLUGIN_FILE', __FILE__ );
 define( 'UWS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'UWS_PLUGIN_URL', plugin_dir_url( __FILE__ ) );

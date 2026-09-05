@@ -154,6 +154,32 @@ if ( ! class_exists( 'WC_Product' ) ) {
 	}
 }
 
+// In-memory HTTP fixture map for HttpEngine tests: set
+// $GLOBALS['uws_test_http_responses'][$url] = ['body' => ..., 'status' => 200]
+// before calling code that triggers wp_remote_get(); an unlisted URL
+// behaves like a 404 with an empty body (simulating "this pagination page
+// doesn't exist"), matching real-world site behavior closely enough.
+$GLOBALS['uws_test_http_responses'] = array();
+
+if ( ! function_exists( 'wp_remote_get' ) ) {
+	function wp_remote_get( $url, $args = array() ) {
+		$fixture = $GLOBALS['uws_test_http_responses'][ $url ] ?? array( 'body' => '', 'status' => 404 );
+		return array( 'body' => $fixture['body'], 'response' => array( 'code' => $fixture['status'] ) );
+	}
+}
+
+if ( ! function_exists( 'wp_remote_retrieve_body' ) ) {
+	function wp_remote_retrieve_body( $response ) {
+		return is_wp_error( $response ) ? '' : (string) ( $response['body'] ?? '' );
+	}
+}
+
+if ( ! function_exists( 'wp_remote_retrieve_response_code' ) ) {
+	function wp_remote_retrieve_response_code( $response ) {
+		return is_wp_error( $response ) ? 0 : (int) ( $response['response']['code'] ?? 0 );
+	}
+}
+
 // Composer's PSR-4 autoloader (Uws\ => includes/) covers every plugin
 // class from here on, so individual test files don't need to hand-require
 // the classes they exercise.

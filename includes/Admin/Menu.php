@@ -92,6 +92,9 @@ class Menu {
 					'duplicateFound' => __( 'This product was already imported (product #', 'universal-woo-scraper' ),
 					'mainImage'      => __( 'main', 'universal-woo-scraper' ),
 					'usedForVariations' => __( 'Used for variations', 'universal-woo-scraper' ),
+					'httpEngineHint'    => __( 'Fetched via plain HTTP (no browser needed).', 'universal-woo-scraper' ),
+					'httpEngineEmptyHint' => __( 'Fetched via plain HTTP (no browser) and found little usable data — this site may render its content with JavaScript. Try deploying the Playwright worker under Browser Settings for this site.', 'universal-woo-scraper' ),
+					'browserEngineHint' => __( 'Fetched via the Playwright browser worker.', 'universal-woo-scraper' ),
 					'error'          => __( 'Error', 'universal-woo-scraper' ),
 				),
 			)

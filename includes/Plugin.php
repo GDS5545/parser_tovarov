@@ -14,6 +14,7 @@ use Uws\Database\Installer;
 use Uws\Queue\Dispatcher;
 use Uws\Queue\QueueRunner;
 use Uws\Rest\RestApi;
+use Uws\Scraper\HttpEngine;
 use Uws\Scraper\PlaywrightHttpEngine;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -64,14 +65,17 @@ class Plugin {
 	}
 
 	/**
-	 * Default implementation of the 'uws_scraper_engine' filter: returns a
-	 * PlaywrightHttpEngine bound to the configured worker URL, or null if
-	 * none is set yet — callers (AnalyzeController, Dispatcher) treat null
-	 * as "no worker configured" rather than crashing.
+	 * Default implementation of the 'uws_scraper_engine' filter: a
+	 * PlaywrightHttpEngine when a worker URL is configured under Browser
+	 * Settings, otherwise the no-deploy HttpEngine fallback (plain
+	 * `wp_remote_get()`, no separate service needed — see its class
+	 * docblock for what it can and can't handle). Either way this never
+	 * returns null, so /analyze and the queue always have something to
+	 * try; the caller only sees a WP_Error if the fetch itself fails.
 	 *
 	 * @param \Uws\Scraper\ScraperEngineInterface|null $engine Passed through
 	 *        unchanged if another filter callback already supplied one.
-	 * @return \Uws\Scraper\ScraperEngineInterface|null
+	 * @return \Uws\Scraper\ScraperEngineInterface
 	 */
 	public function register_scraper_engine( $engine ) {
 		if ( null !== $engine ) {
@@ -79,11 +83,11 @@ class Plugin {
 		}
 
 		$settings = get_option( 'uws_settings', array() );
-		if ( empty( $settings['worker_url'] ) ) {
-			return null;
+		if ( ! empty( $settings['worker_url'] ) ) {
+			return new PlaywrightHttpEngine( $settings['worker_url'], $settings['worker_api_key'] ?? '' );
 		}
 
-		return new PlaywrightHttpEngine( $settings['worker_url'], $settings['worker_api_key'] ?? '' );
+		return new HttpEngine();
 	}
 
 	/**

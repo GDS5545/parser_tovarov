@@ -160,7 +160,14 @@ class SettingsRegistrar {
 	}
 
 	private function register_browser_section() {
-		add_settings_section( 'uws_browser', __( 'Scraper worker connection', 'universal-woo-scraper' ), '__return_false', 'uws-browser-settings' );
+		add_settings_section(
+			'uws_browser',
+			__( 'Scraper worker connection (optional)', 'universal-woo-scraper' ),
+			function () {
+				echo '<p>' . esc_html__( 'Left empty, Analyze/Import fetch pages with plain HTTP — no separate service to deploy, works for most server-rendered sites (JSON-LD is normally already in the HTML). Set a worker URL only if a specific site renders its product data with JavaScript (React/Vue/Next/Nuxt) or needs pagination via a "Load more" button.', 'universal-woo-scraper' ) . '</p>';
+			},
+			'uws-browser-settings'
+		);
 
 		add_settings_field(
 			'worker_url',
@@ -170,7 +177,7 @@ class SettingsRegistrar {
 					'<input type="url" class="regular-text" name="uws_settings[worker_url]" value="%s" placeholder="https://scraper-worker.example.com" />',
 					esc_attr( $this->get( 'worker_url', '' ) )
 				);
-				echo '<p class="description">' . esc_html__( 'Base URL of the Node.js/Playwright worker (Stage 3). Left empty, Analyze/Import report that no worker is configured.', 'universal-woo-scraper' ) . '</p>';
+				echo '<p class="description">' . esc_html__( 'Base URL of the separately-deployed Node.js/Playwright worker (see worker/README.md). Leave empty to use the built-in plain-HTTP fallback.', 'universal-woo-scraper' ) . '</p>';
 			},
 			'uws-browser-settings',
 			'uws_browser'

@@ -20,7 +20,16 @@ class ImportProductPage {
 		?>
 		<div class="wrap uws-wrap">
 			<h1><?php esc_html_e( 'Import Product', 'universal-woo-scraper' ); ?></h1>
-			<p><?php esc_html_e( 'Paste the URL of a single product page. The scraper worker opens it in a real browser and extracts structured data; nothing is created in WooCommerce until you review the preview below and click Import.', 'universal-woo-scraper' ); ?></p>
+			<p><?php esc_html_e( 'Paste the URL of a single product page and extract structured data from it; nothing is created in WooCommerce until you review the preview below and click Import.', 'universal-woo-scraper' ); ?></p>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: link to Browser Settings page */
+					esc_html__( 'No separate worker needed for most sites — plain HTTP fetch is used by default. It cannot render JavaScript-only content or click "Load more" buttons; %s and set a worker URL there only if a specific site needs a real browser.', 'universal-woo-scraper' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=uws-browser-settings' ) ) . '">' . esc_html__( 'deploy the optional Playwright worker', 'universal-woo-scraper' ) . '</a>'
+				);
+				?>
+			</p>
 
 			<form id="uws-analyze-form" class="uws-card">
 				<label for="uws-product-url"><strong><?php esc_html_e( 'Product URL', 'universal-woo-scraper' ); ?></strong></label>
@@ -34,6 +43,7 @@ class ImportProductPage {
 
 			<div id="uws-preview" class="uws-card" hidden>
 				<h2><?php esc_html_e( 'Preview', 'universal-woo-scraper' ); ?></h2>
+				<p class="description" id="uws-engine-note"></p>
 
 				<table class="form-table">
 					<tr>

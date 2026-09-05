@@ -36,13 +36,13 @@ class DashboardPage {
 			<h1><?php esc_html_e( 'Universal Scraper — Dashboard', 'universal-woo-scraper' ); ?></h1>
 
 			<?php if ( empty( $worker_url ) ) : ?>
-				<div class="notice notice-warning">
+				<div class="notice notice-info">
 					<p>
 						<?php
 						printf(
 							/* translators: %s: link to Browser Settings page */
-							esc_html__( 'No scraper worker URL is configured yet. %s to connect the Playwright worker once it is deployed.', 'universal-woo-scraper' ),
-							'<a href="' . esc_url( admin_url( 'admin.php?page=uws-browser-settings' ) ) . '">' . esc_html__( 'Open Browser Settings', 'universal-woo-scraper' ) . '</a>'
+							esc_html__( 'No Playwright worker URL is configured — Analyze uses plain HTTP fetch by default, which works for most server-rendered sites but cannot run JavaScript. %s only if a specific site needs a real browser.', 'universal-woo-scraper' ),
+							'<a href="' . esc_url( admin_url( 'admin.php?page=uws-browser-settings' ) ) . '">' . esc_html__( 'Deploy the optional worker', 'universal-woo-scraper' ) . '</a>'
 						);
 						?>
 					</p>

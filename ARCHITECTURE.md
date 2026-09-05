@@ -1,44 +1,60 @@
 # Universal WooCommerce Product Scraper & Importer — Architecture
 
-Status: **Stage 1–2 of 16** (see roadmap below). This document is the
-reference design for the whole platform; it is updated as later stages land.
+Status: all 16 stages have landed in some form; several (9, 10, 13) are
+"done for the common case" rather than exhaustive — see the roadmap table
+in §6 for exactly what's covered and what's explicitly still a gap. This
+document is the reference design for the whole platform; it is updated as
+the implementation evolves.
 
 ## 1. Problem & principle
 
 Modern product pages are rendered by JS frameworks (React/Vue/Next/Nuxt),
-load data via AJAX/GraphQL, lazy-load images, and vary wildly in markup.
-A plugin that only does `wp_remote_get()` + regex will work on a handful of
-static sites and silently fail everywhere else. This project is therefore
-split into two independently deployable components:
+load data via AJAX/GraphQL, lazy-load images, and vary wildly in markup —
+but most e-commerce sites, including ones built on classic
+PHP/CMS/1C-Bitrix stacks, still render their product data (JSON-LD
+included) directly into the initial server response, specifically because
+that's what search engines need to see. The plugin is built around that
+distinction with **two interchangeable scraper engines** behind one
+interface, `Scraper\ScraperEngineInterface`:
 
 ```
-┌─────────────────────────────┐        HTTP/JSON        ┌───────────────────────────┐
-│   WordPress / WooCommerce    │ ───────────────────────▶ │      Scraper Worker       │
-│   Plugin (PHP)                │ ◀─────────────────────── │  (Node.js + Playwright)   │
-│                               │                          │                           │
-│  - Admin UI                  │                          │  - Browser automation     │
-│  - WooCommerce CRUD           │                          │  - DOM / JSON-LD / meta   │
-│  - Attribute normalization    │                          │    extraction              │
-│  - Category mapping           │                          │  - Pagination / load-more  │
-│  - Queue orchestration (DB)   │                          │  - Screenshot / debug      │
-│  - REST API                   │                          │  - Returns raw structured  │
-│  - Sync / logs                │                          │    page data (not a final  │
-└─────────────────────────────┘                          │    WooCommerce product)    │
-                                                            └───────────────────────────┘
+┌──────────────────────────────┐
+│  WordPress / WooCommerce      │
+│  Plugin (PHP)                  │
+│                                 │
+│  - Admin UI, REST API          │
+│  - WooCommerce CRUD             │      apply_filters('uws_scraper_engine')
+│  - Attribute normalization       │  ┌──────────────┴───────────────┐
+│  - Category mapping               │  │                               │
+│  - Queue orchestration (DB)        ▼  ▼                               ▼
+│  - Sync / logs                  ┌─────────────┐            ┌───────────────────────┐
+└──────────────────────────────┘  │  HttpEngine │  HTTP/JSON │     Scraper Worker      │
+                                   │ (default,   │ ─────────▶ │  (Node.js + Playwright, │
+                                   │  no deploy) │ ◀───────── │   deployed separately)  │
+                                   │ wp_remote_  │            │  - real Chromium        │
+                                   │ get(), no JS│            │  - popups/pagination/   │
+                                   └─────────────┘            │    load-more/screenshot │
+                                                               └───────────────────────┘
 ```
 
-The **worker never talks to WooCommerce or the WP database**. It receives a
-URL + options, drives a real browser, and returns raw structured findings
-(HTML fragments, JSON-LD blocks, image URLs, candidate spec tables, etc.).
-All product-model reasoning (merging extractors, normalization, attribute
-mapping, WooCommerce creation) happens in PHP, so the WordPress side stays
-authoritative and testable without a browser.
+**`HttpEngine` is the default and needs nothing deployed**: it fetches a
+page with `wp_remote_get()` and hands the raw HTML (plus any JSON-LD it
+finds already in that HTML) to the same extraction pipeline described
+below. It cannot execute JavaScript, click a "Load more" button, dismiss a
+cookie popup, or take a debug screenshot — see its class docblock for the
+full, honestly-stated list of what it can't do. For a site that needs
+those things, deploying `worker/` (Node.js + Playwright) and setting its
+URL under Browser Settings switches every request to `PlaywrightHttpEngine`
+with no other configuration or code change, because both engines return
+the exact same raw-page shape (`html`, `final_url`, `status_code`,
+`json_ld_blocks`, `console_errors`, `network_errors`,
+`screenshot_base64`) to the extractors.
 
-The worker is reached through `Scraper\ScraperEngineInterface` — a
-`PlaywrightHttpEngine` implementation calls the Node worker over HTTP; a
-future `HttpEngine` (plain fetch, for static sites where no browser is
-needed) or a different browser engine can be swapped in without touching
-the extractor/import pipeline.
+Neither engine — nor the worker, when deployed — ever talks to WooCommerce
+or the WP database directly. All product-model reasoning (merging
+extractors, normalization, attribute mapping, WooCommerce creation)
+happens in PHP, so the WordPress side stays authoritative and testable
+without a browser.
 
 ## 2. Extraction pipeline (priority order)
 
@@ -86,7 +102,8 @@ includes/
   Security/                    Nonce/capability guards, SSRF-safe UrlValidator
   Rest/                        REST controllers under /wp-json/uws/v1/*
   Admin/                       Menu registration + page controllers
-  Scraper/                     ScraperEngineInterface + PlaywrightHttpEngine (Stage 3)
+  Scraper/                     ScraperEngineInterface + HttpEngine (default, no deploy) +
+                                PlaywrightHttpEngine (talks to worker/, Stage 3)
   Pipeline/                    ExtractionPipeline — fetch + run extractors + merge
   Extractors/                  ProductExtractorInterface + concrete extractors + ProductDataMerger
   Normalizer/                  PriceParser, AttributeNormalizer + synonym/unit dictionaries (Stage 7)
@@ -151,8 +168,8 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 |---|-------|--------|
 | 1 | Architecture + project structure | ✅ done |
 | 2 | WordPress plugin foundation (DB, security, admin/REST scaffold) | ✅ done |
-| 3 | Playwright worker (`worker/`, Express + Chromium, `/fetch` `/discover` `/health`) | ✅ done |
-| 4 | URL analyzer (`ExtractionPipeline`, engine wired via `uws_scraper_engine`) | ✅ done |
+| 3 | Playwright worker (`worker/`, Express + Chromium, `/fetch` `/discover` `/health`) — optional, for JS-rendered/anti-bot-averse sites | ✅ done |
+| 4 | URL analyzer (`ExtractionPipeline`, engine wired via `uws_scraper_engine`; `HttpEngine` is the zero-deploy default, `PlaywrightHttpEngine` used automatically once a worker URL is set) | ✅ done |
 | 5 | Product extraction (JSON-LD, meta, specification tables, breadcrumbs, DOM heuristics, priority merge) | ✅ done |
 | 6 | Image extraction (`img`/lazy attrs/srcset/og:image, download via Media Library, dedupe by source URL) | ✅ done |
 | 7 | Attribute normalization (`AttributeNormalizer` + synonym/unit dictionaries, smart/strict modes) | ✅ done (dictionary is a starter set, not exhaustive) |

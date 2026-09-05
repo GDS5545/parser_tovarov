@@ -23,13 +23,19 @@ Either way, then:
 3. Activate **WooCommerce**, then activate **Universal WooCommerce
    Product Scraper & Importer**. Activation creates the plugin's five
    custom tables via `dbDelta` (see `ARCHITECTURE.md` §4).
-4. Go to **WooCommerce → Universal Scraper → Dashboard** to confirm the
-   menu loaded.
+4. Go to **WooCommerce → Universal Scraper → Import Product** and try a
+   URL. **That's it — nothing else to deploy.** By default the plugin
+   fetches pages with plain HTTP (`Scraper\HttpEngine`), which works for
+   most server-rendered stores. Only continue to §2 below if a specific
+   site needs JavaScript rendering.
 
-## 2. Scraper worker (Playwright) — Stage 3, deployed separately
+## 2. Scraper worker (Playwright) — optional, for JS-rendered sites
 
-The worker is a standalone Node.js service; it does not run inside
-WordPress and does not need PHP. Two ways to run it:
+Skip this section unless a site you're importing from renders its product
+data with JavaScript (React/Vue/Next/Nuxt), needs a "Load more" button
+clicked to page through a category, or you want debug screenshots. The
+worker is a standalone Node.js service; it does not run inside WordPress
+and does not need PHP. Two ways to run it:
 
 **Docker (recommended for production):**
 
@@ -65,20 +71,23 @@ Use **Browser Settings → Delay between requests** and **Max parallel
 jobs** to stay within a reasonable rate against any single target site
 (spec §32).
 
-## 3. Verifying the connection
+## 3. Verifying it works
 
 `WooCommerce → Universal Scraper → Import Product`, paste a product URL,
-click **Analyze Product**. With the worker running and its URL/API key
-set in Browser Settings, this fetches the page, runs it through the
+click **Analyze Product**. This fetches the page (plain HTTP by default,
+or through the worker if one is configured), runs it through the
 extraction pipeline, and shows an editable preview (name, SKU, price,
 categories, attributes, images) with low-confidence fields outlined in
-red/amber so you know what to double check before importing. Click
-**Import** to create the WooCommerce product; a source URL/SKU/GTIN/MPN
-match against an already-imported product returns a prompt to update,
-duplicate, or skip rather than silently overwriting anything.
+red/amber so you know what to double check before importing, plus a note
+saying which engine handled the fetch. Click **Import** to create the
+WooCommerce product; a source URL/SKU/GTIN/MPN match against an
+already-imported product returns a prompt to update, duplicate, or skip
+rather than silently overwriting anything.
 
-If no worker URL is configured, Analyze correctly returns "No scraper
-worker is configured yet" instead of crashing or faking a result.
+If the preview comes back with little or no data and the note says it was
+fetched via plain HTTP, that site likely renders its product data with
+JavaScript — deploy the worker (§2) and set its URL under Browser
+Settings, then try Analyze again.
 
 Optionally, set an API key under **AI Settings** (Anthropic or OpenAI) to
 enable the Stage 12 fallback: it only calls the API when name/SKU/brand/
@@ -96,9 +105,11 @@ cd worker && npm install && npm test
 ```
 
 `phpunit` covers `UrlValidator` (SSRF), `PriceParser`, `AttributeNormalizer`,
-and an extractor-merge integration test (JSON-LD price outranking a DOM
-guess, specification tables becoming attributes, breadcrumbs becoming
-categories). `npm test` covers the worker's own SSRF guard. Stage 15 adds
-a full WP-integration harness (`wp-env`/`wp-cli`, mock HTML fixtures per
-spec §78) against a real WooCommerce install; today's suites are unit-level
-and don't require WordPress or a browser to run.
+`HttpEngine` (JSON-LD extraction, listing-link filtering, SSRF rejection),
+`ImportSnapshot`, `ContentCleaner`/`AiExtractor`, and an extractor-merge
+integration test (JSON-LD price outranking a DOM guess, specification
+tables becoming attributes, breadcrumbs becoming categories). `npm test`
+covers the worker's own SSRF guard. Stage 15 adds a full WP-integration
+harness (`wp-env`/`wp-cli`, mock HTML fixtures per spec §78) against a
+real WooCommerce install; today's suites are unit-level and don't require
+WordPress or a browser to run.

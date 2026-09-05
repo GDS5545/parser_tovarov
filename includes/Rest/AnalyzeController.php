@@ -1,14 +1,15 @@
 <?php
 /**
  * POST /wp-json/uws/v1/analyze — fetches the URL through whichever
- * ScraperEngineInterface Plugin::boot() registered (PlaywrightHttpEngine,
- * once Browser Settings has a worker URL) and runs it through
- * ExtractionPipeline (JSON-LD → meta → specification tables → images →
- * breadcrumbs → DOM heuristics, then AI fallback only if AI Settings has
- * a provider configured AND important fields are still missing). Returns
- * the merged ProductData for the admin Preview screen — nothing is
- * written to WooCommerce here; that only happens when the user confirms
- * via POST /import.
+ * ScraperEngineInterface Plugin::boot() registered: HttpEngine (plain
+ * `wp_remote_get()`, no separate service, the default) or
+ * PlaywrightHttpEngine once Browser Settings has a worker URL — and runs
+ * it through ExtractionPipeline (JSON-LD → meta → specification tables →
+ * images → breadcrumbs → DOM heuristics, then AI fallback only if AI
+ * Settings has a provider configured AND important fields are still
+ * missing). Returns the merged ProductData for the admin Preview screen —
+ * nothing is written to WooCommerce here; that only happens when the user
+ * confirms via POST /import.
  *
  * @package Uws\Rest
  */
@@ -46,9 +47,12 @@ class AnalyzeController {
 		$engine = apply_filters( 'uws_scraper_engine', null );
 
 		if ( ! $engine instanceof \Uws\Scraper\ScraperEngineInterface ) {
+			// Plugin::register_scraper_engine() always supplies HttpEngine as a
+			// no-deploy fallback, so this only fires if a custom
+			// 'uws_scraper_engine' filter callback removed that default.
 			return new WP_Error(
-				'uws_worker_not_configured',
-				__( 'No scraper worker is configured yet. Set the worker URL under Universal Scraper → Browser Settings.', 'universal-woo-scraper' ),
+				'uws_no_scraper_engine',
+				__( 'No scraper engine is available.', 'universal-woo-scraper' ),
 				array( 'status' => 501 )
 			);
 		}
@@ -68,6 +72,7 @@ class AnalyzeController {
 
 		$response['ai_used']  = ! empty( $result['ai_used'] );
 		$response['ai_error'] = $result['ai_error'] ?? null;
+		$response['engine']   = ( new \ReflectionClass( $engine ) )->getShortName();
 
 		if ( ! empty( $settings['debug_mode'] ) ) {
 			$response['debug'] = array(

@@ -5,34 +5,47 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.5.0
+Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Analyze any product/category page with a real browser, extract structured
-product data through a layered fallback pipeline (JSON-LD → DOM → embedded
-JSON → AI as a last resort), normalize attributes, and import into
-WooCommerce with category mapping, variable-product support, and sync.
+Analyze any product/category page and extract structured data through a
+layered fallback pipeline (JSON-LD → DOM → embedded JSON → AI as a last
+resort), normalize attributes, and import into WooCommerce with category
+mapping, variable-product support, and sync. Works out of the box with no
+separate service to deploy; a real browser worker is an optional upgrade
+for JavaScript-heavy sites.
 
 == Description ==
 
-This plugin is the WordPress/WooCommerce half of a two-component system.
-The browser automation (Playwright/Chromium) runs in a separate Node.js
-worker service, reached over HTTP through `Scraper\ScraperEngineInterface`
-— WordPress never has to open a JS-rendered page itself. See
-`ARCHITECTURE.md` in this plugin's folder for the full design and the
-16-stage build roadmap; `INSTALL.md` covers deploying the worker.
+**No separate service required to start using this plugin.** By default,
+Analyze/Import fetch pages with plain HTTP (`wp_remote_get()`) — no
+account, no API key, no permission from the site you're importing from;
+it's the same as any browser opening a public page, just without
+JavaScript execution. This works for most stores, including
+server-rendered ones (1C-Bitrix, OpenCart, classic WooCommerce themes),
+since search-engine-facing product data — JSON-LD included — is normally
+already in the HTML a plain fetch receives.
+
+For a site whose product data only appears after JavaScript runs
+(React/Vue/Next/Nuxt storefronts), or that needs a "Load more" button
+clicked, deploy the optional Node.js/Playwright worker (`worker/`) and set
+its URL under Browser Settings — every request then goes through a real
+Chromium browser instead, with no other configuration change, via
+`Scraper\ScraperEngineInterface`. See `ARCHITECTURE.md` for the full
+design and the 16-stage build roadmap; `INSTALL.md` covers both paths.
 
 = Current status =
 
 Stages 1–8 and 11 of 16 are working end to end: paste a product URL,
-Analyze fetches it through the Playwright worker (`worker/`), runs it
-through the extraction pipeline (JSON-LD → meta tags → specification
-tables → images → breadcrumbs → DOM heuristics), and shows an editable,
-confidence-highlighted preview. Import creates a real WooCommerce simple
-product (categories, global attributes, downloaded images, duplicate
-detection by URL/SKU/GTIN/MPN) via WooCommerce's own CRUD. Bulk/category
-URLs go through the same pipeline via a cron-driven queue with retries.
+Analyze fetches it (plain HTTP by default — see above — or the Playwright
+worker if one is configured), runs it through the extraction pipeline
+(JSON-LD → meta tags → specification tables → images → breadcrumbs → DOM
+heuristics), and shows an editable, confidence-highlighted preview. Import
+creates a real WooCommerce simple product (categories, global attributes,
+downloaded images, duplicate detection by URL/SKU/GTIN/MPN) via
+WooCommerce's own CRUD. Bulk/category URLs go through the same pipeline
+via a cron-driven queue with retries.
 
 Stage 9 (variable products) detects `<select>`/radio option groups and
 creates a real WooCommerce variable product with those attributes marked
@@ -63,12 +76,21 @@ table.
 == Installation ==
 
 1. Upload the plugin folder to `/wp-content/plugins/` or install the ZIP
-   from the Plugins screen.
+   built by `./build.sh` from the Plugins screen.
 2. Activate WooCommerce first, then this plugin.
-3. Go to WooCommerce → Universal Scraper → Browser Settings and enter the
-   Scraper Worker URL once it is deployed (see `INSTALL.md`).
+3. That's it — go to WooCommerce → Universal Scraper → Import Product and
+   try a URL. Only deploy a scraper worker (Browser Settings) if a
+   specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.6.0 =
+* Added `Scraper\HttpEngine`: a plain-`wp_remote_get()` fallback engine
+  that needs no separate service, used automatically whenever no worker
+  URL is configured. Covers most server-rendered stores (JSON-LD is
+  normally already in the initial HTML); JS-only content, "Load more"
+  pagination, and popups still require the optional Playwright worker.
+  This is now the plugin's default rather than the worker being required.
 
 = 0.5.0 =
 * Stage 12: AI fallback extraction (Anthropic/OpenAI) — only called for

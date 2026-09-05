@@ -127,8 +127,27 @@
 		renderAttributes( result.attributes );
 		renderImages( result.images );
 		applyConfidenceStyling( result );
+		renderEngineNote( result );
 
 		document.getElementById( 'uws-preview' ).hidden = false;
+	}
+
+	function renderEngineNote( result ) {
+		var note = document.getElementById( 'uws-engine-note' );
+		if ( ! note ) {
+			return;
+		}
+
+		if ( 'HttpEngine' === result.engine && ! result.name && ! result.regular_price ) {
+			note.textContent = uwsAdmin.i18n.httpEngineEmptyHint ||
+				'Fetched via plain HTTP (no browser) and found little usable data — this site may render its content with JavaScript. Try deploying the Playwright worker under Browser Settings for this site.';
+		} else if ( 'HttpEngine' === result.engine ) {
+			note.textContent = uwsAdmin.i18n.httpEngineHint || 'Fetched via plain HTTP (no browser needed).';
+		} else if ( result.engine ) {
+			note.textContent = uwsAdmin.i18n.browserEngineHint || 'Fetched via the Playwright browser worker.';
+		} else {
+			note.textContent = '';
+		}
 	}
 
 	function collectEditedData() {
