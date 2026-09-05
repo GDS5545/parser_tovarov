@@ -5,6 +5,14 @@
  * (spec §21 step 6). Lowest priority of the non-AI extractors — it only
  * fills what JSON-LD/meta/specifications left blank.
  *
+ * Price detection first tries to scope its search to a recognized
+ * product-info container (mirrors ImageExtractor/SpecificationExtractor):
+ * real-site testing showed that scanning every "price"-classed element on
+ * the *whole* page picks up unrelated prices from related-product widgets,
+ * delivery calculators, etc. elsewhere on the page, and — when exactly 2
+ * amounts turn up — wrongly assumes they're (regular, sale) even when
+ * they're two unrelated numbers.
+ *
  * @package Uws\Extractors
  */
 
@@ -12,6 +20,7 @@ namespace Uws\Extractors;
 
 use Uws\Dto\ProductData;
 use Uws\Normalizer\PriceParser;
+use Uws\Support\ContainerFinder;
 use Uws\Support\HtmlDocument;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -19,6 +28,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class DomExtractor implements ProductExtractorInterface {
+
+	/**
+	 * class/id substrings identifying the main product info block, so the
+	 * price search can be scoped there before falling back to the whole page.
+	 */
+	const PRICE_CONTAINER_HINTS = array(
+		'product-summary', 'product-info', 'product-main', 'product-detail',
+		'product-price', 'item-price', 'price-block', 'summary',
+	);
 
 	public function get_name() {
 		return 'dom';
@@ -54,9 +72,48 @@ class DomExtractor implements ProductExtractorInterface {
 	}
 
 	private function extract_prices( ProductData $data, \DOMXPath $xpath ) {
-		$nodes = $xpath->query( "//*[contains(translate(@class,'PRICE','price'),'price')]" );
+		$container = ContainerFinder::find( $xpath, self::PRICE_CONTAINER_HINTS );
 
-		$amounts = array();
+		$found = $container ? $this->find_price_amounts( $xpath, $container ) : array();
+		if ( empty( $found['amounts'] ) ) {
+			$found = $this->find_price_amounts( $xpath, null );
+		}
+
+		if ( empty( $found['amounts'] ) ) {
+			return;
+		}
+
+		$amounts = array_values( array_unique( $found['amounts'] ) );
+		sort( $amounts );
+
+		if ( 2 === count( $amounts ) ) {
+			// Exactly two differing amounts near the product info is a
+			// reliable (regular, sale) signal; the lower one is the current price.
+			$data->set_field( 'regular_price', (string) $amounts[1], 0.4 );
+			$data->set_field( 'sale_price', (string) $amounts[0], 0.4 );
+		} else {
+			// Either a single confident amount, or 3+ (ambiguous — more
+			// likely several unrelated numbers than one product's regular+
+			// sale price). Either way, only commit to the first one found
+			// in document order rather than guessing at a pair.
+			$data->set_field( 'regular_price', (string) $found['amounts'][0], count( $amounts ) > 2 ? 0.25 : 0.4 );
+		}
+
+		if ( $found['currency'] ) {
+			$data->set_field( 'currency', $found['currency'], 0.4 );
+		}
+	}
+
+	/**
+	 * @param \DOMXPath        $xpath
+	 * @param \DOMElement|null $scope
+	 * @return array{amounts: float[], currency: string|null} $amounts is in document order (not deduped/sorted).
+	 */
+	private function find_price_amounts( \DOMXPath $xpath, $scope ) {
+		$expression = "contains(translate(@class,'PRICE','price'),'price')";
+		$nodes      = $xpath->query( $scope ? ".//*[{$expression}]" : "//*[{$expression}]", $scope );
+
+		$amounts  = array();
 		$currency = null;
 
 		foreach ( $nodes as $node ) {
@@ -73,25 +130,7 @@ class DomExtractor implements ProductExtractorInterface {
 			}
 		}
 
-		if ( empty( $amounts ) ) {
-			return;
-		}
-
-		$amounts = array_values( array_unique( $amounts ) );
-		sort( $amounts );
-
-		if ( count( $amounts ) >= 2 ) {
-			// Two differing prices on a product page are almost always
-			// (regular, sale); the lower one is the current sale price.
-			$data->set_field( 'regular_price', (string) end( $amounts ), 0.4 );
-			$data->set_field( 'sale_price', (string) $amounts[0], 0.4 );
-		} else {
-			$data->set_field( 'regular_price', (string) $amounts[0], 0.4 );
-		}
-
-		if ( $currency ) {
-			$data->set_field( 'currency', $currency, 0.4 );
-		}
+		return array( 'amounts' => $amounts, 'currency' => $currency );
 	}
 
 	private function extract_stock_status( ProductData $data, \DOMXPath $xpath ) {

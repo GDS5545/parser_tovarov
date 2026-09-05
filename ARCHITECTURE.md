@@ -107,6 +107,28 @@ additive-not-override (images, specifications→attributes),
 `ExtractionPipeline` excludes the corresponding generic extractor
 entirely for that domain rather than mixing its findings in.
 
+Two real bugs surfaced testing this against that first live user: (1) the
+Site Templates "Domain" field only stripped a leading `https://`, so
+pasting a full product-page URL (the natural thing to copy) saved a
+"domain" that could never match — fixed by parsing out just the host
+either way; (2) the same user pasted literal scraped values (a price, a
+product name) into the selector fields instead of an XPath expression —
+saving now warns when a field's value doesn't look like an XPath (no
+leading `/`/`(`, no `[`/`@`), and every field's placeholder is now a real
+XPath example rather than a description.
+
+**`Support\ContainerFinder`** — shared by `ImageExtractor`,
+`SpecificationExtractor`, and `DomExtractor`'s price search: look for an
+element whose class/id matches a list of platform-specific container
+conventions (WooCommerce's own markup, 1C-Bitrix's `detail_picture`/
+`sku_props`, generic `product-*` theme naming) and, if one exists and
+yields a result, use only that container; otherwise fall back to a
+whole-page scan. Added after real-site testing showed each of these
+three extractors picking up unrelated same-page content when scanning
+indiscriminately: a homepage-style photo carousel as "product images", a
+"why choose us" marketing table as "specifications", and an unrelated
+related-product's price paired into a fake sale price.
+
 ## 3. Directory layout (WordPress plugin, PSR-4 autoloaded)
 
 ```

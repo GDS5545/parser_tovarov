@@ -5,6 +5,16 @@
  * every extractor's attributes rather than letting one overwrite another,
  * since a page legitimately has many independent specs.
  *
+ * Real-site testing found this scanning the *whole* page picks up more
+ * than the product's own specs: a "why choose us" marketing section (e.g.
+ * "3D modeling of designed objects", "own production of reagents") is
+ * often marked up as exactly the same two-column table/dl shape a real
+ * specification table uses, just elsewhere on the page. So, like
+ * ImageExtractor, this first looks for a container matching common
+ * specification/characteristics naming conventions and, if one exists and
+ * yields at least one attribute, uses ONLY that container; otherwise it
+ * falls back to the previous whole-page scan.
+ *
  * @package Uws\Extractors
  */
 
@@ -12,6 +22,7 @@ namespace Uws\Extractors;
 
 use Uws\Dto\ProductAttribute;
 use Uws\Dto\ProductData;
+use Uws\Support\ContainerFinder;
 use Uws\Support\HtmlDocument;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -23,6 +34,18 @@ class SpecificationExtractor implements ProductExtractorInterface {
 	/** Skip rows whose value looks like another table caption/heading, not real prose. */
 	const MAX_KEY_LENGTH   = 80;
 	const MAX_VALUE_LENGTH = 300;
+
+	/**
+	 * class/id substrings (case-insensitive) identifying a specification/
+	 * characteristics block across common platforms — WooCommerce's own
+	 * "Additional information" tab, 1C-Bitrix's "sku_props", generic
+	 * "specs"/"characteristics" theme naming.
+	 */
+	const SPEC_CONTAINER_HINTS = array(
+		'additional_information', 'woocommerce-product-attributes', 'product-attributes',
+		'specifications', 'specification', 'characteristics', 'sku_props', 'tech-specs',
+		'product-specs', 'spec-table', 'params-table',
+	);
 
 	public function get_name() {
 		return 'specification';
@@ -37,17 +60,34 @@ class SpecificationExtractor implements ProductExtractorInterface {
 	}
 
 	public function extract( array $page ) {
-		$data  = new ProductData();
 		$xpath = HtmlDocument::xpath( (string) $page['html'] );
 
-		$this->extract_tables( $data, $xpath );
-		$this->extract_definition_lists( $data, $xpath );
+		$container = ContainerFinder::find( $xpath, self::SPEC_CONTAINER_HINTS );
+		if ( $container ) {
+			$scoped = $this->collect( $xpath, $container );
+			if ( ! empty( $scoped->attributes ) ) {
+				return $scoped;
+			}
+		}
 
+		return $this->collect( $xpath, null );
+	}
+
+	/**
+	 * @param \DOMXPath        $xpath
+	 * @param \DOMElement|null $scope Restrict the search to this element's
+	 *                                descendants, or null for the whole document.
+	 * @return ProductData
+	 */
+	private function collect( \DOMXPath $xpath, $scope ) {
+		$data = new ProductData();
+		$this->extract_tables( $data, $xpath, $scope );
+		$this->extract_definition_lists( $data, $xpath, $scope );
 		return $data;
 	}
 
-	private function extract_tables( ProductData $data, \DOMXPath $xpath ) {
-		foreach ( $xpath->query( '//table' ) as $table ) {
+	private function extract_tables( ProductData $data, \DOMXPath $xpath, $scope ) {
+		foreach ( $xpath->query( $scope ? './/table' : '//table', $scope ) as $table ) {
 			foreach ( $xpath->query( './/tr', $table ) as $row ) {
 				$cells = $xpath->query( './th|./td', $row );
 				if ( $cells->length < 2 ) {
@@ -62,8 +102,8 @@ class SpecificationExtractor implements ProductExtractorInterface {
 		}
 	}
 
-	private function extract_definition_lists( ProductData $data, \DOMXPath $xpath ) {
-		foreach ( $xpath->query( '//dl' ) as $list ) {
+	private function extract_definition_lists( ProductData $data, \DOMXPath $xpath, $scope ) {
+		foreach ( $xpath->query( $scope ? './/dl' : '//dl', $scope ) as $list ) {
 			$terms       = $xpath->query( './dt', $list );
 			$definitions = $xpath->query( './dd', $list );
 

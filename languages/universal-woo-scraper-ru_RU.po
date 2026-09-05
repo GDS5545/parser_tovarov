@@ -596,3 +596,15 @@ msgstr "Шаблон сайта сохранён для %s."
 msgid "Site template deleted."
 msgstr "Шаблон сайта удалён."
 
+msgid "Important: type a path to the element (an XPath expression, usually starting with //), never the value itself."
+msgstr "Важно: указывайте путь к элементу (XPath-выражение, обычно начинается с //), а не само значение."
+
+msgid "For example, for the price field, the correct entry looks like //span[@itemprop=\"price\"] — NOT the price \"23820\" itself. The grey example text in each field below is the shape to copy, not real data."
+msgstr "Например, для поля цены правильная запись выглядит как //span[@itemprop=\"price\"] — а НЕ сама цена «23820». Серый пример-подсказка в каждом поле ниже показывает форму записи, а не реальные данные."
+
+msgid "example.com — just the domain, not the full product page URL"
+msgstr "example.com — только домен, а не полный URL страницы товара"
+
+msgid "These fields don't look like XPath expressions, they look like literal text or a URL: %s. An XPath expression is a *path to the element* (it normally starts with / or //, e.g. //h1[@class=\"product-title\"]), not the value itself — get one from your browser's DevTools as described above. As saved, these fields will not match anything and automatic detection will be used instead."
+msgstr "Эти поля не похожи на XPath-выражения, а похожи на обычный текст или URL: %s. XPath-выражение — это *путь к элементу* (обычно начинается с / или //, например //h1[@class=\"product-title\"]), а не само значение — получите его в DevTools браузера, как описано выше. В сохранённом виде эти поля не будут ничему соответствовать, и для них продолжит использоваться автоопределение."
+

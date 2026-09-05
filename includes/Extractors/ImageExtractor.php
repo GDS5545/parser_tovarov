@@ -44,6 +44,7 @@
 namespace Uws\Extractors;
 
 use Uws\Dto\ProductData;
+use Uws\Support\ContainerFinder;
 use Uws\Support\DomainMatcher;
 use Uws\Support\HtmlDocument;
 use Uws\Support\UrlResolver;
@@ -105,7 +106,7 @@ class ImageExtractor implements ProductExtractorInterface {
 		$base      = ! empty( $page['final_url'] ) ? $page['final_url'] : '';
 		$page_host = $base ? (string) ( wp_parse_url( $base, PHP_URL_HOST ) ?: '' ) : '';
 
-		$container = $this->find_gallery_container( $xpath );
+		$container = ContainerFinder::find( $xpath, self::GALLERY_CONTAINER_HINTS );
 		if ( $container ) {
 			$scoped = $this->collect_images( $xpath->query( './/img', $container ), $base, $page_host );
 			if ( ! empty( $scoped->images ) ) {
@@ -114,23 +115,6 @@ class ImageExtractor implements ProductExtractorInterface {
 		}
 
 		return $this->collect_images( $xpath->query( '//img' ), $base, $page_host );
-	}
-
-	/**
-	 * @param \DOMXPath $xpath
-	 * @return \DOMElement|null First element whose class or id matches a
-	 *                          known gallery-container convention.
-	 */
-	private function find_gallery_container( \DOMXPath $xpath ) {
-		foreach ( self::GALLERY_CONTAINER_HINTS as $hint ) {
-			$nodes = $xpath->query(
-				"//*[contains(translate(concat(@class,' ',@id), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{$hint}')]"
-			);
-			if ( $nodes->length > 0 ) {
-				return $nodes->item( 0 );
-			}
-		}
-		return null;
 	}
 
 	/**

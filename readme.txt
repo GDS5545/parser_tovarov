@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.8.0
+Stable tag: 0.8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,30 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.8.1 =
+* Fixed a real bug found live: Site Templates' Domain field only
+  stripped a leading `https://`, so pasting a full product page URL
+  (path and all — an easy mistake) saved a domain that could never match
+  any page. Now normalizes to the bare host either way.
+* Added an inline check when saving a Site Template: if a field's value
+  doesn't look like an XPath expression (doesn't start with `/`/`(` and
+  has no `[`/`@`), a warning explains it looks like literal text or a
+  URL instead of a path to an element — this was a real point of
+  confusion (a live user pasted the actual scraped price/name/description
+  text into the selector fields). Field placeholders now show a real
+  XPath example instead of a description.
+* `SpecificationExtractor` now prefers a recognized specifications
+  container (WooCommerce's own tab, 1C-Bitrix `sku_props`, generic
+  `specifications`/`characteristics` naming) over a whole-page scan,
+  fixing a real case where an unrelated "why choose us" marketing
+  section (marked up as the same two-column table shape) was picked up
+  as if it were product specifications.
+* `DomExtractor`'s price detection now scopes to a recognized
+  product-info container when one exists, and only pairs two found
+  amounts as (regular, sale) when *exactly* two turn up nearby — 3+
+  amounts (a real case: an unrelated price bled in from a related-
+  products widget) no longer get guessed into a fake sale price.
 
 = 0.8.0 =
 * Site Templates (spec §47): WooCommerce → Universal Scraper → Site

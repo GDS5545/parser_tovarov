@@ -592,3 +592,15 @@ msgstr ""
 msgid "Site template deleted."
 msgstr ""
 
+msgid "Important: type a path to the element (an XPath expression, usually starting with //), never the value itself."
+msgstr ""
+
+msgid "For example, for the price field, the correct entry looks like //span[@itemprop=\"price\"] — NOT the price \"23820\" itself. The grey example text in each field below is the shape to copy, not real data."
+msgstr ""
+
+msgid "example.com — just the domain, not the full product page URL"
+msgstr ""
+
+msgid "These fields don't look like XPath expressions, they look like literal text or a URL: %s. An XPath expression is a *path to the element* (it normally starts with / or //, e.g. //h1[@class=\"product-title\"]), not the value itself — get one from your browser's DevTools as described above. As saved, these fields will not match anything and automatic detection will be used instead."
+msgstr ""
+
