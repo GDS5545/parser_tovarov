@@ -15,6 +15,7 @@ namespace Uws\Queue;
 use Uws\Database\LogRepository;
 use Uws\Database\ProductLinkRepository;
 use Uws\Pipeline\ExtractionPipeline;
+use Uws\Support\ImporterArgs;
 use Uws\Woocommerce\ProductImporter;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -85,12 +86,7 @@ class Dispatcher {
 
 		$imported = $this->importer->import(
 			$data,
-			array(
-				'product_id'         => $existing ? (int) $existing->product_id : 0,
-				'status'             => $settings['default_import_status'] ?? 'draft',
-				'image_policy'       => $settings['image_policy'] ?? 'download',
-				'normalization_mode' => $settings['normalization_mode'] ?? 'smart',
-			)
+			ImporterArgs::from_settings( $settings, $existing ? (int) $existing->product_id : 0 )
 		);
 
 		if ( is_wp_error( $imported ) ) {

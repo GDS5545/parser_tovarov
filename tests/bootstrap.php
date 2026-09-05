@@ -87,6 +87,73 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	}
 }
 
+// In-memory postmeta stand-in for ImportSnapshot's read()/write() tests —
+// swap-in-able because it's global state, so tests that use it should not
+// assume isolation between test *methods* that touch the same post ID.
+$GLOBALS['uws_test_postmeta'] = array();
+
+if ( ! function_exists( 'get_post_meta' ) ) {
+	function get_post_meta( $post_id, $key, $single = false ) {
+		return $GLOBALS['uws_test_postmeta'][ $post_id ][ $key ] ?? '';
+	}
+}
+
+if ( ! function_exists( 'update_post_meta' ) ) {
+	function update_post_meta( $post_id, $key, $value ) {
+		$GLOBALS['uws_test_postmeta'][ $post_id ][ $key ] = $value;
+		return true;
+	}
+}
+
+if ( ! class_exists( 'WC_Product' ) ) {
+	// Minimal stand-in satisfying the \WC_Product type hint ImportSnapshot
+	// uses — the real class ships with WooCommerce and isn't available in
+	// this pure-PHP unit test run. Declares real methods (not __call) for
+	// every field ImportSnapshot::TRACKED_FIELDS reads, since
+	// method_exists() does not recognize magic methods.
+	class WC_Product {
+		private $id;
+		private $fields;
+
+		public function __construct( $id, array $fields = array() ) {
+			$this->id     = $id;
+			$this->fields = $fields;
+		}
+
+		public function get_id() {
+			return $this->id;
+		}
+
+		public function get_name() {
+			return $this->fields['name'] ?? '';
+		}
+
+		public function get_description() {
+			return $this->fields['description'] ?? '';
+		}
+
+		public function get_short_description() {
+			return $this->fields['short_description'] ?? '';
+		}
+
+		public function get_regular_price() {
+			return $this->fields['regular_price'] ?? '';
+		}
+
+		public function get_sale_price() {
+			return $this->fields['sale_price'] ?? '';
+		}
+
+		public function get_stock_status() {
+			return $this->fields['stock_status'] ?? '';
+		}
+
+		public function get_stock_quantity() {
+			return $this->fields['stock_quantity'] ?? null;
+		}
+	}
+}
+
 // Composer's PSR-4 autoloader (Uws\ => includes/) covers every plugin
 // class from here on, so individual test files don't need to hand-require
 // the classes they exercise.

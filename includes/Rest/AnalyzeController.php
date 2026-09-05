@@ -4,9 +4,11 @@
  * ScraperEngineInterface Plugin::boot() registered (PlaywrightHttpEngine,
  * once Browser Settings has a worker URL) and runs it through
  * ExtractionPipeline (JSON-LD → meta → specification tables → images →
- * breadcrumbs → DOM heuristics). Returns the merged ProductData for the
- * admin Preview screen — nothing is written to WooCommerce here; that only
- * happens when the user confirms via POST /import.
+ * breadcrumbs → DOM heuristics, then AI fallback only if AI Settings has
+ * a provider configured AND important fields are still missing). Returns
+ * the merged ProductData for the admin Preview screen — nothing is
+ * written to WooCommerce here; that only happens when the user confirms
+ * via POST /import.
  *
  * @package Uws\Rest
  */
@@ -63,6 +65,9 @@ class AnalyzeController {
 		}
 
 		$response = $result['data']->to_array();
+
+		$response['ai_used']  = ! empty( $result['ai_used'] );
+		$response['ai_error'] = $result['ai_error'] ?? null;
 
 		if ( ! empty( $settings['debug_mode'] ) ) {
 			$response['debug'] = array(

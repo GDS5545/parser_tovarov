@@ -19,6 +19,15 @@
  * combination — a real variable product ready for that step, not a fake
  * one pretending to be fully imported.
  *
+ * Synchronization (spec §27, §72-73): when re-importing into an existing
+ * product, each update-policy toggle (update_title/update_description/
+ * update_price/update_stock/update_categories/update_attributes/
+ * update_images) independently gates whether that field group is touched
+ * at all, and — for the fields ImportSnapshot tracks (title, description,
+ * short_description, price, stock) — "protect manual edits" additionally
+ * skips a field the merchant changed by hand in WooCommerce since the
+ * last import, rather than clobbering it with a fresh scrape.
+ *
  * @package Uws\Woocommerce
  */
 
@@ -47,15 +56,22 @@ class ProductImporter {
 	/** @var ImageImporter */
 	private $images;
 
-	public function __construct( CategoryResolver $categories = null, AttributeResolver $attributes = null, ImageImporter $images = null ) {
+	/** @var ImportSnapshot */
+	private $snapshot;
+
+	public function __construct( CategoryResolver $categories = null, AttributeResolver $attributes = null, ImageImporter $images = null, ImportSnapshot $snapshot = null ) {
 		$this->categories = $categories ?: new CategoryResolver();
 		$this->attributes = $attributes ?: new AttributeResolver();
 		$this->images     = $images ?: new ImageImporter();
+		$this->snapshot   = $snapshot ?: new ImportSnapshot();
 	}
 
 	/**
 	 * @param ProductData $data
-	 * @param array{product_id?:int, status?:string, image_policy?:string, normalization_mode?:string} $args
+	 * @param array{product_id?:int, status?:string, image_policy?:string, normalization_mode?:string,
+	 *              protect_manual_edits?:bool, update_title?:bool, update_description?:bool,
+	 *              update_price?:bool, update_stock?:bool, update_categories?:bool,
+	 *              update_attributes?:bool, update_images?:bool} $args
 	 * @return array{product_id:int, warnings:string[]}|WP_Error
 	 */
 	public function import( ProductData $data, array $args = array() ) {
@@ -63,29 +79,42 @@ class ProductImporter {
 			return new WP_Error( 'uws_woocommerce_missing', __( 'WooCommerce is not active.', 'universal-woo-scraper' ) );
 		}
 
-		$warnings   = array();
-		$product_id = isset( $args['product_id'] ) ? (int) $args['product_id'] : 0;
-		$is_new     = 0 === $product_id;
+		$warnings       = array();
+		$product_id     = isset( $args['product_id'] ) ? (int) $args['product_id'] : 0;
+		$is_new         = 0 === $product_id;
 		$wants_variable = 'variable' === $data->product_type;
 
 		$product = $is_new ? null : wc_get_product( $product_id );
 		if ( ! $product ) {
 			$product = $wants_variable ? new WC_Product_Variable() : new WC_Product_Simple();
+			$is_new  = true;
 		} elseif ( $wants_variable !== ( $product instanceof WC_Product_Variable ) ) {
 			$warnings[] = __( 'This product already exists as a different product type (simple vs. variable) than what was just detected; the existing type was kept rather than converting it automatically.', 'universal-woo-scraper' );
 		}
 
 		$is_variable = $product instanceof WC_Product_Variable;
+		$snapshot    = $is_new ? array() : $this->snapshot->read( $product_id );
 
-		$this->apply_basic_fields( $product, $data, $args );
-		$this->apply_price( $product, $data, $is_variable, $warnings );
-		$domain = wp_parse_url( $data->source_url, PHP_URL_HOST ) ?: 'global';
-		$this->apply_categories( $product, $data, $domain );
-		$variation_attribute_labels = $this->apply_attributes( $product, $data, $args, $is_variable, $warnings );
+		$this->apply_basic_fields( $product, $data, $args, $snapshot, $warnings );
+		$this->apply_price( $product, $data, $args, $snapshot, $is_variable, $warnings );
+
+		if ( $this->policy_enabled( $args, 'update_categories' ) ) {
+			$domain = wp_parse_url( $data->source_url, PHP_URL_HOST ) ?: 'global';
+			$this->apply_categories( $product, $data, $domain );
+		}
+
+		$variation_attribute_labels = array();
+		if ( $this->policy_enabled( $args, 'update_attributes' ) ) {
+			$variation_attribute_labels = $this->apply_attributes( $product, $data, $args, $is_variable );
+		}
 
 		$product_id = $product->save();
 
-		$this->apply_images( $product, $data, $args, $warnings );
+		if ( $this->policy_enabled( $args, 'update_images' ) ) {
+			$this->apply_images( $product, $data, $args, $warnings );
+		}
+
+		$this->snapshot->write( wc_get_product( $product_id ) );
 
 		if ( $is_variable && ! empty( $variation_attribute_labels ) ) {
 			$warnings[] = sprintf(
@@ -100,14 +129,58 @@ class ProductImporter {
 		return array( 'product_id' => $product_id, 'warnings' => $warnings );
 	}
 
-	private function apply_basic_fields( \WC_Product $product, ProductData $data, array $args ) {
-		if ( $data->name ) {
+	/**
+	 * @param array<string,mixed> $args
+	 * @param string              $key
+	 * @return bool Whether this field group's update-policy toggle allows touching it (default true if unset).
+	 */
+	private function policy_enabled( array $args, $key ) {
+		return ! array_key_exists( $key, $args ) || ! empty( $args[ $key ] );
+	}
+
+	/**
+	 * Gate for one ImportSnapshot-tracked field: false if its update-policy
+	 * toggle is off, or if "protect manual edits" is on and this field
+	 * differs from the last known-imported snapshot (someone changed it
+	 * by hand since).
+	 *
+	 * @param array<string,mixed> $args
+	 * @param string              $policy_key
+	 * @param array<string,mixed> $snapshot
+	 * @param \WC_Product         $product
+	 * @param string              $field
+	 * @param string|null         $label For the "skipped" warning; pass null to skip silently.
+	 * @param string[]            $warnings
+	 * @return bool
+	 */
+	private function should_apply( array $args, $policy_key, array $snapshot, \WC_Product $product, $field, $label, array &$warnings ) {
+		if ( ! $this->policy_enabled( $args, $policy_key ) ) {
+			return false;
+		}
+		if ( empty( $snapshot ) ) {
+			return true; // New product, or never tracked before — nothing to protect against yet.
+		}
+		if ( ! empty( $args['protect_manual_edits'] ) && $this->snapshot->was_manually_edited( $snapshot, $product, $field ) ) {
+			if ( $label ) {
+				$warnings[] = sprintf(
+					/* translators: %s: field label, e.g. "description" */
+					__( 'Skipped updating %s: it was manually edited in WooCommerce since the last import.', 'universal-woo-scraper' ),
+					$label
+				);
+			}
+			return false;
+		}
+		return true;
+	}
+
+	private function apply_basic_fields( \WC_Product $product, ProductData $data, array $args, array $snapshot, array &$warnings ) {
+		if ( $data->name && $this->should_apply( $args, 'update_title', $snapshot, $product, 'name', __( 'title', 'universal-woo-scraper' ), $warnings ) ) {
 			$product->set_name( wp_strip_all_tags( $data->name ) );
 		}
-		if ( $data->description ) {
+		if ( $data->description && $this->should_apply( $args, 'update_description', $snapshot, $product, 'description', __( 'description', 'universal-woo-scraper' ), $warnings ) ) {
 			$product->set_description( wp_kses_post( $data->description ) );
 		}
-		if ( $data->short_description ) {
+		if ( $data->short_description && $this->should_apply( $args, 'update_description', $snapshot, $product, 'short_description', null, $warnings ) ) {
 			$product->set_short_description( wp_kses_post( $data->short_description ) );
 		}
 		if ( $data->sku && ! $this->sku_taken_by_other_product( $data->sku, $product->get_id() ) ) {
@@ -118,11 +191,11 @@ class ProductImporter {
 		$product->set_status( in_array( $status, array( 'draft', 'pending', 'publish' ), true ) ? $status : 'draft' );
 		$product->set_catalog_visibility( 'visible' );
 
-		if ( $data->stock_status ) {
+		if ( $data->stock_status && $this->should_apply( $args, 'update_stock', $snapshot, $product, 'stock_status', __( 'stock status', 'universal-woo-scraper' ), $warnings ) ) {
 			$product->set_manage_stock( false );
 			$product->set_stock_status( $data->stock_status );
 		}
-		if ( null !== $data->stock_quantity ) {
+		if ( null !== $data->stock_quantity && $this->should_apply( $args, 'update_stock', $snapshot, $product, 'stock_quantity', __( 'stock quantity', 'universal-woo-scraper' ), $warnings ) ) {
 			$product->set_manage_stock( true );
 			$product->set_stock_quantity( (int) $data->stock_quantity );
 		}
@@ -132,7 +205,7 @@ class ProductImporter {
 		}
 	}
 
-	private function apply_price( \WC_Product $product, ProductData $data, $is_variable, array &$warnings ) {
+	private function apply_price( \WC_Product $product, ProductData $data, array $args, array $snapshot, $is_variable, array &$warnings ) {
 		if ( $is_variable ) {
 			if ( $data->regular_price ) {
 				$warnings[] = __( 'Source page has a price, but WooCommerce prices variable products per-variation, not on the parent; it was not applied here — set it per variation after generating them.', 'universal-woo-scraper' );
@@ -142,7 +215,7 @@ class ProductImporter {
 
 		$store_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
 
-		if ( $data->regular_price ) {
+		if ( $data->regular_price && $this->should_apply( $args, 'update_price', $snapshot, $product, 'regular_price', __( 'regular price', 'universal-woo-scraper' ), $warnings ) ) {
 			$parsed = PriceParser::parse( (string) $data->regular_price );
 			if ( null !== $parsed['amount'] ) {
 				$product->set_regular_price( (string) $parsed['amount'] );
@@ -157,7 +230,7 @@ class ProductImporter {
 			}
 		}
 
-		if ( $data->sale_price ) {
+		if ( $data->sale_price && $this->should_apply( $args, 'update_price', $snapshot, $product, 'sale_price', null, $warnings ) ) {
 			$parsed = PriceParser::parse( (string) $data->sale_price );
 			if ( null !== $parsed['amount'] ) {
 				$product->set_sale_price( (string) $parsed['amount'] );
@@ -180,10 +253,9 @@ class ProductImporter {
 	 * @param ProductData $data
 	 * @param array       $args
 	 * @param bool        $is_variable
-	 * @param string[]    $warnings
 	 * @return string[] Display labels of attributes marked for variation (empty if none/not variable).
 	 */
-	private function apply_attributes( \WC_Product $product, ProductData $data, array $args, $is_variable, array &$warnings ) {
+	private function apply_attributes( \WC_Product $product, ProductData $data, array $args, $is_variable ) {
 		if ( empty( $data->attributes ) ) {
 			return array();
 		}

@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.4.0
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,9 +43,22 @@ and attribute mappings) is done: WooCommerce → Universal Scraper →
 Mappings lets you rename or "skip" any source label, applied to all
 future imports without touching products already created.
 
-Not yet built: AI fallback extraction (Stage 12), a sync/diff review UI
-(Stage 13), and installer packaging (Stage 16). See `ARCHITECTURE.md` for
-the full stage-by-stage status table.
+Stage 12 (AI fallback) calls Anthropic or OpenAI only when name/SKU/brand/
+price/description are still missing after the conventional extractors run
+— never for a page they already resolved, and never overwriting an
+already-confident field. Stage 13 (sync) tracks what the plugin last
+wrote for title/description/price/stock so a re-scrape can tell "still
+matches what we imported" apart from "a human edited this in wp-admin
+since" (Settings → Protect manual edits), with per-field toggles for
+what's allowed to update on re-import at all. Stage 16: run `./build.sh`
+for an installable ZIP; `worker/Dockerfile` + `docker-compose.yml`
+package the worker.
+
+Not yet built: a side-by-side "here's what changed" review screen before
+a sync applies (updates apply directly, governed by the toggles above),
+and an in-wp-admin installation wizard (install remains ZIP-upload or
+copy-the-folder). See `ARCHITECTURE.md` for the full stage-by-stage status
+table.
 
 == Installation ==
 
@@ -56,6 +69,22 @@ the full stage-by-stage status table.
    Scraper Worker URL once it is deployed (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.5.0 =
+* Stage 12: AI fallback extraction (Anthropic/OpenAI) — only called for
+  fields still missing after the conventional pipeline runs, on a
+  size-capped and script/style-stripped copy of the page; never
+  overwrites an already-confident field.
+* Stage 13: `ImportSnapshot` tracks title/description/price/stock so
+  re-imports can protect fields a merchant edited manually in WooCommerce;
+  per-field update-policy toggles (title/description/price/stock/
+  categories/attributes/images) added to Settings.
+* Stage 16: `build.sh` packages an installable ZIP; `worker/Dockerfile` +
+  `docker-compose.yml` package the worker.
+* Fixed a settings-form bug where saving AI Settings or Browser Settings
+  could silently reset "Protect manual edits"/debug mode back to
+  unchecked (checkboxes not present on the submitted page's form were
+  being coerced to false regardless of their stored value).
 
 = 0.4.0 =
 * Stage 9: variable-product detection (`<select>`/radio option groups) and

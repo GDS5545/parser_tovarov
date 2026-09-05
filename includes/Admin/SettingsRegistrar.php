@@ -4,6 +4,16 @@
  * defines every field, split across three admin pages (Settings, AI
  * Settings, Browser Settings) that all write into the same option array.
  *
+ * Checkbox fields need special care here: WordPress's options.php submits
+ * only the fields physically present in whichever page's <form> was
+ * saved, so an unchecked checkbox and a checkbox that simply isn't on
+ * that page look identical in $_POST (both absent). Each page template
+ * therefore renders a hidden `uws_settings_page` marker (not part of the
+ * option itself); sanitize() only touches the checkbox keys that belong
+ * to the page named there, so saving e.g. AI Settings can never silently
+ * reset "Protect manual edits" or the update-policy toggles back to
+ * their unchecked state.
+ *
  * @package Uws\Admin
  */
 
@@ -17,6 +27,19 @@ class SettingsRegistrar {
 
 	const OPTION       = 'uws_settings';
 	const OPTION_GROUP = 'uws_settings_group';
+
+	/** Checkbox keys that live on the main Settings page (spec §72: per-field sync update policy). */
+	const SETTINGS_PAGE_CHECKBOXES = array(
+		'protect_manual_edits',
+		'debug_mode',
+		'update_title',
+		'update_description',
+		'update_price',
+		'update_stock',
+		'update_categories',
+		'update_attributes',
+		'update_images',
+	);
 
 	public function register() {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -34,6 +57,7 @@ class SettingsRegistrar {
 		);
 
 		$this->register_general_section();
+		$this->register_sync_section();
 		$this->register_browser_section();
 		$this->register_ai_section();
 	}
@@ -73,18 +97,6 @@ class SettingsRegistrar {
 		);
 
 		add_settings_field(
-			'protect_manual_edits',
-			__( 'Protect manual edits on sync', 'universal-woo-scraper' ),
-			function () {
-				?>
-				<label><input type="checkbox" name="uws_settings[protect_manual_edits]" value="1" <?php checked( $this->get( 'protect_manual_edits', true ) ); ?> /> <?php esc_html_e( 'Do not overwrite fields a human edited manually in WooCommerce', 'universal-woo-scraper' ); ?></label>
-				<?php
-			},
-			'uws-settings',
-			'uws_general'
-		);
-
-		add_settings_field(
 			'debug_mode',
 			__( 'Debug mode', 'universal-woo-scraper' ),
 			function () {
@@ -94,6 +106,56 @@ class SettingsRegistrar {
 			},
 			'uws-settings',
 			'uws_general'
+		);
+	}
+
+	private function register_sync_section() {
+		add_settings_section(
+			'uws_sync',
+			__( 'Synchronization / update policy', 'universal-woo-scraper' ),
+			function () {
+				echo '<p>' . esc_html__( 'When re-importing a product that already exists (matched by source URL/SKU/GTIN/MPN), choose which field groups are allowed to change.', 'universal-woo-scraper' ) . '</p>';
+			},
+			'uws-settings'
+		);
+
+		add_settings_field(
+			'protect_manual_edits',
+			__( 'Protect manual edits', 'universal-woo-scraper' ),
+			function () {
+				?>
+				<label><input type="checkbox" name="uws_settings[protect_manual_edits]" value="1" <?php checked( $this->get( 'protect_manual_edits', true ) ); ?> /> <?php esc_html_e( 'For title/description/price/stock, skip a field a human changed in WooCommerce since the last import instead of overwriting it', 'universal-woo-scraper' ); ?></label>
+				<?php
+			},
+			'uws-settings',
+			'uws_sync'
+		);
+
+		$toggles = array(
+			'update_title'       => __( 'Title', 'universal-woo-scraper' ),
+			'update_description' => __( 'Description', 'universal-woo-scraper' ),
+			'update_price'       => __( 'Price', 'universal-woo-scraper' ),
+			'update_stock'       => __( 'Stock', 'universal-woo-scraper' ),
+			'update_categories'  => __( 'Categories', 'universal-woo-scraper' ),
+			'update_attributes'  => __( 'Attributes', 'universal-woo-scraper' ),
+			'update_images'      => __( 'Images', 'universal-woo-scraper' ),
+		);
+
+		add_settings_field(
+			'update_policy',
+			__( 'Update on re-import', 'universal-woo-scraper' ),
+			function () use ( $toggles ) {
+				foreach ( $toggles as $key => $label ) {
+					printf(
+						'<label style="display:inline-block;margin:0 1.2em 0.4em 0;"><input type="checkbox" name="uws_settings[%1$s]" value="1" %2$s /> %3$s</label>',
+						esc_attr( $key ),
+						checked( $this->get( $key, true ), true, false ),
+						esc_html( $label )
+					);
+				}
+			},
+			'uws-settings',
+			'uws_sync'
 		);
 	}
 
@@ -185,7 +247,7 @@ class SettingsRegistrar {
 					<option value="anthropic" <?php selected( $value, 'anthropic' ); ?>><?php esc_html_e( 'Anthropic', 'universal-woo-scraper' ); ?></option>
 					<option value="openai" <?php selected( $value, 'openai' ); ?>><?php esc_html_e( 'OpenAI', 'universal-woo-scraper' ); ?></option>
 				</select>
-				<p class="description"><?php esc_html_e( 'Used only for fields the conventional extractors (JSON-LD, DOM, specification tables) could not confidently determine.', 'universal-woo-scraper' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Used only for fields the conventional extractors (JSON-LD, DOM, specification tables) could not confidently determine. The page text sent to the API is capped (~12,000 characters) and scripts/styles are stripped first.', 'universal-woo-scraper' ); ?></p>
 				<?php
 			},
 			'uws-ai-settings',
@@ -218,7 +280,9 @@ class SettingsRegistrar {
 
 	/**
 	 * Sanitizes the whole settings array on save. Unknown keys are dropped;
-	 * known keys are cast/escaped per field type.
+	 * known keys are cast/escaped per field type. Checkbox keys are only
+	 * touched when the submitting page's hidden `uws_settings_page` marker
+	 * says they belong to it — see the class docblock.
 	 *
 	 * @param array<string,mixed> $input
 	 * @return array<string,mixed>
@@ -243,8 +307,14 @@ class SettingsRegistrar {
 		if ( isset( $input['normalization_mode'] ) ) {
 			$clean['normalization_mode'] = 'strict' === $input['normalization_mode'] ? 'strict' : 'smart';
 		}
-		$clean['protect_manual_edits'] = ! empty( $input['protect_manual_edits'] );
-		$clean['debug_mode']           = ! empty( $input['debug_mode'] );
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- routing hint only, CSRF is already covered by settings_fields()'s nonce for the surrounding options.php submission.
+		$submitting_page = isset( $_POST['uws_settings_page'] ) ? sanitize_key( wp_unslash( $_POST['uws_settings_page'] ) ) : '';
+		if ( 'uws-settings' === $submitting_page ) {
+			foreach ( self::SETTINGS_PAGE_CHECKBOXES as $checkbox_key ) {
+				$clean[ $checkbox_key ] = ! empty( $input[ $checkbox_key ] );
+			}
+		}
 
 		if ( isset( $input['delay_between_requests'] ) ) {
 			$clean['delay_between_requests'] = max( 0, (float) $input['delay_between_requests'] );

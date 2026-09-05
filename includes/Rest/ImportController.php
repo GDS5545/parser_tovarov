@@ -18,6 +18,7 @@ use Uws\Database\LogRepository;
 use Uws\Database\ProductLinkRepository;
 use Uws\Dto\ProductData;
 use Uws\Security\UrlValidator;
+use Uws\Support\ImporterArgs;
 use Uws\Woocommerce\ProductImporter;
 use WP_Error;
 use WP_REST_Request;
@@ -94,15 +95,7 @@ class ImportController {
 		$settings   = get_option( 'uws_settings', array() );
 		$product_id = ( $existing && 'update' === $action ) ? (int) $existing->product_id : 0;
 
-		$result = $this->importer->import(
-			$data,
-			array(
-				'product_id'         => $product_id,
-				'status'             => $settings['default_import_status'] ?? 'draft',
-				'image_policy'       => $settings['image_policy'] ?? 'download',
-				'normalization_mode' => $settings['normalization_mode'] ?? 'smart',
-			)
-		);
+		$result = $this->importer->import( $data, ImporterArgs::from_settings( $settings, $product_id ) );
 
 		if ( is_wp_error( $result ) ) {
 			$this->logs->record(

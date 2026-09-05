@@ -81,7 +81,7 @@ uninstall.php                  Table/option cleanup on uninstall
 composer.json                  PSR-4: Uws\ => includes/
 includes/
   Plugin.php                   Wires everything together on plugins_loaded
-  Support/                     HtmlDocument (DOMXPath helper), UrlResolver
+  Support/                     HtmlDocument (DOMXPath helper), UrlResolver, ImporterArgs
   Database/                    dbDelta schema + repositories for the 5 uws_* tables
   Security/                    Nonce/capability guards, SSRF-safe UrlValidator
   Rest/                        REST controllers under /wp-json/uws/v1/*
@@ -92,8 +92,9 @@ includes/
   Normalizer/                  PriceParser, AttributeNormalizer + synonym/unit dictionaries (Stage 7)
   (mapping persistence lives in Database\MappingRepository, consulted directly
    by CategoryResolver/AttributeResolver rather than a separate Mappers/ layer)
-  Woocommerce/                 ProductImporter, CategoryResolver, AttributeResolver, ImageImporter (Stage 8)
-  Ai/                          AiExtractor + provider clients (Stage 12, not yet built)
+  Woocommerce/                 ProductImporter, CategoryResolver, AttributeResolver, ImageImporter (Stage 8),
+                                ImportSnapshot (Stage 13, manual-edit protection)
+  Ai/                          AiExtractor + AnthropicClient/OpenAiClient + ContentCleaner (Stage 12)
   Dto/                         ProductData / ProductAttribute value objects
 worker/                        Node.js + Express + Playwright scraper service (Stage 3)
   src/server.js                 HTTP API: /health /fetch /discover
@@ -159,11 +160,11 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 | 9 | Variable products | ◐ partial — `VariationExtractor` detects `<select>`/radio-group option sets and flags them for variation; `ProductImporter` creates a real `WC_Product_Variable` with those attributes marked for variation. Per-variation price/SKU/stock/image is **not** synthesized (that data lives behind AJAX on real stores, essentially never in the initial HTML) — the result tells the merchant to use WooCommerce's own "Generate variations" button instead of inventing numbers |
 | 10 | Categories + mappings | ✅ done — `Database\MappingRepository` backs both `CategoryResolver` (scoped per source domain) and `AttributeResolver` (scoped globally); an identity mapping row is auto-created the first time a label is seen, and the Mappings admin page lets a merchant rename the WooCommerce-facing label or set a row to "skip" for all future imports without touching already-imported products |
 | 11 | Queue (worker loop, retries, rate limiting) | ✅ done — cron-driven `Dispatcher`, exponential backoff, category→single fan-out |
-| 12 | AI extraction | ⏳ not started |
-| 13 | Synchronization | ◐ partial — re-scraping upserts `uws_product_links` and can update an existing product, but there's no diff/changed-fields review UI yet |
+| 12 | AI extraction | ✅ done — `Ai\AiExtractor` runs as a distinct second pass after the normal merge (not a member of the uniform extractor list, since it needs to see what's already resolved), calling Anthropic or OpenAI only when an important field (name/sku/brand/price/description) is still missing/low-confidence, on a script/style-stripped and size-capped (~12,000 char) copy of the page. Never overwrites an already-confident field |
+| 13 | Synchronization | ✅ done for the fields that matter most — `ImportSnapshot` records what the plugin last wrote for title/description/short description/regular+sale price/stock, so a re-scrape can tell "matches what we imported, safe to refresh" apart from "a human changed this in wp-admin since" (protect_manual_edits). Per-field update-policy toggles (title/description/price/stock/categories/attributes/images) gate whether a group is touched at all. No diff/changed-fields *review* UI (a side-by-side "here's what would change" screen before committing) — updates apply directly, governed by the toggles above |
 | 14 | Admin UI (full preview/editor) | ◐ partial — Import Product has an editable, confidence-highlighted preview; Bulk/Queue/Logs/Products are functional but plain |
 | 15 | Tests | ◐ partial — PHPUnit covers `UrlValidator`, `PriceParser`, `AttributeNormalizer`, and an extractor-merge integration test; worker has `node --test` coverage for its SSRF guard. No WP-integration/WooCommerce test harness yet |
-| 16 | Packaging + installation docs | ⏳ not started (`INSTALL.md` covers manual setup; no installer script or Docker image yet) |
+| 16 | Packaging + installation docs | ✅ done — `build.sh` produces a clean, installable `universal-woo-scraper-<version>.zip` (production Composer deps, `worker/`/`tests/`/dev tooling excluded, built in a temp dir so it never touches the dev `vendor/`); `worker/Dockerfile` + `docker-compose.yml` package the worker (base image pinned to match the exact `playwright` npm version). No installation *wizard* UI inside wp-admin — install remains ZIP-upload or copy-the-folder, per `INSTALL.md` |
 
 `/import` still refuses to silently overwrite an existing product: a
 match by source URL/SKU/GTIN/MPN returns `409 duplicate` with

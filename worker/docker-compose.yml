@@ -1,0 +1,9 @@
+services:
+  uws-worker:
+    build: .
+    ports:
+      - "4790:4790"
+    environment:
+      - WORKER_API_KEY=${WORKER_API_KEY:?set WORKER_API_KEY in a .env file or the environment before starting}
+      - PORT=4790
+    restart: unless-stopped

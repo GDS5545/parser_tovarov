@@ -172,6 +172,13 @@ class Installer {
 			'ai_api_key'              => '',
 			'image_policy'            => 'download', // 'download' | 'remote' | 'main_only'.
 			'protect_manual_edits'    => true,
+			'update_title'            => true,
+			'update_description'      => true,
+			'update_price'            => true,
+			'update_stock'            => true,
+			'update_categories'       => true,
+			'update_attributes'       => true,
+			'update_images'           => true,
 			'debug_mode'              => false,
 		);
 	}
