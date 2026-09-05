@@ -58,14 +58,16 @@ priority wins on conflict, and every field gets a confidence score:
 9. `AiExtractor` — **only** runs for fields still missing/low-confidence
    after 1–8, with a size-capped, pre-cleaned text/HTML payload
 
-Implemented so far: 1, 2, 4, 5, 7, 8 (registered by `ExtractionPipeline`,
-priority order enforced by `ProductDataMerger`, which lets each extractor's
-declared priority win on scalar-field conflicts while attributes/images
-accumulate from every extractor rather than overwrite). `EmbeddedJsonExtractor`
-(3), `VariationExtractor` (6), and `AiExtractor` (9) are not built yet — a
-page whose data only lives in a framework's inline JSON state or in
-variation option groups will come back with lower-confidence/partial
-fields rather than nothing, but won't be fully resolved until those land.
+Implemented so far: 1, 2, 4, 5, 6 (`VariationExtractor` — detects
+`<select>`/radio-group option sets, not embedded-JSON variation data), 7, 8
+(registered by `ExtractionPipeline`, priority order enforced by
+`ProductDataMerger`, which lets each extractor's declared priority win on
+scalar-field conflicts — and on which image is "main" — while
+attributes/images accumulate from every extractor rather than overwrite).
+`EmbeddedJsonExtractor` (3) and `AiExtractor` (9) are not built yet — a page
+whose product/variation data only lives in a framework's inline JSON state
+(`__NEXT_DATA__` etc.) will come back with lower-confidence/partial fields
+rather than nothing, but won't be fully resolved until those land.
 
 This ordering directly implements spec requirement "AI only as fallback,
 never as the primary path" — most conventional stores should resolve
@@ -88,7 +90,8 @@ includes/
   Pipeline/                    ExtractionPipeline — fetch + run extractors + merge
   Extractors/                  ProductExtractorInterface + concrete extractors + ProductDataMerger
   Normalizer/                  PriceParser, AttributeNormalizer + synonym/unit dictionaries (Stage 7)
-  Mappers/                     Category & attribute mapping persistence (Stage 10, not yet populated)
+  (mapping persistence lives in Database\MappingRepository, consulted directly
+   by CategoryResolver/AttributeResolver rather than a separate Mappers/ layer)
   Woocommerce/                 ProductImporter, CategoryResolver, AttributeResolver, ImageImporter (Stage 8)
   Ai/                          AiExtractor + provider clients (Stage 12, not yet built)
   Dto/                         ProductData / ProductAttribute value objects
@@ -153,8 +156,8 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 | 6 | Image extraction (`img`/lazy attrs/srcset/og:image, download via Media Library, dedupe by source URL) | ✅ done |
 | 7 | Attribute normalization (`AttributeNormalizer` + synonym/unit dictionaries, smart/strict modes) | ✅ done (dictionary is a starter set, not exhaustive) |
 | 8 | WooCommerce importer (`ProductImporter`, real `WC_Product_Simple`/`WC_Product_Attribute` CRUD) | ✅ done — simple products only |
-| 9 | Variable products | ⏳ not started — importer detects and reports the case rather than silently dropping variations |
-| 10 | Categories + mappings | ◐ partial — categories resolve/create live via `CategoryResolver`; the persisted `uws_mappings` review/override UI (spec §10, source-label ≠ target-label editing) isn't built |
+| 9 | Variable products | ◐ partial — `VariationExtractor` detects `<select>`/radio-group option sets and flags them for variation; `ProductImporter` creates a real `WC_Product_Variable` with those attributes marked for variation. Per-variation price/SKU/stock/image is **not** synthesized (that data lives behind AJAX on real stores, essentially never in the initial HTML) — the result tells the merchant to use WooCommerce's own "Generate variations" button instead of inventing numbers |
+| 10 | Categories + mappings | ✅ done — `Database\MappingRepository` backs both `CategoryResolver` (scoped per source domain) and `AttributeResolver` (scoped globally); an identity mapping row is auto-created the first time a label is seen, and the Mappings admin page lets a merchant rename the WooCommerce-facing label or set a row to "skip" for all future imports without touching already-imported products |
 | 11 | Queue (worker loop, retries, rate limiting) | ✅ done — cron-driven `Dispatcher`, exponential backoff, category→single fan-out |
 | 12 | AI extraction | ⏳ not started |
 | 13 | Synchronization | ◐ partial — re-scraping upserts `uws_product_links` and can update an existing product, but there's no diff/changed-fields review UI yet |

@@ -4,11 +4,20 @@
  * global WooCommerce attributes before creating a new one (spec §5–6),
  * and ensures the value exists as a term on that attribute's taxonomy.
  *
+ * Like CategoryResolver, every normalized attribute slug is checked
+ * against wp_uws_mappings first (spec §10, §46): the first time a slug is
+ * seen, an identity mapping row is auto-created so a merchant can later
+ * rename its display label or set it to "skip" (the attribute is dropped
+ * from every future import without touching products already created).
+ * Attribute mappings are scoped globally, not per-domain — a WooCommerce
+ * global attribute is store-wide by definition.
+ *
  * @package Uws\Woocommerce
  */
 
 namespace Uws\Woocommerce;
 
+use Uws\Database\MappingRepository;
 use Uws\Dto\ProductAttribute;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,12 +26,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class AttributeResolver {
 
+	/** @var MappingRepository */
+	private $mappings;
+
+	public function __construct( MappingRepository $mappings = null ) {
+		$this->mappings = $mappings ?: new MappingRepository();
+	}
+
 	/**
 	 * @param ProductAttribute $attribute Already run through AttributeNormalizer.
-	 * @return array{taxonomy:string, attribute_id:int, term_id:int}|null
+	 * @return array{taxonomy:string, attribute_id:int, term_id:int}|null Null
+	 *         if the attribute's mapping says "skip", or if taxonomy/term
+	 *         creation failed.
 	 */
 	public function resolve( ProductAttribute $attribute ) {
-		$taxonomy = $this->ensure_taxonomy( $attribute->attribute_name, $attribute->attribute_key );
+		$mapping = $this->mappings->get_or_create(
+			MappingRepository::TYPE_ATTRIBUTE,
+			'global',
+			$attribute->attribute_name,
+			$attribute->attribute_key
+		);
+
+		if ( MappingRepository::ACTION_SKIP === $mapping->action ) {
+			return null;
+		}
+
+		$slug  = $mapping->target_key ?: $attribute->attribute_name;
+		$label = $mapping->target_label ?: $attribute->attribute_key;
+
+		$taxonomy = $this->ensure_taxonomy( $slug, $label );
 		if ( ! $taxonomy ) {
 			return null;
 		}

@@ -73,7 +73,13 @@ class ImportProductPage {
 					</tr>
 					<tr>
 						<th><?php esc_html_e( 'Attributes', 'universal-woo-scraper' ); ?></th>
-						<td><div id="uws-attributes-list"></div></td>
+						<td>
+							<label style="display:block;margin-bottom:0.5em;">
+								<input type="checkbox" id="uws-f-is-variable" />
+								<?php esc_html_e( 'This is a variable product (create a WooCommerce variable product using the attributes checked below as "Used for variations")', 'universal-woo-scraper' ); ?>
+							</label>
+							<div id="uws-attributes-list"></div>
+						</td>
 					</tr>
 					<tr>
 						<th><?php esc_html_e( 'Images', 'universal-woo-scraper' ); ?></th>

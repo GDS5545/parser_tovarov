@@ -19,6 +19,7 @@ use Uws\Extractors\MetaExtractor;
 use Uws\Extractors\ProductDataMerger;
 use Uws\Extractors\ProductExtractorInterface;
 use Uws\Extractors\SpecificationExtractor;
+use Uws\Extractors\VariationExtractor;
 use Uws\Scraper\ScraperEngineInterface;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -57,6 +58,7 @@ class ExtractionPipeline {
 			new JsonLdExtractor(),
 			new MetaExtractor(),
 			new SpecificationExtractor(),
+			new VariationExtractor(),
 			new ImageExtractor(),
 			new BreadcrumbExtractor(),
 			new DomExtractor(),

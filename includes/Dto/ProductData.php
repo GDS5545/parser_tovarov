@@ -118,9 +118,10 @@ class ProductData {
 				if ( empty( $row['attribute_key'] ) ) {
 					continue;
 				}
-				$attribute            = new ProductAttribute( (string) $row['attribute_key'], (string) ( $row['value_raw'] ?? '' ), (string) ( $row['source'] ?? 'user' ) );
-				$attribute->confidence = isset( $row['confidence'] ) ? (float) $row['confidence'] : 1.0;
-				$data->attributes[]    = $attribute;
+				$attribute               = new ProductAttribute( (string) $row['attribute_key'], (string) ( $row['value_raw'] ?? '' ), (string) ( $row['source'] ?? 'user' ) );
+				$attribute->confidence   = isset( $row['confidence'] ) ? (float) $row['confidence'] : 1.0;
+				$attribute->is_variation = ! empty( $row['is_variation'] );
+				$data->attributes[]      = $attribute;
 			}
 		}
 

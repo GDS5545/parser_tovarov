@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.3.0
+Stable tag: 0.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,11 +34,18 @@ product (categories, global attributes, downloaded images, duplicate
 detection by URL/SKU/GTIN/MPN) via WooCommerce's own CRUD. Bulk/category
 URLs go through the same pipeline via a cron-driven queue with retries.
 
-Not yet built: variable products (Stage 9 — the importer reports this
-case rather than dropping it silently), the persisted category/attribute
-mapping review UI (Stage 10), AI fallback extraction (Stage 12), a
-sync/diff review UI (Stage 13), and installer packaging (Stage 16). See
-`ARCHITECTURE.md` for the full stage-by-stage status table.
+Stage 9 (variable products) detects `<select>`/radio option groups and
+creates a real WooCommerce variable product with those attributes marked
+for variation — it does not invent per-variation price/SKU/stock (that
+data lives behind AJAX on real stores), so the result tells you to use
+WooCommerce's own "Generate variations" button next. Stage 10 (category
+and attribute mappings) is done: WooCommerce → Universal Scraper →
+Mappings lets you rename or "skip" any source label, applied to all
+future imports without touching products already created.
+
+Not yet built: AI fallback extraction (Stage 12), a sync/diff review UI
+(Stage 13), and installer packaging (Stage 16). See `ARCHITECTURE.md` for
+the full stage-by-stage status table.
 
 == Installation ==
 
@@ -49,6 +56,15 @@ sync/diff review UI (Stage 13), and installer packaging (Stage 16). See
    Scraper Worker URL once it is deployed (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.4.0 =
+* Stage 9: variable-product detection (`<select>`/radio option groups) and
+  real `WC_Product_Variable` creation with variation attributes marked;
+  per-variation data is intentionally left to WooCommerce's own "Generate
+  variations" rather than fabricated.
+* Stage 10: category/attribute mapping review UI backed by a real
+  `MappingRepository` — rename or skip any source label, applied to all
+  future imports.
 
 = 0.3.0 =
 * Stages 3-8 + 11: Playwright worker, extraction pipeline (JSON-LD/meta/

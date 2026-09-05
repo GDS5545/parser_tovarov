@@ -74,8 +74,10 @@
 			var row = document.createElement( 'div' );
 			row.className = 'uws-attribute-row';
 			row.innerHTML =
-				'<input type="text" class="uws-attr-key" value="' + escapeHtml( attribute.attribute_key || '' ) + '" style="width:35%;" />' +
-				'<input type="text" class="uws-attr-value" value="' + escapeHtml( attribute.value_raw || '' ) + '" style="width:45%;" />' +
+				'<input type="text" class="uws-attr-key" value="' + escapeHtml( attribute.attribute_key || '' ) + '" style="width:30%;" />' +
+				'<input type="text" class="uws-attr-value" value="' + escapeHtml( attribute.value_raw || '' ) + '" style="width:40%;" />' +
+				'<label style="white-space:nowrap;"><input type="checkbox" class="uws-attr-variation" ' + ( attribute.is_variation ? 'checked' : '' ) + ' /> ' +
+					( uwsAdmin.i18n.usedForVariations || 'Used for variations' ) + '</label>' +
 				'<button type="button" class="button uws-attr-remove" data-index="' + index + '">&times;</button>';
 			container.appendChild( row );
 		} );
@@ -120,6 +122,8 @@
 		document.getElementById( 'uws-f-short-description' ).value = result.short_description || '';
 		document.getElementById( 'uws-f-description' ).value = result.description || '';
 
+		document.getElementById( 'uws-f-is-variable' ).checked = 'variable' === result.product_type;
+
 		renderAttributes( result.attributes );
 		renderImages( result.images );
 		applyConfidenceStyling( result );
@@ -142,6 +146,7 @@
 			.filter( Boolean );
 		base.short_description = document.getElementById( 'uws-f-short-description' ).value;
 		base.description = document.getElementById( 'uws-f-description' ).value;
+		base.product_type = document.getElementById( 'uws-f-is-variable' ).checked ? 'variable' : 'simple';
 
 		base.attributes = Array.prototype.map.call(
 			document.querySelectorAll( '#uws-attributes-list .uws-attribute-row' ),
@@ -149,6 +154,7 @@
 				return {
 					attribute_key: row.querySelector( '.uws-attr-key' ).value,
 					value_raw: row.querySelector( '.uws-attr-value' ).value,
+					is_variation: row.querySelector( '.uws-attr-variation' ).checked,
 					source: 'user',
 				};
 			}

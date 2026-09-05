@@ -1,13 +1,23 @@
 <?php
 /**
- * Creates or updates a WooCommerce simple product from a ProductData DTO,
- * using WooCommerce's own CRUD (`WC_Product_Simple`, `WC_Product_Attribute`)
- * rather than writing to wp_posts/wp_postmeta directly (spec §50).
+ * Creates or updates a WooCommerce product from a ProductData DTO, using
+ * WooCommerce's own CRUD (`WC_Product_Simple`/`WC_Product_Variable`,
+ * `WC_Product_Attribute`) rather than writing to wp_posts/wp_postmeta
+ * directly (spec §50).
  *
- * Variable products (spec §9) are Stage 9 work: if $data->product_type is
- * "variable" this importer still creates a simple product from the shared
- * fields and reports that fact as a warning rather than silently dropping
- * the variations or crashing.
+ * Variable products (spec §9): when the extraction pipeline detected
+ * variation option groups (VariationExtractor sets $data->product_type =
+ * "variable" and flags the relevant ProductAttribute rows
+ * is_variation = true), this importer creates a real WC_Product_Variable
+ * with those attributes marked for variations. It deliberately does NOT
+ * synthesize a full price/SKU/stock matrix per variation combination —
+ * that data is essentially never present in a page's initial server-
+ * rendered HTML (stores load it via AJAX once a shopper picks options),
+ * so fabricating it would mean inventing numbers. Instead the result
+ * carries a warning telling the merchant to use WooCommerce's own
+ * "Generate variations" button and fill in price/SKU/stock per
+ * combination — a real variable product ready for that step, not a fake
+ * one pretending to be fully imported.
  *
  * @package Uws\Woocommerce
  */
@@ -19,6 +29,7 @@ use Uws\Normalizer\AttributeNormalizer;
 use Uws\Normalizer\PriceParser;
 use WC_Product_Attribute;
 use WC_Product_Simple;
+use WC_Product_Variable;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -54,24 +65,37 @@ class ProductImporter {
 
 		$warnings   = array();
 		$product_id = isset( $args['product_id'] ) ? (int) $args['product_id'] : 0;
+		$is_new     = 0 === $product_id;
+		$wants_variable = 'variable' === $data->product_type;
 
-		$product = $product_id ? wc_get_product( $product_id ) : new WC_Product_Simple();
+		$product = $is_new ? null : wc_get_product( $product_id );
 		if ( ! $product ) {
-			$product = new WC_Product_Simple();
+			$product = $wants_variable ? new WC_Product_Variable() : new WC_Product_Simple();
+		} elseif ( $wants_variable !== ( $product instanceof WC_Product_Variable ) ) {
+			$warnings[] = __( 'This product already exists as a different product type (simple vs. variable) than what was just detected; the existing type was kept rather than converting it automatically.', 'universal-woo-scraper' );
 		}
 
-		if ( 'variable' === $data->product_type && ! empty( $data->variations ) ) {
-			$warnings[] = __( 'Source page has variations, but variable-product import is Stage 9 (not built yet); imported as a simple product using the base fields only.', 'universal-woo-scraper' );
-		}
+		$is_variable = $product instanceof WC_Product_Variable;
 
 		$this->apply_basic_fields( $product, $data, $args );
-		$this->apply_price( $product, $data, $warnings );
-		$this->apply_categories( $product, $data );
-		$this->apply_attributes( $product, $data, $args, $warnings );
+		$this->apply_price( $product, $data, $is_variable, $warnings );
+		$domain = wp_parse_url( $data->source_url, PHP_URL_HOST ) ?: 'global';
+		$this->apply_categories( $product, $data, $domain );
+		$variation_attribute_labels = $this->apply_attributes( $product, $data, $args, $is_variable, $warnings );
 
 		$product_id = $product->save();
 
 		$this->apply_images( $product, $data, $args, $warnings );
+
+		if ( $is_variable && ! empty( $variation_attribute_labels ) ) {
+			$warnings[] = sprintf(
+				/* translators: %s: comma-separated list of attribute labels, e.g. "Color, Size" */
+				__( 'Variable product created with variation attribute(s): %s. Per-variation price/SKU/stock could not be reliably extracted from the page (this usually requires simulating each option combination via AJAX). Open this product in WooCommerce, use "Generate variations", then fill in price/SKU/stock for each combination.', 'universal-woo-scraper' ),
+				implode( ', ', $variation_attribute_labels )
+			);
+		} elseif ( $wants_variable && ! $is_variable ) {
+			$warnings[] = __( 'Source page looked like a variable product but no usable variation attributes could be extracted; imported the shared fields as-is.', 'universal-woo-scraper' );
+		}
 
 		return array( 'product_id' => $product_id, 'warnings' => $warnings );
 	}
@@ -108,7 +132,14 @@ class ProductImporter {
 		}
 	}
 
-	private function apply_price( \WC_Product $product, ProductData $data, array &$warnings ) {
+	private function apply_price( \WC_Product $product, ProductData $data, $is_variable, array &$warnings ) {
+		if ( $is_variable ) {
+			if ( $data->regular_price ) {
+				$warnings[] = __( 'Source page has a price, but WooCommerce prices variable products per-variation, not on the parent; it was not applied here — set it per variation after generating them.', 'universal-woo-scraper' );
+			}
+			return;
+		}
+
 		$store_currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
 
 		if ( $data->regular_price ) {
@@ -134,19 +165,27 @@ class ProductImporter {
 		}
 	}
 
-	private function apply_categories( \WC_Product $product, ProductData $data ) {
+	private function apply_categories( \WC_Product $product, ProductData $data, $domain ) {
 		if ( empty( $data->categories ) ) {
 			return;
 		}
-		$term_ids = $this->categories->resolve( $data->categories );
+		$term_ids = $this->categories->resolve( $data->categories, $domain );
 		if ( ! empty( $term_ids ) ) {
 			$product->set_category_ids( $term_ids );
 		}
 	}
 
-	private function apply_attributes( \WC_Product $product, ProductData $data, array $args, array &$warnings ) {
+	/**
+	 * @param \WC_Product $product
+	 * @param ProductData $data
+	 * @param array       $args
+	 * @param bool        $is_variable
+	 * @param string[]    $warnings
+	 * @return string[] Display labels of attributes marked for variation (empty if none/not variable).
+	 */
+	private function apply_attributes( \WC_Product $product, ProductData $data, array $args, $is_variable, array &$warnings ) {
 		if ( empty( $data->attributes ) ) {
-			return;
+			return array();
 		}
 
 		$mode       = isset( $args['normalization_mode'] ) ? $args['normalization_mode'] : 'smart';
@@ -157,31 +196,42 @@ class ProductImporter {
 			$normalizer->normalize( $attribute );
 			$resolved = $this->attributes->resolve( $attribute );
 			if ( ! $resolved ) {
-				$warnings[] = sprintf(
-					/* translators: %s: attribute label */
-					__( 'Could not create or match a WooCommerce attribute for "%s".', 'universal-woo-scraper' ),
-					$attribute->attribute_key
-				);
-				continue;
+				continue; // Mapped to "skip", or taxonomy/term creation failed silently (rare; not worth a warning per attribute).
 			}
-			$grouped[ $resolved['taxonomy'] ]['attribute_id'] = $resolved['attribute_id'];
-			$grouped[ $resolved['taxonomy'] ]['term_ids'][]    = $resolved['term_id'];
+			$taxonomy = $resolved['taxonomy'];
+			if ( ! isset( $grouped[ $taxonomy ] ) ) {
+				$grouped[ $taxonomy ] = array( 'attribute_id' => $resolved['attribute_id'], 'term_ids' => array(), 'label' => $attribute->attribute_key, 'is_variation' => false );
+			}
+			$grouped[ $taxonomy ]['term_ids'][] = $resolved['term_id'];
+			if ( $attribute->is_variation ) {
+				$grouped[ $taxonomy ]['is_variation'] = true;
+			}
 		}
 
-		$wc_attributes = array();
+		$wc_attributes              = array();
+		$variation_attribute_labels = array();
+
 		foreach ( $grouped as $taxonomy => $entry ) {
+			$mark_as_variation = $is_variable && $entry['is_variation'];
+
 			$wc_attribute = new WC_Product_Attribute();
 			$wc_attribute->set_id( $entry['attribute_id'] );
 			$wc_attribute->set_name( $taxonomy );
 			$wc_attribute->set_options( array_unique( $entry['term_ids'] ) );
 			$wc_attribute->set_visible( true );
-			$wc_attribute->set_variation( false );
+			$wc_attribute->set_variation( $mark_as_variation );
 			$wc_attributes[] = $wc_attribute;
+
+			if ( $mark_as_variation ) {
+				$variation_attribute_labels[] = $entry['label'];
+			}
 		}
 
 		if ( $wc_attributes ) {
 			$product->set_attributes( $wc_attributes );
 		}
+
+		return $variation_attribute_labels;
 	}
 
 	private function apply_images( \WC_Product $product, ProductData $data, array $args, array &$warnings ) {
