@@ -1,0 +1,546 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Universal WooCommerce Product Scraper & Importer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "(none detected — type comma-separated category names here if needed)"
+msgstr ""
+
+msgid "A product from this source (matched by URL, SKU, GTIN, or MPN) has already been imported."
+msgstr ""
+
+msgid "A row is created automatically the first time an unmapped source category or attribute is seen during import. Rename the WooCommerce-facing label or set a row to \"Skip\" to drop it from every future import of that domain/attribute — already-imported products are not affected."
+msgstr ""
+
+msgid "AI Settings"
+msgstr ""
+
+msgid "AI fallback extraction"
+msgstr ""
+
+msgid "AI response was not valid JSON."
+msgstr ""
+
+msgid "API key"
+msgstr ""
+
+msgid "Action"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "Add to Queue"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Analyze Product"
+msgstr ""
+
+msgid "Analyze a single product URL"
+msgstr ""
+
+msgid "Analyzing…"
+msgstr ""
+
+msgid "Anthropic"
+msgstr ""
+
+msgid "Attempts"
+msgstr ""
+
+msgid "Attribute value normalization"
+msgstr ""
+
+msgid "Attributes"
+msgstr ""
+
+msgid "Base URL of the separately-deployed Node.js/Playwright worker (see worker/README.md). Leave empty to use the built-in plain-HTTP fallback."
+msgstr ""
+
+msgid "Brand"
+msgstr ""
+
+msgid "Browser Settings"
+msgstr ""
+
+msgid "Bulk Import"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Categories"
+msgstr ""
+
+msgid "Category & Attribute Mappings"
+msgstr ""
+
+msgid "Clear all logs? This cannot be undone."
+msgstr ""
+
+msgid "Clear logs"
+msgstr ""
+
+msgid "Completed"
+msgstr ""
+
+msgid "Configure the scraper worker connection"
+msgstr ""
+
+msgid "Could not download image: %s"
+msgstr ""
+
+msgid "Could not reach the scraper worker: %s"
+msgstr ""
+
+msgid "Created"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Dashboard"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Debug mode"
+msgstr ""
+
+msgid "Default import status"
+msgstr ""
+
+msgid "Delay between requests (seconds)"
+msgstr ""
+
+msgid "Deploy the optional worker"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Discovered and queued %d product URLs."
+msgstr ""
+
+msgid "Download all images"
+msgstr ""
+
+msgid "Download main image only"
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Error"
+msgstr ""
+
+msgid "Every minute (Universal Woo Scraper queue)"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Fetched via plain HTTP (no browser needed)."
+msgstr ""
+
+msgid "Fetched via plain HTTP (no browser) and found little usable data — this site may render its content with JavaScript. Try deploying the Playwright worker under Browser Settings for this site."
+msgstr ""
+
+msgid "Fetched via the Playwright browser worker."
+msgstr ""
+
+msgid "For title/description/price/stock, skip a field a human changed in WooCommerce since the last import instead of overwriting it"
+msgstr ""
+
+msgid "Get started"
+msgstr ""
+
+msgid "Global WooCommerce Attributes"
+msgstr ""
+
+msgid "ID"
+msgstr ""
+
+msgid "Image import policy"
+msgstr ""
+
+msgid "Image policy is set to \"remote\"; images were not downloaded (WooCommerce products need a local attachment, so no image was set)."
+msgstr ""
+
+msgid "Images"
+msgstr ""
+
+msgid "Import"
+msgstr ""
+
+msgid "Import Product"
+msgstr ""
+
+msgid "Import defaults"
+msgstr ""
+
+msgid "Import from a category / listing URL"
+msgstr ""
+
+msgid "Imported Products"
+msgstr ""
+
+msgid "Imported as product #"
+msgstr ""
+
+msgid "Imported products"
+msgstr ""
+
+msgid "Importing…"
+msgstr ""
+
+msgid "Job not found."
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Last scraped"
+msgstr ""
+
+msgid "Left empty, Analyze/Import fetch pages with plain HTTP — no separate service to deploy, works for most server-rendered sites (JSON-LD is normally already in the HTML). Set a worker URL only if a specific site renders its product data with JavaScript (React/Vue/Next/Nuxt) or needs pagination via a \"Load more\" button."
+msgstr ""
+
+msgid "Log entries"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Map"
+msgstr ""
+
+msgid "Mappings"
+msgstr ""
+
+msgid "Mappings saved."
+msgstr ""
+
+msgid "Max parallel jobs"
+msgstr ""
+
+msgid "Missing product data."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "No Anthropic API key configured."
+msgstr ""
+
+msgid "No OpenAI API key configured."
+msgstr ""
+
+msgid "No Playwright worker URL is configured — Analyze uses plain HTTP fetch by default, which works for most server-rendered sites but cannot run JavaScript. %s only if a specific site needs a real browser."
+msgstr ""
+
+msgid "No global attributes exist yet in this store."
+msgstr ""
+
+msgid "No jobs yet. Add one from Import Product or Bulk Import."
+msgstr ""
+
+msgid "No log entries yet."
+msgstr ""
+
+msgid "No mappings recorded yet — they appear here after the first Analyze/Import that finds a category or attribute."
+msgstr ""
+
+msgid "No products imported yet."
+msgstr ""
+
+msgid "No scraper engine is available."
+msgstr ""
+
+msgid "No scraper worker URL is configured. Set it under Universal Scraper → Browser Settings."
+msgstr ""
+
+msgid "No scraper worker is configured (Universal Scraper → Browser Settings)."
+msgstr ""
+
+msgid "No separate worker needed for most sites — plain HTTP fetch is used by default. It cannot render JavaScript-only content or click \"Load more\" buttons; %s and set a worker URL there only if a specific site needs a real browser."
+msgstr ""
+
+msgid "One URL per line. Each is added to the queue as a \"single\" job."
+msgstr ""
+
+msgid "Only http and https URLs are allowed."
+msgstr ""
+
+msgid "OpenAI"
+msgstr ""
+
+msgid "Or queue a category/bulk import"
+msgstr ""
+
+msgid "Paste product URLs"
+msgstr ""
+
+msgid "Paste the URL of a single product page and extract structured data from it; nothing is created in WooCommerce until you review the preview below and click Import."
+msgstr ""
+
+msgid "Pending jobs"
+msgstr ""
+
+msgid "Pending review"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Price"
+msgstr ""
+
+msgid "Processing"
+msgstr ""
+
+msgid "Product"
+msgstr ""
+
+msgid "Product URL"
+msgstr ""
+
+msgid "Product name is required."
+msgstr ""
+
+msgid "Products"
+msgstr ""
+
+msgid "Protect manual edits"
+msgstr ""
+
+msgid "Provider"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "Queue"
+msgstr ""
+
+msgid "Queue Category"
+msgstr ""
+
+msgid "Regular price"
+msgstr ""
+
+msgid "Retry"
+msgstr ""
+
+msgid "SKU"
+msgstr ""
+
+msgid "Sale price"
+msgstr ""
+
+msgid "Save mappings"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Scraper worker connection (optional)"
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Short description"
+msgstr ""
+
+msgid "Skip"
+msgstr ""
+
+msgid "Skipped updating %s: it was manually edited in WooCommerce since the last import."
+msgstr ""
+
+msgid "Smart normalization"
+msgstr ""
+
+msgid "Source"
+msgstr ""
+
+msgid "Source label"
+msgstr ""
+
+msgid "Source page has a price, but WooCommerce prices variable products per-variation, not on the parent; it was not applied here — set it per variation after generating them."
+msgstr ""
+
+msgid "Source page looked like a variable product but no usable variation attributes could be extracted; imported the shared fields as-is."
+msgstr ""
+
+msgid "Source price is in %1$s but the store currency is %2$s; the numeric amount was imported as-is, with no conversion applied."
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Stock"
+msgstr ""
+
+msgid "Store HTML snapshots, screenshots, and console/network errors for each analyzed page"
+msgstr ""
+
+msgid "Strict mode"
+msgstr ""
+
+msgid "Synchronization / update policy"
+msgstr ""
+
+msgid "Taxonomy"
+msgstr ""
+
+msgid "Terms"
+msgstr ""
+
+msgid "The URL could not be parsed."
+msgstr ""
+
+msgid "The host name could not be resolved."
+msgstr ""
+
+msgid "The normalizer (Stage 7) checks this list before creating a new global attribute for an extracted specification, so equivalent labels like \"Voltage\", \"Напряжение\", and \"Напряжение питания\" collapse onto a single pa_voltage taxonomy instead of five separate ones."
+msgstr ""
+
+msgid "The page returned HTTP %d. If this site actively blocks non-browser requests (some do), the Playwright worker may still succeed where this fallback cannot."
+msgstr ""
+
+msgid "The worker will discover product links (including paginated and \"Load more\" listings, spec-permitting) and queue them one by one, respecting the configured request delay."
+msgstr ""
+
+msgid "This URL resolves to a private, loopback, or otherwise non-public address and cannot be scraped."
+msgstr ""
+
+msgid "This is a variable product (create a WooCommerce variable product using the attributes checked below as \"Used for variations\")"
+msgstr ""
+
+msgid "This listing loads more products via a JavaScript button/infinite scroll, which the no-browser fallback cannot operate. Deploy the Playwright worker and set its URL under Browser Settings to import this category."
+msgstr ""
+
+msgid "This product already exists as a different product type (simple vs. variable) than what was just detected; the existing type was kept rather than converting it automatically."
+msgstr ""
+
+msgid "This product was already imported (product #"
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid "URL is empty."
+msgstr ""
+
+msgid "URLs containing credentials are not allowed."
+msgstr ""
+
+msgid "Universal Scraper"
+msgstr ""
+
+msgid "Universal Scraper — Dashboard"
+msgstr ""
+
+msgid "Universal WooCommerce Product Scraper requires WooCommerce to be installed and active."
+msgstr ""
+
+msgid "Unknown Anthropic API error."
+msgstr ""
+
+msgid "Unknown OpenAI API error."
+msgstr ""
+
+msgid "Unknown worker error."
+msgstr ""
+
+msgid "Update on re-import"
+msgstr ""
+
+msgid "Use remote image URLs"
+msgstr ""
+
+msgid "Used for variations"
+msgstr ""
+
+msgid "Used only for fields the conventional extractors (JSON-LD, DOM, specification tables) could not confidently determine. The page text sent to the API is capped (~12,000 characters) and scripts/styles are stripped first."
+msgstr ""
+
+msgid "Variable product created with variation attribute(s): %s. Per-variation price/SKU/stock could not be reliably extracted from the page (this usually requires simulating each option combination via AJAX). Open this product in WooCommerce, use \"Generate variations\", then fill in price/SKU/stock for each combination."
+msgstr ""
+
+msgid "Variations"
+msgstr ""
+
+msgid "When re-importing a product that already exists (matched by source URL/SKU/GTIN/MPN), choose which field groups are allowed to change."
+msgstr ""
+
+msgid "WooCommerce is not active."
+msgstr ""
+
+msgid "WooCommerce label"
+msgstr ""
+
+msgid "Worker API key"
+msgstr ""
+
+msgid "Worker URL"
+msgstr ""
+
+msgid "deploy the optional Playwright worker"
+msgstr ""
+
+msgid "description"
+msgstr ""
+
+msgid "main"
+msgstr ""
+
+msgid "regular price"
+msgstr ""
+
+msgid "source_url is required for duplicate detection and sync."
+msgstr ""
+
+msgid "stock quantity"
+msgstr ""
+
+msgid "stock status"
+msgstr ""
+
+msgid "title"
+msgstr ""
+
+msgid "%1$d / %2$d URLs queued."
+msgstr ""
+
+msgid "Category job #%d queued."
+msgstr ""
+
+msgid "). Type \"update\", \"duplicate\", or \"skip\":"
+msgstr ""
+
+msgid "https://…/correct-product-photo.jpg"
+msgstr ""
+
+msgid "Add image URL"
+msgstr ""
+

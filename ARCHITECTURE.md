@@ -171,7 +171,7 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 | 3 | Playwright worker (`worker/`, Express + Chromium, `/fetch` `/discover` `/health`) — optional, for JS-rendered/anti-bot-averse sites | ✅ done |
 | 4 | URL analyzer (`ExtractionPipeline`, engine wired via `uws_scraper_engine`; `HttpEngine` is the zero-deploy default, `PlaywrightHttpEngine` used automatically once a worker URL is set) | ✅ done |
 | 5 | Product extraction (JSON-LD, meta, specification tables, breadcrumbs, DOM heuristics, priority merge) | ✅ done |
-| 6 | Image extraction (`img`/lazy attrs/srcset/og:image, download via Media Library, dedupe by source URL) — filters to same-registrable-domain images, a site-chrome keyword list (social/messenger/partner/payment badges), and icon-sized `width`/`height` attributes, after a real-site test surfaced a WhatsApp badge and third-party tracking pixels being picked up as "product images" | ✅ done |
+| 6 | Image extraction (`img`/lazy attrs/srcset/og:image, download via Media Library, dedupe by source URL) — filters to same-registrable-domain images, a site-chrome keyword list (social/messenger/partner/payment badges), and icon-sized `width`/`height` attributes; prefers a recognized gallery container (WooCommerce/1C-Bitrix `detail_picture`/generic `product-image`) over a whole-page scan when one exists, after real-site testing surfaced both site chrome and an unrelated same-domain photo block being picked up as "product images"; a manual "Add image URL" field in the Preview covers whatever a heuristic still misses | ✅ done |
 | 7 | Attribute normalization (`AttributeNormalizer` + synonym/unit dictionaries, smart/strict modes) | ✅ done (dictionary is a starter set, not exhaustive) |
 | 8 | WooCommerce importer (`ProductImporter`, real `WC_Product_Simple`/`WC_Product_Attribute` CRUD) | ✅ done — simple products only |
 | 9 | Variable products | ◐ partial — `VariationExtractor` detects `<select>`/radio-group option sets and flags them for variation; `ProductImporter` creates a real `WC_Product_Variable` with those attributes marked for variation. Per-variation price/SKU/stock/image is **not** synthesized (that data lives behind AJAX on real stores, essentially never in the initial HTML) — the result tells the merchant to use WooCommerce's own "Generate variations" button instead of inventing numbers |
@@ -186,3 +186,18 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 `/import` still refuses to silently overwrite an existing product: a
 match by source URL/SKU/GTIN/MPN returns `409 duplicate` with
 `update`/`duplicate`/`skip` as the caller's explicit choices (spec §26).
+
+## 7. Localization
+
+Every user-facing string in the admin UI and REST error messages goes
+through WordPress's standard `__()`/`_e()`/`esc_html__()` calls under the
+`universal-woo-scraper` text domain (spec §38 — never hardcoded Russian or
+English in the templates). `Plugin::boot()` calls
+`load_plugin_textdomain()` pointed at `languages/`, so a translation is
+picked up automatically based on the site's configured locale, no setting
+to flip. `languages/universal-woo-scraper-ru_RU.mo` ships a complete
+Russian translation (180 strings, verified against every `__()`-family
+call site with no gaps); `languages/universal-woo-scraper.pot` is the
+source catalog for adding another language with a standard PO editor
+(Poedit, Loco Translate, etc.) — translate it, compile to
+`universal-woo-scraper-<locale>.mo`, drop it in `languages/`.

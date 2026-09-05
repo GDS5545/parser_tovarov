@@ -1,0 +1,550 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Universal WooCommerce Product Scraper & Importer\n"
+"Report-Msgid-Bugs-To: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+msgid "(none detected — type comma-separated category names here if needed)"
+msgstr "(не обнаружено — при необходимости укажите категории через запятую)"
+
+msgid "A product from this source (matched by URL, SKU, GTIN, or MPN) has already been imported."
+msgstr "Товар с этого источника (совпадение по URL, артикулу, GTIN или MPN) уже был импортирован."
+
+msgid "A row is created automatically the first time an unmapped source category or attribute is seen during import. Rename the WooCommerce-facing label or set a row to \"Skip\" to drop it from every future import of that domain/attribute — already-imported products are not affected."
+msgstr "Строка создаётся автоматически при первом обнаружении несопоставленной категории или атрибута источника во время импорта. Переименуйте отображаемое в WooCommerce название или установите действие «Пропустить», чтобы исключать его из всех будущих импортов этого домена/атрибута — на уже импортированные товары это не влияет."
+
+msgid "AI Settings"
+msgstr "Настройки ИИ"
+
+msgid "AI fallback extraction"
+msgstr "Резервное извлечение через ИИ"
+
+msgid "AI response was not valid JSON."
+msgstr "Ответ ИИ не является корректным JSON."
+
+msgid "API key"
+msgstr "API-ключ"
+
+msgid "Action"
+msgstr "Действие"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "Add to Queue"
+msgstr "Добавить в очередь"
+
+msgid "All"
+msgstr "Все"
+
+msgid "Analyze Product"
+msgstr "Анализировать товар"
+
+msgid "Analyze a single product URL"
+msgstr "Проанализировать URL одного товара"
+
+msgid "Analyzing…"
+msgstr "Анализ…"
+
+msgid "Anthropic"
+msgstr "Anthropic"
+
+msgid "Attempts"
+msgstr "Попытки"
+
+msgid "Attribute value normalization"
+msgstr "Нормализация значений атрибутов"
+
+msgid "Attributes"
+msgstr "Атрибуты"
+
+msgid "Base URL of the separately-deployed Node.js/Playwright worker (see worker/README.md). Leave empty to use the built-in plain-HTTP fallback."
+msgstr "Базовый URL отдельно развёрнутого Node.js/Playwright-воркера (см. worker/README.md). Оставьте пустым, чтобы использовать встроенный запасной вариант через обычный HTTP."
+
+msgid "Brand"
+msgstr "Бренд"
+
+msgid "Browser Settings"
+msgstr "Настройки браузера"
+
+msgid "Bulk Import"
+msgstr "Массовый импорт"
+
+msgid "Cancel"
+msgstr "Отменить"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "Category & Attribute Mappings"
+msgstr "Сопоставление категорий и атрибутов"
+
+msgid "Clear all logs? This cannot be undone."
+msgstr "Очистить все логи? Это действие нельзя отменить."
+
+msgid "Clear logs"
+msgstr "Очистить логи"
+
+msgid "Completed"
+msgstr "Завершено"
+
+msgid "Configure the scraper worker connection"
+msgstr "Настройте подключение к воркеру-скраперу"
+
+msgid "Could not download image: %s"
+msgstr "Не удалось скачать изображение: %s"
+
+msgid "Could not reach the scraper worker: %s"
+msgstr "Не удалось подключиться к воркеру-скраперу: %s"
+
+msgid "Created"
+msgstr "Создано"
+
+msgid "Currency"
+msgstr "Валюта"
+
+msgid "Dashboard"
+msgstr "Панель управления"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Debug mode"
+msgstr "Режим отладки"
+
+msgid "Default import status"
+msgstr "Статус импорта по умолчанию"
+
+msgid "Delay between requests (seconds)"
+msgstr "Задержка между запросами (сек.)"
+
+msgid "Deploy the optional worker"
+msgstr "Развернуть опциональный воркер"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Disabled"
+msgstr "Отключено"
+
+msgid "Discovered and queued %d product URLs."
+msgstr "Найдено и добавлено в очередь URL товаров: %d."
+
+msgid "Download all images"
+msgstr "Скачивать все изображения"
+
+msgid "Download main image only"
+msgstr "Скачивать только главное изображение"
+
+msgid "Draft"
+msgstr "Черновик"
+
+msgid "Duration"
+msgstr "Длительность"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Every minute (Universal Woo Scraper queue)"
+msgstr "Каждую минуту (очередь Universal Woo Scraper)"
+
+msgid "Failed"
+msgstr "Не удалось"
+
+msgid "Fetched via plain HTTP (no browser needed)."
+msgstr "Получено через обычный HTTP (без браузера)."
+
+msgid "Fetched via plain HTTP (no browser) and found little usable data — this site may render its content with JavaScript. Try deploying the Playwright worker under Browser Settings for this site."
+msgstr "Получено через обычный HTTP (без браузера), но полезных данных найдено мало — возможно, этот сайт формирует контент через JavaScript. Попробуйте развернуть Playwright-воркер в настройках браузера для этого сайта."
+
+msgid "Fetched via the Playwright browser worker."
+msgstr "Получено через браузерный воркер Playwright."
+
+msgid "For title/description/price/stock, skip a field a human changed in WooCommerce since the last import instead of overwriting it"
+msgstr "Для названия/описания/цены/остатка — пропускать поле, если человек изменил его в WooCommerce после последнего импорта, вместо того чтобы перезаписывать"
+
+msgid "Get started"
+msgstr "Начало работы"
+
+msgid "Global WooCommerce Attributes"
+msgstr "Глобальные атрибуты WooCommerce"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Image import policy"
+msgstr "Политика импорта изображений"
+
+msgid "Image policy is set to \"remote\"; images were not downloaded (WooCommerce products need a local attachment, so no image was set)."
+msgstr "Установлена политика изображений «внешние ссылки»; изображения не были скачаны (товарам WooCommerce нужно локальное вложение, поэтому изображение не установлено)."
+
+msgid "Images"
+msgstr "Изображения"
+
+msgid "Import"
+msgstr "Импорт"
+
+msgid "Import Product"
+msgstr "Импорт товара"
+
+msgid "Import defaults"
+msgstr "Настройки импорта по умолчанию"
+
+msgid "Import from a category / listing URL"
+msgstr "Импорт по URL категории / списка товаров"
+
+msgid "Imported Products"
+msgstr "Импортированные товары"
+
+msgid "Imported as product #"
+msgstr "Импортировано как товар #"
+
+msgid "Imported products"
+msgstr "Импортированные товары"
+
+msgid "Importing…"
+msgstr "Импорт…"
+
+msgid "Job not found."
+msgstr "Задача не найдена."
+
+msgid "Label"
+msgstr "Название"
+
+msgid "Last scraped"
+msgstr "Последний парсинг"
+
+msgid "Left empty, Analyze/Import fetch pages with plain HTTP — no separate service to deploy, works for most server-rendered sites (JSON-LD is normally already in the HTML). Set a worker URL only if a specific site renders its product data with JavaScript (React/Vue/Next/Nuxt) or needs pagination via a \"Load more\" button."
+msgstr "Если оставить пустым, Analyze/Import будут получать страницы через обычный HTTP — без отдельного сервиса, подходит для большинства сайтов с серверным рендерингом (JSON-LD обычно уже есть в HTML). Указывайте URL воркера, только если конкретный сайт рендерит данные товара через JavaScript (React/Vue/Next/Nuxt) или требует пагинации через кнопку «Показать ещё»."
+
+msgid "Log entries"
+msgstr "Записи в логах"
+
+msgid "Logs"
+msgstr "Логи"
+
+msgid "Map"
+msgstr "Сопоставить"
+
+msgid "Mappings"
+msgstr "Сопоставления"
+
+msgid "Mappings saved."
+msgstr "Сопоставления сохранены."
+
+msgid "Max parallel jobs"
+msgstr "Макс. параллельных задач"
+
+msgid "Missing product data."
+msgstr "Отсутствуют данные товара."
+
+msgid "Name"
+msgstr "Название"
+
+msgid "No Anthropic API key configured."
+msgstr "Не настроен API-ключ Anthropic."
+
+msgid "No OpenAI API key configured."
+msgstr "Не настроен API-ключ OpenAI."
+
+msgid "No Playwright worker URL is configured — Analyze uses plain HTTP fetch by default, which works for most server-rendered sites but cannot run JavaScript. %s only if a specific site needs a real browser."
+msgstr "URL Playwright-воркера не настроен — Analyze по умолчанию использует обычный HTTP-запрос, что подходит для большинства сайтов с серверным рендерингом, но не может выполнять JavaScript. %s только если конкретному сайту нужен настоящий браузер."
+
+msgid "No global attributes exist yet in this store."
+msgstr "В этом магазине пока нет глобальных атрибутов."
+
+msgid "No jobs yet. Add one from Import Product or Bulk Import."
+msgstr "Задач пока нет. Добавьте их через «Импорт товара» или «Массовый импорт»."
+
+msgid "No log entries yet."
+msgstr "Записей в логах пока нет."
+
+msgid "No mappings recorded yet — they appear here after the first Analyze/Import that finds a category or attribute."
+msgstr "Сопоставлений пока нет — они появятся здесь после первого анализа/импорта, в котором найдётся категория или атрибут."
+
+msgid "No products imported yet."
+msgstr "Товары пока не импортированы."
+
+msgid "No scraper engine is available."
+msgstr "Нет доступного движка парсинга."
+
+msgid "No scraper worker URL is configured. Set it under Universal Scraper → Browser Settings."
+msgstr "URL воркера-скрапера не настроен. Укажите его в Universal Scraper → Настройки браузера."
+
+msgid "No scraper worker is configured (Universal Scraper → Browser Settings)."
+msgstr "Воркер-скрапер не настроен (Universal Scraper → Настройки браузера)."
+
+msgid "No separate worker needed for most sites — plain HTTP fetch is used by default. It cannot render JavaScript-only content or click \"Load more\" buttons; %s and set a worker URL there only if a specific site needs a real browser."
+msgstr "Для большинства сайтов отдельный воркер не нужен — по умолчанию используется обычный HTTP-запрос. Он не может отрендерить контент, требующий только JavaScript, или нажать кнопку «Показать ещё»; %s и укажите там URL воркера, только если конкретному сайту нужен настоящий браузер."
+
+msgid "One URL per line. Each is added to the queue as a \"single\" job."
+msgstr "По одному URL на строку. Каждый добавляется в очередь как отдельная задача."
+
+msgid "Only http and https URLs are allowed."
+msgstr "Разрешены только URL со схемой http и https."
+
+msgid "OpenAI"
+msgstr "OpenAI"
+
+msgid "Or queue a category/bulk import"
+msgstr "Или поставьте в очередь импорт по категории/массовый импорт"
+
+msgid "Paste product URLs"
+msgstr "Вставьте URL товаров"
+
+msgid "Paste the URL of a single product page and extract structured data from it; nothing is created in WooCommerce until you review the preview below and click Import."
+msgstr "Вставьте URL страницы одного товара, чтобы извлечь из неё структурированные данные; в WooCommerce ничего не будет создано, пока вы не проверите превью ниже и не нажмёте «Импорт»."
+
+msgid "Pending jobs"
+msgstr "Задачи в ожидании"
+
+msgid "Pending review"
+msgstr "На проверке"
+
+msgid "Preview"
+msgstr "Превью"
+
+msgid "Price"
+msgstr "Цена"
+
+msgid "Processing"
+msgstr "В обработке"
+
+msgid "Product"
+msgstr "Товар"
+
+msgid "Product URL"
+msgstr "URL товара"
+
+msgid "Product name is required."
+msgstr "Название товара обязательно."
+
+msgid "Products"
+msgstr "Товары"
+
+msgid "Protect manual edits"
+msgstr "Защищать ручные изменения"
+
+msgid "Provider"
+msgstr "Провайдер"
+
+msgid "Published"
+msgstr "Опубликовано"
+
+msgid "Queue"
+msgstr "Очередь"
+
+msgid "Queue Category"
+msgstr "Поставить категорию в очередь"
+
+msgid "Regular price"
+msgstr "Обычная цена"
+
+msgid "Retry"
+msgstr "Повторить"
+
+msgid "SKU"
+msgstr "Артикул (SKU)"
+
+msgid "Sale price"
+msgstr "Цена со скидкой"
+
+msgid "Save mappings"
+msgstr "Сохранить сопоставления"
+
+msgid "Scope"
+msgstr "Область"
+
+msgid "Scraper worker connection (optional)"
+msgstr "Подключение воркера-скрапера (опционально)"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Short description"
+msgstr "Краткое описание"
+
+msgid "Skip"
+msgstr "Пропустить"
+
+msgid "Skipped updating %s: it was manually edited in WooCommerce since the last import."
+msgstr "Обновление поля «%s» пропущено: оно было вручную изменено в WooCommerce после последнего импорта."
+
+msgid "Smart normalization"
+msgstr "Умная нормализация"
+
+msgid "Source"
+msgstr "Источник"
+
+msgid "Source label"
+msgstr "Название источника"
+
+msgid "Source page has a price, but WooCommerce prices variable products per-variation, not on the parent; it was not applied here — set it per variation after generating them."
+msgstr "На странице-источнике есть цена, но WooCommerce задаёт цену вариативных товаров по вариациям, а не у родительского товара; здесь она не применена — установите её для каждой вариации после их создания."
+
+msgid "Source page looked like a variable product but no usable variation attributes could be extracted; imported the shared fields as-is."
+msgstr "Страница-источник похожа на вариативный товар, но извлечь пригодные атрибуты вариаций не удалось; общие поля импортированы как есть."
+
+msgid "Source price is in %1$s but the store currency is %2$s; the numeric amount was imported as-is, with no conversion applied."
+msgstr "Цена источника указана в %1$s, а валюта магазина — %2$s; числовое значение импортировано как есть, без конвертации."
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Stock"
+msgstr "Остаток"
+
+msgid "Store HTML snapshots, screenshots, and console/network errors for each analyzed page"
+msgstr "Сохранять HTML-снимки, скриншоты и ошибки консоли/сети для каждой проанализированной страницы"
+
+msgid "Strict mode"
+msgstr "Строгий режим"
+
+msgid "Synchronization / update policy"
+msgstr "Синхронизация / политика обновления"
+
+msgid "Taxonomy"
+msgstr "Таксономия"
+
+msgid "Terms"
+msgstr "Термины"
+
+msgid "The URL could not be parsed."
+msgstr "Не удалось разобрать URL."
+
+msgid "The host name could not be resolved."
+msgstr "Не удалось разрешить имя хоста."
+
+msgid "The normalizer (Stage 7) checks this list before creating a new global attribute for an extracted specification, so equivalent labels like \"Voltage\", \"Напряжение\", and \"Напряжение питания\" collapse onto a single pa_voltage taxonomy instead of five separate ones."
+msgstr "Нормализатор (этап 7) сверяется с этим списком перед созданием нового глобального атрибута для извлечённой характеристики, поэтому равнозначные подписи вроде «Voltage», «Напряжение» и «Напряжение питания» схлопываются в один таксон pa_voltage вместо пяти разных."
+
+msgid "The page returned HTTP %d. If this site actively blocks non-browser requests (some do), the Playwright worker may still succeed where this fallback cannot."
+msgstr "Страница вернула HTTP %d. Если этот сайт активно блокирует запросы не из браузера (некоторые так делают), Playwright-воркер может справиться там, где этот запасной вариант — нет."
+
+msgid "The worker will discover product links (including paginated and \"Load more\" listings, spec-permitting) and queue them one by one, respecting the configured request delay."
+msgstr "Воркер найдёт ссылки на товары (включая постраничные списки и списки с кнопкой «Показать ещё», если это возможно) и поставит их в очередь по одному, соблюдая настроенную задержку между запросами."
+
+msgid "This URL resolves to a private, loopback, or otherwise non-public address and cannot be scraped."
+msgstr "Этот URL указывает на приватный, локальный или иной непубличный адрес, и его нельзя парсить."
+
+msgid "This is a variable product (create a WooCommerce variable product using the attributes checked below as \"Used for variations\")"
+msgstr "Это вариативный товар (создать вариативный товар WooCommerce, используя отмеченные ниже атрибуты как «используемые для вариаций»)"
+
+msgid "This listing loads more products via a JavaScript button/infinite scroll, which the no-browser fallback cannot operate. Deploy the Playwright worker and set its URL under Browser Settings to import this category."
+msgstr "Этот список подгружает товары через JavaScript-кнопку или бесконечную прокрутку, а запасной вариант без браузера не умеет с этим работать. Разверните Playwright-воркер и укажите его URL в настройках браузера, чтобы импортировать эту категорию."
+
+msgid "This product already exists as a different product type (simple vs. variable) than what was just detected; the existing type was kept rather than converting it automatically."
+msgstr "Этот товар уже существует с другим типом (простой/вариативный), отличным от только что определённого; существующий тип оставлен без автоматического преобразования."
+
+msgid "This product was already imported (product #"
+msgstr "Этот товар уже был импортирован (товар #"
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "URL is empty."
+msgstr "URL пуст."
+
+msgid "URLs containing credentials are not allowed."
+msgstr "URL с указанными учётными данными не разрешены."
+
+msgid "Universal Scraper"
+msgstr "Universal Scraper"
+
+msgid "Universal Scraper — Dashboard"
+msgstr "Universal Scraper — Панель управления"
+
+msgid "Universal WooCommerce Product Scraper requires WooCommerce to be installed and active."
+msgstr "Universal WooCommerce Product Scraper требует установленного и активного WooCommerce."
+
+msgid "Unknown Anthropic API error."
+msgstr "Неизвестная ошибка API Anthropic."
+
+msgid "Unknown OpenAI API error."
+msgstr "Неизвестная ошибка API OpenAI."
+
+msgid "Unknown worker error."
+msgstr "Неизвестная ошибка воркера."
+
+msgid "Update on re-import"
+msgstr "Обновлять при повторном импорте"
+
+msgid "Use remote image URLs"
+msgstr "Использовать внешние ссылки на изображения"
+
+msgid "Used for variations"
+msgstr "Используется для вариаций"
+
+msgid "Used only for fields the conventional extractors (JSON-LD, DOM, specification tables) could not confidently determine. The page text sent to the API is capped (~12,000 characters) and scripts/styles are stripped first."
+msgstr "Используется только для полей, которые обычные экстракторы (JSON-LD, DOM, таблицы характеристик) не смогли уверенно определить. Текст страницы, отправляемый в API, ограничен (~12 000 символов), скрипты и стили предварительно удаляются."
+
+msgid "Variable product created with variation attribute(s): %s. Per-variation price/SKU/stock could not be reliably extracted from the page (this usually requires simulating each option combination via AJAX). Open this product in WooCommerce, use \"Generate variations\", then fill in price/SKU/stock for each combination."
+msgstr "Создан вариативный товар с атрибутом(ами) вариаций: %s. Цену/артикул/остаток по каждой вариации надёжно извлечь со страницы не удалось (обычно это требует эмуляции AJAX-запросов для каждой комбинации). Откройте товар в WooCommerce, нажмите «Создать вариации» и заполните цену/артикул/остаток для каждой комбинации."
+
+msgid "Variations"
+msgstr "Вариации"
+
+msgid "When re-importing a product that already exists (matched by source URL/SKU/GTIN/MPN), choose which field groups are allowed to change."
+msgstr "При повторном импорте уже существующего товара (совпадение по URL источника/артикулу/GTIN/MPN) выберите, какие группы полей можно изменять."
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce не активен."
+
+msgid "WooCommerce label"
+msgstr "Название в WooCommerce"
+
+msgid "Worker API key"
+msgstr "API-ключ воркера"
+
+msgid "Worker URL"
+msgstr "URL воркера"
+
+msgid "deploy the optional Playwright worker"
+msgstr "разверните опциональный Playwright-воркер"
+
+msgid "description"
+msgstr "описание"
+
+msgid "main"
+msgstr "главное"
+
+msgid "regular price"
+msgstr "обычная цена"
+
+msgid "source_url is required for duplicate detection and sync."
+msgstr "source_url обязателен для проверки дублей и синхронизации."
+
+msgid "stock quantity"
+msgstr "количество на складе"
+
+msgid "stock status"
+msgstr "статус наличия"
+
+msgid "title"
+msgstr "заголовок"
+
+msgid "%1$d / %2$d URLs queued."
+msgstr "Добавлено в очередь: %1$d из %2$d URL."
+
+msgid "Category job #%d queued."
+msgstr "Задача категории #%d добавлена в очередь."
+
+msgid "). Type \"update\", \"duplicate\", or \"skip\":"
+msgstr "). Введите «update» (обновить), «duplicate» (дублировать) или «skip» (пропустить):"
+
+msgid "https://…/correct-product-photo.jpg"
+msgstr "https://…/правильное-фото-товара.jpg"
+
+msgid "Add image URL"
+msgstr "Добавить URL изображения"
+

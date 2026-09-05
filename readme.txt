@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.6.1
+Stable tag: 0.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,25 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.7.0 =
+* Russian translation (`languages/universal-woo-scraper-ru_RU.mo`) — all
+  180 user-facing strings across the admin UI and API error messages.
+  Loads automatically on a Russian-locale WordPress install via the
+  plugin's existing `load_plugin_textdomain()` call; no settings change
+  needed. `languages/universal-woo-scraper.pot` is included for anyone
+  translating to another language.
+* `ImageExtractor` now looks for a recognizable product-gallery container
+  first (WooCommerce's own markup, 1C-Bitrix's `detail_picture`, generic
+  `product-image`/`product-gallery` theme conventions) and, if one exists
+  and contains at least one surviving image, uses only images inside it —
+  fixes real-site cases where an unrelated same-domain photo block
+  elsewhere on the page (that no filename/size heuristic could
+  distinguish from a real product photo) was being picked up instead.
+  Falls back to a whole-page scan when no such container is found.
+* Import Product preview now has an "Add image URL" field so a photo the
+  automatic extraction misses can be added by hand before importing,
+  without waiting on extractor accuracy.
 
 = 0.6.1 =
 * Fixed a real-site regression found during testing: `ImageExtractor` was

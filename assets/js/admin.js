@@ -103,6 +103,30 @@
 		} );
 	}
 
+	function initAddImage() {
+		var button = document.getElementById( 'uws-add-image-btn' );
+		var input = document.getElementById( 'uws-add-image-url' );
+		if ( ! button || ! input ) {
+			return;
+		}
+
+		button.addEventListener( 'click', function () {
+			var url = input.value.trim();
+			if ( ! url ) {
+				return;
+			}
+			if ( ! lastAnalyzeResult ) {
+				lastAnalyzeResult = {};
+			}
+			if ( ! Array.isArray( lastAnalyzeResult.images ) ) {
+				lastAnalyzeResult.images = [];
+			}
+			lastAnalyzeResult.images.push( { url: url, is_main: 0 === lastAnalyzeResult.images.length, variation_key: null } );
+			renderImages( lastAnalyzeResult.images );
+			input.value = '';
+		} );
+	}
+
 	function escapeHtml( value ) {
 		var div = document.createElement( 'div' );
 		div.textContent = value == null ? '' : String( value );
@@ -210,7 +234,7 @@
 				var choice = window.prompt(
 					( uwsAdmin.i18n.duplicateFound || 'This product was already imported (product #' ) +
 						result.data.existing.product_id +
-						'). Type "update", "duplicate", or "skip":',
+						( uwsAdmin.i18n.duplicatePromptSuffix || '). Type "update", "duplicate", or "skip":' ),
 					'update'
 				);
 				if ( choice && [ 'update', 'duplicate', 'skip' ].indexOf( choice ) !== -1 ) {
@@ -319,7 +343,8 @@
 					} )
 				).then( function ( results ) {
 					var queued = results.filter( function ( r ) { return r.ok; } ).length;
-					showResult( queued + ' / ' + urls.length + ' URLs queued.' );
+					var template = uwsAdmin.i18n.urlsQueuedTemplate || '%1$d / %2$d URLs queued.';
+					showResult( template.replace( '%1$d', queued ).replace( '%2$d', urls.length ) );
 					bulkButton.disabled = false;
 				} );
 			} );
@@ -335,7 +360,8 @@
 				restRequest( '/jobs', 'POST', { url: input.value, type: 'category' } ).then( function ( result ) {
 					categoryButton.disabled = false;
 					if ( result.ok ) {
-						showResult( 'Category job #' + result.data.id + ' queued.' );
+						var template = uwsAdmin.i18n.categoryQueuedTemplate || 'Category job #%d queued.';
+						showResult( template.replace( '%d', result.data.id ) );
 					} else {
 						showResult( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error );
 					}
@@ -367,5 +393,6 @@
 		initAnalyzeForm();
 		initBulkImport();
 		initQueueActions();
+		initAddImage();
 	} );
 } )();

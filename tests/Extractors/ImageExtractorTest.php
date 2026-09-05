@@ -60,6 +60,54 @@ final class ImageExtractorTest extends TestCase {
 		$this->assertStringContainsString( 'real-photo.jpg', $data->images[0]['url'] );
 	}
 
+	public function test_prefers_recognized_gallery_container_over_unrelated_same_domain_images() {
+		// A same-domain "our work" carousel elsewhere on the page, plus a
+		// recognizable product-image container — the container should win
+		// even though every image here passes the domain/keyword/size filters.
+		$html = '<div class="site-gallery">
+				<img src="/uploadedFiles/images/unrelated-1.jpg" />
+				<img src="/uploadedFiles/images/unrelated-2.jpg" />
+			</div>
+			<div class="product-gallery">
+				<img src="/uploadedFiles/images/real-product.jpg" alt="Product" />
+			</div>';
+
+		$data = $this->extract( $html );
+
+		$this->assertCount( 1, $data->images );
+		$this->assertStringContainsString( 'real-product.jpg', $data->images[0]['url'] );
+	}
+
+	public function test_bitrix_detail_picture_container_is_recognized() {
+		$html = '<div class="catalog-list"><img src="/img/list-thumb.jpg" /></div>
+			<div class="detail_picture"><img src="/upload/iblock/real.jpg" /></div>';
+
+		$data = $this->extract( $html );
+
+		$this->assertCount( 1, $data->images );
+		$this->assertStringContainsString( 'real.jpg', $data->images[0]['url'] );
+	}
+
+	public function test_falls_back_to_whole_page_when_no_gallery_container_matches() {
+		$html = '<div class="whatever"><img src="/uploadedFiles/images/only-photo.jpg" /></div>';
+
+		$data = $this->extract( $html );
+
+		$this->assertCount( 1, $data->images );
+	}
+
+	public function test_falls_back_to_whole_page_when_container_matches_but_has_no_surviving_images() {
+		// The "gallery" container exists but only holds chrome (e.g. a
+		// loading spinner); the real photo lives outside it.
+		$html = '<div class="product-gallery"><img src="/img/spinner.gif" /></div>
+			<img src="/uploadedFiles/images/real-photo.jpg" />';
+
+		$data = $this->extract( $html );
+
+		$this->assertCount( 1, $data->images );
+		$this->assertStringContainsString( 'real-photo.jpg', $data->images[0]['url'] );
+	}
+
 	public function test_real_world_regression_only_product_photos_survive() {
 		// Condensed from the actual habarovsk.vagner-ural.ru page that
 		// exposed this bug: a WhatsApp badge appeared before the real

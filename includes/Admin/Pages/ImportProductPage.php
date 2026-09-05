@@ -93,7 +93,13 @@ class ImportProductPage {
 					</tr>
 					<tr>
 						<th><?php esc_html_e( 'Images', 'universal-woo-scraper' ); ?></th>
-						<td><div id="uws-images-list"></div></td>
+						<td>
+							<div id="uws-images-list"></div>
+							<p style="margin-top:0.75em;">
+								<input type="url" id="uws-add-image-url" class="regular-text" placeholder="<?php esc_attr_e( 'https://…/correct-product-photo.jpg', 'universal-woo-scraper' ); ?>" />
+								<button type="button" class="button" id="uws-add-image-btn"><?php esc_html_e( 'Add image URL', 'universal-woo-scraper' ); ?></button>
+							</p>
+						</td>
 					</tr>
 				</table>
 

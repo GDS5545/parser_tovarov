@@ -10,20 +10,33 @@
  * Real e-commerce pages are full of <img> tags that are not the product:
  * header/footer chrome (WhatsApp/Telegram click-to-chat badges, language
  * flags, partner/payment logos), social widget icons pulled from a
- * third-party domain, and analytics tracking pixels (Mail.ru/Yandex
- * counters rendered as a 1x1 <img>). Filtering those out matters — without
- * it, "Import" would pull two dozen unrelated images into the product's
- * gallery and could even end up choosing one of them as the *main* image
- * (whichever happens to appear first in the raw HTML, which is often a
- * header badge above the actual product photo). This extractor therefore:
+ * third-party domain, analytics tracking pixels (Mail.ru/Yandex counters
+ * rendered as a 1x1 <img>), and — the hardest case — a same-domain,
+ * normally-sized photo gallery elsewhere on the page (a homepage-style
+ * "our work"/certificates carousel) that no filename or size heuristic
+ * distinguishes from a real product photo. This extractor therefore:
+ *  - first looks for a container whose class/id matches common
+ *    product-gallery conventions across several CMS/theme families
+ *    (WooCommerce, 1C-Bitrix, generic "product-image"/"detail_picture"
+ *    naming) and, if one exists and contains at least one image that
+ *    survives the filters below, uses ONLY images inside it — this is
+ *    what actually fixes "picks up everything around the product but
+ *    not the product" on sites with unrelated same-domain image blocks
+ *    elsewhere on the page;
+ *  - otherwise falls back to scanning the whole page, so a site without
+ *    a recognizable gallery container still gets whatever the filters
+ *    below consider plausible, rather than nothing;
  *  - only keeps images on the same registrable domain as the page itself
  *    (a CDN subdomain is fine; a different site like web.telegram.org or
- *    mail.ru is not — that alone removes tracking pixels and social badges
- *    embedded from a different domain);
- *  - drops filenames matching a list of common site-chrome keywords
- *    (whatsapp, telegram, partner, payment logos, etc.);
+ *    mail.ru is not);
+ *  - drops filenames matching a list of common site-chrome keywords;
  *  - drops images whose declared width/height attributes mark them as
- *    icon-sized (<=32px) even when same-domain and not keyword-matched.
+ *    icon-sized (<=32px).
+ *
+ * None of this is a substitute for actually seeing the page: if a site's
+ * real product photo still doesn't come through, the fix is to look at
+ * that page's markup (or add a manual image URL in the Preview screen)
+ * rather than keep stacking heuristics blind.
  *
  * @package Uws\Extractors
  */
@@ -62,6 +75,19 @@ class ImageExtractor implements ProductExtractorInterface {
 	/** An <img> with both dimensions at or below this (in its own width/height attributes) is icon-sized, not a product photo. */
 	const ICON_MAX_DIMENSION = 32;
 
+	/**
+	 * class/id substrings (case-insensitive) that identify a product image
+	 * gallery/container across common platforms — WooCommerce's own
+	 * markup, 1C-Bitrix catalog templates ("detail_picture", "sku_props"),
+	 * and generic "product-image"/"product-gallery" theme conventions.
+	 * Checked in order; the first one present on the page wins.
+	 */
+	const GALLERY_CONTAINER_HINTS = array(
+		'woocommerce-product-gallery', 'product-gallery', 'product-images', 'product-image',
+		'product-photo', 'product-photos', 'detail_picture', 'element-image', 'item-photo',
+		'item-image', 'gallery-product', 'fotorama',
+	);
+
 	public function get_name() {
 		return 'image';
 	}
@@ -75,14 +101,49 @@ class ImageExtractor implements ProductExtractorInterface {
 	}
 
 	public function extract( array $page ) {
-		$data  = new ProductData();
-		$xpath = HtmlDocument::xpath( (string) $page['html'] );
-		$base  = ! empty( $page['final_url'] ) ? $page['final_url'] : '';
+		$xpath     = HtmlDocument::xpath( (string) $page['html'] );
+		$base      = ! empty( $page['final_url'] ) ? $page['final_url'] : '';
 		$page_host = $base ? (string) ( wp_parse_url( $base, PHP_URL_HOST ) ?: '' ) : '';
 
+		$container = $this->find_gallery_container( $xpath );
+		if ( $container ) {
+			$scoped = $this->collect_images( $xpath->query( './/img', $container ), $base, $page_host );
+			if ( ! empty( $scoped->images ) ) {
+				return $scoped;
+			}
+		}
+
+		return $this->collect_images( $xpath->query( '//img' ), $base, $page_host );
+	}
+
+	/**
+	 * @param \DOMXPath $xpath
+	 * @return \DOMElement|null First element whose class or id matches a
+	 *                          known gallery-container convention.
+	 */
+	private function find_gallery_container( \DOMXPath $xpath ) {
+		foreach ( self::GALLERY_CONTAINER_HINTS as $hint ) {
+			$nodes = $xpath->query(
+				"//*[contains(translate(concat(@class,' ',@id), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '{$hint}')]"
+			);
+			if ( $nodes->length > 0 ) {
+				return $nodes->item( 0 );
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @param \DOMNodeList $img_nodes
+	 * @param string       $base
+	 * @param string       $page_host
+	 * @return ProductData
+	 */
+	private function collect_images( \DOMNodeList $img_nodes, $base, $page_host ) {
+		$data = new ProductData();
 		$seen = array();
 
-		foreach ( $xpath->query( '//img' ) as $img ) {
+		foreach ( $img_nodes as $img ) {
 			/** @var \DOMElement $img */
 			if ( $this->is_icon_sized( $img ) ) {
 				continue;

@@ -95,6 +95,9 @@ class Menu {
 					'httpEngineHint'    => __( 'Fetched via plain HTTP (no browser needed).', 'universal-woo-scraper' ),
 					'httpEngineEmptyHint' => __( 'Fetched via plain HTTP (no browser) and found little usable data — this site may render its content with JavaScript. Try deploying the Playwright worker under Browser Settings for this site.', 'universal-woo-scraper' ),
 					'browserEngineHint' => __( 'Fetched via the Playwright browser worker.', 'universal-woo-scraper' ),
+					'urlsQueuedTemplate'    => __( '%1$d / %2$d URLs queued.', 'universal-woo-scraper' ),
+					'categoryQueuedTemplate' => __( 'Category job #%d queued.', 'universal-woo-scraper' ),
+					'duplicatePromptSuffix'  => __( '). Type "update", "duplicate", or "skip":', 'universal-woo-scraper' ),
 					'error'          => __( 'Error', 'universal-woo-scraper' ),
 				),
 			)
