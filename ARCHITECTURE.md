@@ -216,6 +216,22 @@ a queue that never moves for reasons entirely outside the plugin (no
 visitors → no cron trigger), which looks identical to a genuinely stuck
 queue from the admin's side.
 
+Neither of those covers a hard PHP fatal (hitting `max_execution_time`
+or `memory_limit`) during one job — not a catchable `Throwable`, so the
+try/catch above can't turn it into a normal failure; the fix has to be
+not hitting the limit. `handle_tick()` raises the execution time limit
+(120s) and the memory limit (`wp_raise_memory_limit()`) before processing
+a tick's jobs, and `process_category_job()` caps how many links from one
+listing page it acts on (`MAX_LINKS_PER_CATEGORY_PAGE`, 200) — a real
+catalog-root page can mean substantially more network and DB work, and a
+substantially larger HTML payload to parse, than a single product page
+ever would. Relatedly, `ScraperEngineInterface::discover_product_urls()`
+accepts an optional `$prefetched_page`: `process_category_job()` already
+had to fetch its URL once to classify it, so passing that same page
+through avoids `discover_product_urls()` fetching (and holding in memory
+alongside the first copy) that exact same potentially-large page a
+second time purely to find its links.
+
 ## 3. Directory layout (WordPress plugin, PSR-4 autoloaded)
 
 ```

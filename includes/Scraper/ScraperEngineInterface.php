@@ -46,11 +46,19 @@ interface ScraperEngineInterface {
 	 * "Load more" control up to $max_pages, and returns the discovered
 	 * product URLs (spec §19–20).
 	 *
-	 * @param string              $url
-	 * @param array<string,mixed> $options max_pages, pagination_strategy ('query'|'path'|'load_more'|'infinite_scroll').
+	 * @param string                    $url
+	 * @param array<string,mixed>       $options max_pages, pagination_strategy ('query'|'path'|'load_more'|'infinite_scroll').
+	 * @param array<string,mixed>|null  $prefetched_page A page already
+	 *        fetched for this exact $url (see fetch_page()) — skips
+	 *        fetching page 1 again. The category-tree crawler
+	 *        (Dispatcher::process_category_job(), spec §19) always has one
+	 *        on hand already, since it must fetch the URL anyway to decide
+	 *        whether it's a product page before calling this; without this,
+	 *        a large listing page would be fetched and held in memory
+	 *        twice at once for no reason.
 	 * @return string[]|\WP_Error
 	 */
-	public function discover_product_urls( $url, array $options = array() );
+	public function discover_product_urls( $url, array $options = array(), array $prefetched_page = null );
 
 	/**
 	 * @return bool Whether the worker is reachable and reports itself healthy.

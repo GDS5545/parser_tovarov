@@ -82,7 +82,7 @@ class HttpEngine implements ScraperEngineInterface {
 		);
 	}
 
-	public function discover_product_urls( $url, array $options = array() ) {
+	public function discover_product_urls( $url, array $options = array(), array $prefetched_page = null ) {
 		$valid = UrlValidator::validate( $url );
 		if ( is_wp_error( $valid ) ) {
 			return $valid;
@@ -102,7 +102,7 @@ class HttpEngine implements ScraperEngineInterface {
 		for ( $page_number = 1; $page_number <= $max_pages; $page_number++ ) {
 			$page_url = 1 === $page_number ? $url : $this->paginate_url( $url, $strategy, $page_number );
 
-			$page = $this->fetch_page( $page_url );
+			$page = ( 1 === $page_number && null !== $prefetched_page ) ? $prefetched_page : $this->fetch_page( $page_url );
 			if ( is_wp_error( $page ) ) {
 				break; // Later pages may simply not exist (404) — keep whatever was already found.
 			}
@@ -110,6 +110,7 @@ class HttpEngine implements ScraperEngineInterface {
 			foreach ( $this->extract_links( $page['html'], $page_url ) as $link ) {
 				$found[ $link ] = true;
 			}
+			unset( $page ); // A large listing page's HTML has no reason to stay alive once its links are extracted.
 		}
 
 		return array_keys( $found );

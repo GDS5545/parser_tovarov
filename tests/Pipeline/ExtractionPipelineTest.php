@@ -15,7 +15,7 @@ final class FakeEngine implements ScraperEngineInterface {
 	public function fetch_page( $url, array $options = array() ) {
 		return $this->page;
 	}
-	public function discover_product_urls( $url, array $options = array() ) {
+	public function discover_product_urls( $url, array $options = array(), array $prefetched_page = null ) {
 		return array();
 	}
 	public function health_check() {
@@ -87,7 +87,7 @@ final class ExtractionPipelineTest extends TestCase {
 				$this->fetch_calls++;
 				return $this->page;
 			}
-			public function discover_product_urls( $url, array $options = array() ) { return array(); }
+			public function discover_product_urls( $url, array $options = array(), array $prefetched_page = null ) { return array(); }
 			public function health_check() { return true; }
 		};
 

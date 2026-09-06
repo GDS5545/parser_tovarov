@@ -42,7 +42,10 @@ class PlaywrightHttpEngine implements ScraperEngineInterface {
 		return $this->post( '/fetch', array( 'url' => $url, 'options' => $options ) );
 	}
 
-	public function discover_product_urls( $url, array $options = array() ) {
+	public function discover_product_urls( $url, array $options = array(), array $prefetched_page = null ) {
+		// $prefetched_page is unused here: the worker does its own fetch in
+		// its own process, so there's no local PHP memory to save by
+		// passing one along — accepted only to satisfy the interface.
 		$valid = UrlValidator::validate( $url );
 		if ( is_wp_error( $valid ) ) {
 			return $valid;

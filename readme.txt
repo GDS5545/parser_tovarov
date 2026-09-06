@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.3
+Stable tag: 0.9.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.4 =
+* Fixed a likely cause of the fatal error 0.9.3's time-limit fix didn't
+  catch: a category job fetched its own listing page twice — once to
+  classify it (product vs. listing), a second time inside
+  discover_product_urls() to find its links — holding two full copies of
+  a potentially large page's HTML in memory at once, on top of every
+  extractor parsing that HTML into its own DOMDocument during
+  classification. `ScraperEngineInterface::discover_product_urls()` now
+  accepts the page already fetched for classification and reuses it
+  instead of fetching page 1 again; `Dispatcher` also raises PHP's memory
+  limit for the same reason the previous release raised its time limit —
+  a real catalog page can need meaningfully more of both than a single
+  product page ever would.
 
 = 0.9.3 =
 * Raised the PHP execution time limit (to 120s) for the queue's per-tick

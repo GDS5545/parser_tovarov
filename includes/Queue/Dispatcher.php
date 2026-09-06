@@ -71,6 +71,24 @@ class Dispatcher {
 			@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.PHP.DiscouragedPHPFunctions
 		}
 
+		// Every extractor parses $page['html'] into its own DOMDocument
+		// independently (simplest correct design — each is a small,
+		// self-contained unit that only needs a $page array in, ProductData
+		// out — but it does mean a large listing page's HTML gets parsed by
+		// libxml roughly once per extractor). On a shared host's often-low
+		// default memory_limit (64M-128M), a large real-world catalog page
+		// can exhaust that before a smaller product page ever would.
+		// wp_raise_memory_limit() is WP's own equivalent for admin/cron
+		// contexts (respects WP_MEMORY_LIMIT/WP_MAX_MEMORY_LIMIT if set);
+		// falling back to a flat override only if that function is missing
+		// (a REST request, unlike admin-ajax/cron, isn't one of its
+		// recognized contexts) or declines to raise it.
+		if ( function_exists( 'wp_raise_memory_limit' ) ) {
+			wp_raise_memory_limit( 'admin' );
+		} elseif ( function_exists( 'ini_set' ) ) {
+			@ini_set( 'memory_limit', '256M' ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.PHP.IniSet
+		}
+
 		/** @var \Uws\Scraper\ScraperEngineInterface|null $engine */
 		$engine = apply_filters( 'uws_scraper_engine', null );
 
@@ -167,7 +185,8 @@ class Dispatcher {
 			return;
 		}
 
-		$urls = $engine->discover_product_urls( $job->url, $options );
+		$urls = $engine->discover_product_urls( $job->url, $options, $page );
+		unset( $page ); // Already used for classification and link discovery — no reason to hold a possibly-large page in memory any longer.
 		if ( is_wp_error( $urls ) ) {
 			$this->fail( $repository, $job, $urls->get_error_message() );
 			return;
