@@ -608,3 +608,45 @@ msgstr "example.com — только домен, а не полный URL стр
 msgid "These fields don't look like XPath expressions, they look like literal text or a URL: %s. An XPath expression is a *path to the element* (it normally starts with / or //, e.g. //h1[@class=\"product-title\"]), not the value itself — get one from your browser's DevTools as described above. As saved, these fields will not match anything and automatic detection will be used instead."
 msgstr "Эти поля не похожи на XPath-выражения, а похожи на обычный текст или URL: %s. XPath-выражение — это *путь к элементу* (обычно начинается с / или //, например //h1[@class=\"product-title\"]), а не само значение — получите его в DevTools браузера, как описано выше. В сохранённом виде эти поля не будут ничему соответствовать, и для них продолжит использоваться автоопределение."
 
+msgid "You do not have permission to do this."
+msgstr "У вас нет прав для этого действия."
+
+msgid "Site template not found."
+msgstr "Шаблон сайта не найден."
+
+msgid "XPath Picker (no DevTools needed)"
+msgstr "Выбор XPath (без DevTools)"
+
+msgid "Drag this button to your bookmarks bar. Open the product page you want to build a template from, click the bookmarklet, then click each element (name, price, image, description…) directly on the page — it shows the XPath for you to copy into the fields below. Click \"Stop\" or press Esc when done."
+msgstr "Перетащите эту кнопку на панель закладок браузера. Откройте страницу товара, для которой хотите создать шаблон, нажмите на закладку, затем щёлкайте прямо на странице по нужным элементам (название, цена, изображение, описание…) — появится XPath, который нужно скопировать в поля ниже. По завершении нажмите «Stop» или Esc."
+
+msgid "Drag this button to your bookmarks bar instead of clicking it — clicking it here does nothing useful."
+msgstr "Перетащите эту кнопку на панель закладок вместо того, чтобы нажимать на неё здесь — нажатие здесь ни к чему не приведёт."
+
+msgid "UWS XPath Picker"
+msgstr "UWS Выбор XPath"
+
+msgid "Import / Export"
+msgstr "Импорт / Экспорт"
+
+msgid "Export a template as JSON to move it to another WordPress install, or to share it. Import one someone else (or you) prepared, in the same format."
+msgstr "Экспортируйте шаблон в формате JSON, чтобы перенести его на другой сайт WordPress или поделиться им. Импортируйте шаблон, подготовленный вами или кем-то другим, в том же формате."
+
+msgid "Export all templates"
+msgstr "Экспортировать все шаблоны"
+
+msgid "Import JSON"
+msgstr "Импортировать JSON"
+
+msgid "Export"
+msgstr "Экспорт"
+
+msgid "That JSON could not be parsed. Check it's valid and try again."
+msgstr "Не удалось разобрать этот JSON. Проверьте его корректность и попробуйте снова."
+
+msgid "Imported %d site template."
+msgid_plural "Imported %d site templates."
+msgstr[0] "Импортирован %d шаблон сайта."
+msgstr[1] "Импортировано %d шаблона сайта."
+msgstr[2] "Импортировано %d шаблонов сайта."
+

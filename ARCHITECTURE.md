@@ -117,6 +117,28 @@ saving now warns when a field's value doesn't look like an XPath (no
 leading `/`/`(`, no `[`/`@`), and every field's placeholder is now a real
 XPath example rather than a description.
 
+Neither fix addressed the root problem: a merchant without DevTools
+experience still has no reliable way to *find* the right XPath in the
+first place, and this environment cannot fetch the merchant's real site
+to work one out for them (outbound access to arbitrary external domains
+is blocked here). So the Site Templates page also ships an **"XPath
+Picker" bookmarklet** (`assets/js/xpath-picker.js`, injected as a
+`javascript:` URI built by `SiteTemplatesPage::bookmarklet_href()`):
+dragged to the bookmarks bar and run on the live product page, it
+overlays a floating panel, highlights whatever element the mouse is over,
+and on click computes that element's XPath client-side (walking up
+parents, preferring `//*[@id="…"]` when available, else a positional
+`tag[N]` index) and logs it for the merchant to copy — no DevTools
+"Copy XPath" menu required.
+
+**Import/Export (spec §49).** Once a template is worked out (via the
+picker or otherwise), `SiteTemplatesPage` can export it — or all
+templates — as JSON (`SourceRepository::find_by_id()` backs the
+single-template export) via `admin-post.php` download handlers
+registered in `Menu::register()`, and import JSON pasted back in,
+so a working template moves between installs, or between merchants,
+without retyping every field by hand.
+
 **`Support\ContainerFinder`** — shared by `ImageExtractor`,
 `SpecificationExtractor`, and `DomExtractor`'s price search: look for an
 element whose class/id matches a list of platform-specific container

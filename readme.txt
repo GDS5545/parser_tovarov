@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.8.1
+Stable tag: 0.8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.8.2 =
+* Added an "XPath Picker" bookmarklet to the Site Templates page: drag it
+  to your bookmarks bar, open the real product page, click it, then click
+  each element on the page (name, price, image, description…) to see its
+  XPath printed for you to copy — no browser DevTools knowledge required.
+  Added because a manually-written Site Template kept getting the domain
+  and selector fields wrong; this lets a merchant generate correct XPath
+  expressions directly from the live page instead of guessing.
+* Added Import/Export for Site Templates (spec §49): export any single
+  template, or all of them, as JSON from the templates table; paste JSON
+  back in to import one or many templates at once, so a template built
+  once (including via the XPath Picker above) can be reused across sites
+  or shared without retyping every field by hand.
 
 = 0.8.1 =
 * Fixed a real bug found live: Site Templates' Domain field only

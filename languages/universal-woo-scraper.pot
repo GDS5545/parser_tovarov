@@ -604,3 +604,43 @@ msgstr ""
 msgid "These fields don't look like XPath expressions, they look like literal text or a URL: %s. An XPath expression is a *path to the element* (it normally starts with / or //, e.g. //h1[@class=\"product-title\"]), not the value itself — get one from your browser's DevTools as described above. As saved, these fields will not match anything and automatic detection will be used instead."
 msgstr ""
 
+msgid "You do not have permission to do this."
+msgstr ""
+
+msgid "Site template not found."
+msgstr ""
+
+msgid "XPath Picker (no DevTools needed)"
+msgstr ""
+
+msgid "Drag this button to your bookmarks bar. Open the product page you want to build a template from, click the bookmarklet, then click each element (name, price, image, description…) directly on the page — it shows the XPath for you to copy into the fields below. Click \"Stop\" or press Esc when done."
+msgstr ""
+
+msgid "Drag this button to your bookmarks bar instead of clicking it — clicking it here does nothing useful."
+msgstr ""
+
+msgid "UWS XPath Picker"
+msgstr ""
+
+msgid "Import / Export"
+msgstr ""
+
+msgid "Export a template as JSON to move it to another WordPress install, or to share it. Import one someone else (or you) prepared, in the same format."
+msgstr ""
+
+msgid "Export all templates"
+msgstr ""
+
+msgid "Import JSON"
+msgstr ""
+
+msgid "Export"
+msgstr ""
+
+msgid "That JSON could not be parsed. Check it's valid and try again."
+msgstr ""
+
+msgid "Imported %d site template."
+msgid_plural "Imported %d site templates."
+msgstr[0] ""
+msgstr[1] ""

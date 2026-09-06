@@ -34,6 +34,7 @@ class Menu {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		( new SettingsRegistrar() )->register();
+		SiteTemplatesPage::register_export_handlers();
 	}
 
 	public function register_menu() {

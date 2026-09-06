@@ -45,6 +45,27 @@ class SourceRepository {
 	}
 
 	/**
+	 * @param int $id
+	 * @return object|null
+	 */
+	public function find_by_id( $id ) {
+		global $wpdb;
+		$table = Tables::sources();
+
+		$row = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", (int) $id ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+		if ( ! $row ) {
+			return null;
+		}
+
+		$profile        = json_decode( (string) $row->profile, true );
+		$row->selectors = is_array( $profile ) && ! empty( $profile['selectors'] ) ? $profile['selectors'] : array();
+
+		return $row;
+	}
+
+	/**
 	 * @return array<int,object> Every configured Site Template, most recently updated first.
 	 */
 	public function all() {

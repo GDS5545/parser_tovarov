@@ -26,8 +26,74 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class SiteTemplatesPage {
 
-	const SAVE_ACTION   = 'uws_save_site_template';
-	const DELETE_ACTION = 'uws_delete_site_template';
+	const SAVE_ACTION    = 'uws_save_site_template';
+	const DELETE_ACTION  = 'uws_delete_site_template';
+	const IMPORT_ACTION  = 'uws_import_site_template';
+	const EXPORT_ONE     = 'uws_export_site_template';
+	const EXPORT_ALL     = 'uws_export_site_templates_all';
+
+	/**
+	 * Registers the admin-post handlers for JSON export (spec §49) — these
+	 * must fire before any admin-page HTML is output, so unlike save/
+	 * delete/import (handled inline at the top of render()) they're wired
+	 * through WordPress's admin-post.php mechanism instead. Called once
+	 * from Menu::register().
+	 */
+	public static function register_export_handlers() {
+		add_action( 'admin_post_' . self::EXPORT_ONE, array( new self(), 'handle_export_one' ) );
+		add_action( 'admin_post_' . self::EXPORT_ALL, array( new self(), 'handle_export_all' ) );
+	}
+
+	/**
+	 * admin-post.php handler: downloads one template as a JSON file.
+	 */
+	public function handle_export_one() {
+		check_admin_referer( self::EXPORT_ONE );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'universal-woo-scraper' ) );
+		}
+
+		$template = ( new SourceRepository() )->find_by_id( (int) ( $_GET['id'] ?? 0 ) );
+		if ( ! $template ) {
+			wp_die( esc_html__( 'Site template not found.', 'universal-woo-scraper' ) );
+		}
+
+		$this->send_json_download(
+			array( array( 'domain' => $template->domain, 'selectors' => $template->selectors ) ),
+			'uws-site-template-' . sanitize_file_name( $template->domain ) . '.json'
+		);
+	}
+
+	/**
+	 * admin-post.php handler: downloads every configured template as one JSON file.
+	 */
+	public function handle_export_all() {
+		check_admin_referer( self::EXPORT_ALL );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			wp_die( esc_html__( 'You do not have permission to do this.', 'universal-woo-scraper' ) );
+		}
+
+		$templates = array_map(
+			function ( $template ) {
+				return array( 'domain' => $template->domain, 'selectors' => $template->selectors );
+			},
+			( new SourceRepository() )->all()
+		);
+
+		$this->send_json_download( $templates, 'uws-site-templates.json' );
+	}
+
+	/**
+	 * @param array<int,array<string,mixed>> $payload
+	 * @param string                         $filename
+	 */
+	private function send_json_download( array $payload, $filename ) {
+		nocache_headers();
+		header( 'Content-Type: application/json; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+		echo wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+		exit;
+	}
 
 	/** Ordered field keys shown on the form; must match Uws\Database\SourceRepository::SELECTOR_FIELDS. */
 	const FIELDS = array( 'name', 'sku', 'brand', 'price', 'sale_price', 'description', 'short_description', 'specifications', 'images', 'categories' );
@@ -105,6 +171,7 @@ class SiteTemplatesPage {
 
 		$this->maybe_handle_save( $repository );
 		$this->maybe_handle_delete( $repository );
+		$this->maybe_handle_import( $repository );
 
 		$editing_domain = isset( $_GET['edit'] ) ? sanitize_text_field( wp_unslash( $_GET['edit'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$editing        = $editing_domain ? $repository->find( $editing_domain ) : null;
@@ -118,6 +185,30 @@ class SiteTemplatesPage {
 			<p><strong><?php esc_html_e( 'Important: type a path to the element (an XPath expression, usually starting with //), never the value itself.', 'universal-woo-scraper' ); ?></strong>
 				<?php esc_html_e( 'For example, for the price field, the correct entry looks like //span[@itemprop="price"] — NOT the price "23820" itself. The grey example text in each field below is the shape to copy, not real data.', 'universal-woo-scraper' ); ?>
 			</p>
+
+			<div class="uws-card">
+				<h2><?php esc_html_e( 'XPath Picker (no DevTools needed)', 'universal-woo-scraper' ); ?></h2>
+				<p>
+					<?php esc_html_e( 'Drag this button to your bookmarks bar. Open the product page you want to build a template from, click the bookmarklet, then click each element (name, price, image, description…) directly on the page — it shows the XPath for you to copy into the fields below. Click "Stop" or press Esc when done.', 'universal-woo-scraper' ); ?>
+				</p>
+				<p>
+					<a href="<?php echo esc_url( $this->bookmarklet_href() ); ?>" class="button button-hero" onclick="alert('<?php echo esc_js( __( 'Drag this button to your bookmarks bar instead of clicking it — clicking it here does nothing useful.', 'universal-woo-scraper' ) ); ?>'); return false;">📍 <?php esc_html_e( 'UWS XPath Picker', 'universal-woo-scraper' ); ?></a>
+				</p>
+			</div>
+
+			<div class="uws-card">
+				<h2><?php esc_html_e( 'Import / Export', 'universal-woo-scraper' ); ?></h2>
+				<p><?php esc_html_e( 'Export a template as JSON to move it to another WordPress install, or to share it. Import one someone else (or you) prepared, in the same format.', 'universal-woo-scraper' ); ?></p>
+				<p>
+					<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=' . self::EXPORT_ALL ), self::EXPORT_ALL ) ); ?>"><?php esc_html_e( 'Export all templates', 'universal-woo-scraper' ); ?></a>
+				</p>
+				<form method="post">
+					<?php wp_nonce_field( self::IMPORT_ACTION ); ?>
+					<input type="hidden" name="action" value="<?php echo esc_attr( self::IMPORT_ACTION ); ?>" />
+					<textarea name="template_json" rows="6" class="large-text code" placeholder='[{"domain":"example.com","selectors":{"name":"//h1","price":"//span[@class=\"price\"]"}}]'></textarea>
+					<p><button type="submit" class="button"><?php esc_html_e( 'Import JSON', 'universal-woo-scraper' ); ?></button></p>
+				</form>
+			</div>
 
 			<form method="post" class="uws-card">
 				<?php wp_nonce_field( self::SAVE_ACTION ); ?>
@@ -166,6 +257,7 @@ class SiteTemplatesPage {
 								<td><?php echo esc_html( implode( ', ', array_keys( $template->selectors ) ) ); ?></td>
 								<td>
 									<a class="button" href="<?php echo esc_url( add_query_arg( 'edit', rawurlencode( $template->domain ) ) ); ?>"><?php esc_html_e( 'Edit', 'universal-woo-scraper' ); ?></a>
+									<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=' . self::EXPORT_ONE . '&id=' . $template->id ), self::EXPORT_ONE ) ); ?>"><?php esc_html_e( 'Export', 'universal-woo-scraper' ); ?></a>
 									<form method="post" style="display:inline;" onsubmit="return confirm('<?php echo esc_js( __( 'Delete this site template?', 'universal-woo-scraper' ) ); ?>');">
 										<?php wp_nonce_field( self::DELETE_ACTION ); ?>
 										<input type="hidden" name="action" value="<?php echo esc_attr( self::DELETE_ACTION ); ?>" />
@@ -273,6 +365,69 @@ class SiteTemplatesPage {
 			return true;
 		}
 		return false !== strpos( $value, '@' ) || false !== strpos( $value, '[' );
+	}
+
+	/**
+	 * Accepts the JSON shape produced by handle_export_one()/
+	 * handle_export_all() — a single {domain, selectors} object or an
+	 * array of them — and upserts each as a template (spec §49: export/
+	 * import Site Profiles to move between WordPress installs).
+	 */
+	private function maybe_handle_import( SourceRepository $repository ) {
+		if ( ! isset( $_POST['action'] ) || self::IMPORT_ACTION !== $_POST['action'] ) {
+			return;
+		}
+		check_admin_referer( self::IMPORT_ACTION );
+		if ( ! current_user_can( 'manage_woocommerce' ) ) {
+			return;
+		}
+
+		$raw = isset( $_POST['template_json'] ) ? wp_unslash( $_POST['template_json'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		$decoded = json_decode( $raw, true );
+
+		if ( null === $decoded && '' !== trim( (string) $raw ) ) {
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'That JSON could not be parsed. Check it\'s valid and try again.', 'universal-woo-scraper' ) . '</p></div>';
+			return;
+		}
+
+		$entries = isset( $decoded['domain'] ) ? array( $decoded ) : (array) $decoded;
+		$imported = 0;
+
+		foreach ( $entries as $entry ) {
+			if ( empty( $entry['domain'] ) || empty( $entry['selectors'] ) || ! is_array( $entry['selectors'] ) ) {
+				continue;
+			}
+			$domain = self::normalize_domain( sanitize_text_field( $entry['domain'] ) );
+			if ( '' === $domain ) {
+				continue;
+			}
+
+			$selectors = array();
+			foreach ( SourceRepository::SELECTOR_FIELDS as $field ) {
+				if ( ! empty( $entry['selectors'][ $field ] ) && is_string( $entry['selectors'][ $field ] ) ) {
+					$selectors[ $field ] = sanitize_text_field( $entry['selectors'][ $field ] );
+				}
+			}
+
+			$repository->save( $domain, $selectors );
+			$imported++;
+		}
+
+		echo '<div class="notice ' . ( $imported ? 'notice-success' : 'notice-warning' ) . ' is-dismissible"><p>' .
+			esc_html( sprintf(
+				/* translators: %d: number of templates imported */
+				_n( 'Imported %d site template.', 'Imported %d site templates.', $imported, 'universal-woo-scraper' ),
+				$imported
+			) ) . '</p></div>';
+	}
+
+	/**
+	 * @return string A javascript: bookmarklet URI built from assets/js/xpath-picker.js.
+	 */
+	private function bookmarklet_href() {
+		$path = UWS_PLUGIN_DIR . 'assets/js/xpath-picker.js';
+		$js   = is_readable( $path ) ? file_get_contents( $path ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		return 'javascript:' . rawurlencode( $js );
 	}
 
 	private function maybe_handle_delete( SourceRepository $repository ) {
