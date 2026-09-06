@@ -109,6 +109,39 @@ class JobRepository {
 	}
 
 	/**
+	 * Recovers jobs stuck in 'processing': a crash mid-tick (PHP fatal
+	 * error, hosting timeout killing the request) leaves a job's status set
+	 * to 'processing' forever otherwise, since fetch_due() only ever looks
+	 * at 'pending'/'retry' — with no code path left that will ever touch
+	 * that row again, the whole queue can appear to just stop, with no log
+	 * entry explaining why (Dispatcher::handle_tick() now also wraps each
+	 * job in try/catch so this should be rare, but a fatal error can still
+	 * happen below the catch, e.g. a hosting timeout that kills the
+	 * request outright). Called once per cron tick, before fetch_due().
+	 *
+	 * @param int $older_than_minutes A job younger than this is left alone —
+	 *        it may simply still be running.
+	 * @return array<int,object> The jobs that were reset, so the caller can log it.
+	 */
+	public function reset_stale_processing( $older_than_minutes = 10 ) {
+		global $wpdb;
+		$table  = Tables::jobs();
+		$cutoff = gmdate( 'Y-m-d H:i:s', time() - max( 1, (int) $older_than_minutes ) * 60 );
+
+		$stuck = $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$table} WHERE status = 'processing' AND updated_at <= %s", $cutoff ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+
+		if ( $stuck ) {
+			$wpdb->query(
+				$wpdb->prepare( "UPDATE {$table} SET status = 'pending', updated_at = %s WHERE status = 'processing' AND updated_at <= %s", current_time( 'mysql', true ), $cutoff ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			);
+		}
+
+		return $stuck ?: array();
+	}
+
+	/**
 	 * @param int    $id
 	 * @param string $status One of self::STATUSES.
 	 * @param array<string,mixed> $extra Extra columns to set (result, error_message, next_retry_at, attempts).

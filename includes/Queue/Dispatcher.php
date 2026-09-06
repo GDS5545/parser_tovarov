@@ -69,10 +69,20 @@ class Dispatcher {
 				continue;
 			}
 
-			if ( 'category' === $job->type ) {
-				$this->process_category_job( $repository, $job, $engine );
-			} else {
-				$this->process_single_job( $repository, $job, $engine );
+			try {
+				if ( 'category' === $job->type ) {
+					$this->process_category_job( $repository, $job, $engine );
+				} else {
+					$this->process_single_job( $repository, $job, $engine );
+				}
+			} catch ( \Throwable $e ) {
+				// Without this, an unexpected error (a page structure that
+				// crashes an extractor, a WooCommerce API edge case, ...)
+				// would fatal the whole cron request with the job frozen at
+				// 'processing' — no log entry, no retry, and no due job
+				// after it in this tick would run either. fail() gets this
+				// job a proper log entry and normal retry/backoff instead.
+				$this->fail( $repository, $job, $e->getMessage() );
 			}
 		}
 	}

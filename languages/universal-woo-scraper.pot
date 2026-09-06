@@ -610,6 +610,9 @@ msgstr ""
 msgid "Discovered %1$d links, queued %2$d for further crawling/import."
 msgstr ""
 
+msgid "Recovered a job stuck in \"processing\" (likely an unexpected crash mid-run) and reset it to pending."
+msgstr ""
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr ""
 

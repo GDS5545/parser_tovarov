@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.0
+Stable tag: 0.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.1 =
+* Fixed a robustness gap in the queue worker: an unexpected error partway
+  through a job (a page structure that crashes an extractor, an edge
+  case in the WooCommerce API, a hosting timeout, ...) previously
+  crashed the whole cron tick with the job frozen at "processing"
+  forever — no log entry, no retry, and the queue would look like it
+  had simply stopped with nothing to explain why. `Dispatcher` now
+  catches any such error per job and records it as a normal failure
+  (logged, retried with backoff) instead. As a second safety net, every
+  cron tick now also recovers any job still stuck in "processing" from
+  more than 10 minutes ago (a hosting timeout can still kill a request
+  outright, skipping even that catch) and resets it back to pending,
+  with a log entry noting the recovery.
 
 = 0.9.0 =
 * "Import from a category / listing URL" (Bulk Import) now crawls a

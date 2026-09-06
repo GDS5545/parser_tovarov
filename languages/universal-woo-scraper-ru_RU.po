@@ -614,6 +614,9 @@ msgstr "Максимальная глубина обхода вложенных 
 msgid "Discovered %1$d links, queued %2$d for further crawling/import."
 msgstr "Найдено ссылок: %1$d, поставлено в очередь на дальнейший обход/импорт: %2$d."
 
+msgid "Recovered a job stuck in \"processing\" (likely an unexpected crash mid-run) and reset it to pending."
+msgstr "Восстановлена зависшая в статусе «processing» задача (вероятно, из-за сбоя в процессе выполнения) — возвращена в статус «pending»."
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr "example.com — только домен, а не полный URL страницы товара"
 
