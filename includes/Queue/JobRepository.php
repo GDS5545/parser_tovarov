@@ -95,7 +95,7 @@ class JobRepository {
 		$table = Tables::jobs();
 		$now   = current_time( 'mysql', true );
 
-		return $wpdb->get_results(
+		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT * FROM {$table}
 				 WHERE status IN ('pending','retry')
@@ -106,6 +106,8 @@ class JobRepository {
 				$limit
 			)
 		); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $table is a controlled identifier from Tables::jobs().
+
+		return self::as_row_array( $rows );
 	}
 
 	/**
@@ -128,8 +130,10 @@ class JobRepository {
 		$table  = Tables::jobs();
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - max( 1, (int) $older_than_minutes ) * 60 );
 
-		$stuck = $wpdb->get_results(
-			$wpdb->prepare( "SELECT * FROM {$table} WHERE status = 'processing' AND updated_at <= %s", $cutoff ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$stuck = self::as_row_array(
+			$wpdb->get_results(
+				$wpdb->prepare( "SELECT * FROM {$table} WHERE status = 'processing' AND updated_at <= %s", $cutoff ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			)
 		);
 
 		if ( $stuck ) {
@@ -138,7 +142,28 @@ class JobRepository {
 			);
 		}
 
-		return $stuck ?: array();
+		return $stuck;
+	}
+
+	/**
+	 * Normalizes a $wpdb->get_results() return value to a guaranteed array.
+	 * Belt-and-suspenders around a real crash: `Dispatcher::handle_tick(
+	 * array $due_jobs, ...)` fataled with "stdClass given" for
+	 * `fetch_due()`'s return value on a live site — get_results() is
+	 * documented to always return an array (possibly empty) or null, never
+	 * a bare row object, so this should be unreachable, but the crash
+	 * happened regardless (a wpdb drop-in, an object-cache layer, or some
+	 * other environment specific to that host may be involved) and this
+	 * call site cannot afford to fatal the whole request over it.
+	 *
+	 * @param mixed $result
+	 * @return array<int,object>
+	 */
+	private static function as_row_array( $result ) {
+		if ( is_array( $result ) ) {
+			return $result;
+		}
+		return is_object( $result ) ? array( $result ) : array();
 	}
 
 	/**

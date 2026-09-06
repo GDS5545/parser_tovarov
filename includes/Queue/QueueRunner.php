@@ -53,6 +53,14 @@ class QueueRunner {
 		}
 
 		$due_jobs = $this->jobs->fetch_due( self::batch_size() );
+		if ( ! is_array( $due_jobs ) ) {
+			// fetch_due() already guarantees an array; this is a second,
+			// cheap guard directly at the call site that fatal-crashed on a
+			// live install ("Argument #1 ($due_jobs) must be of type array,
+			// stdClass given") — whatever produced that, do_action() below
+			// must never receive anything but an array.
+			$due_jobs = is_object( $due_jobs ) ? array( $due_jobs ) : array();
+		}
 
 		/**
 		 * Fires once per tick with the jobs that are due to run. Dispatcher

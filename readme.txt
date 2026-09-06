@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.4
+Stable tag: 0.9.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.5 =
+* Fixed the actual reported crash on a live "Run queue now" click, now
+  that debug logging caught it precisely: `Dispatcher::handle_tick()`
+  fataled with "Argument #1 ($due_jobs) must be of type array, stdClass
+  given" — `$wpdb->get_results()` is documented to always return an
+  array, so this should be unreachable, but it happened regardless on
+  that host (a wpdb drop-in or another environment-specific factor may
+  be involved; the exact cause wasn't fully identifiable from a debug
+  log alone). `JobRepository::fetch_due()` and `reset_stale_processing()`
+  now normalize their $wpdb results to a guaranteed array before
+  returning, and `QueueRunner::run_due_jobs()` re-checks right before
+  handing the batch to the dispatcher, so this can no longer fatal
+  regardless of what a given host's `$wpdb` happens to hand back.
 
 = 0.9.4 =
 * Fixed a likely cause of the fatal error 0.9.3's time-limit fix didn't
