@@ -131,6 +131,21 @@ parents, preferring `//*[@id="…"]` when available, else a positional
 `tag[N]` index) and logs it for the merchant to copy — no DevTools
 "Copy XPath" menu required.
 
+**Simpler domain matching.** A merchant saving `example.com` should not
+have to worry about whether the actual product page loads from
+`www.example.com` or a subdomain like `shop.example.com` — a template
+that only applied on an exact host match could silently fail to fire on
+a real page for no reason the merchant could see. `SourceRepository::
+find_for_host()` now tries an exact match first (the common, cheap case)
+and, only if that misses, falls back to `DomainMatcher::same_site()`
+(the same registrable-domain comparison `ImageExtractor` already used)
+across every saved template. Both `ManualSelectorExtractor` and
+`ExtractionPipeline::extractors_for_domain()` (which excludes the
+generic Image/Specification extractors when a template overrides those
+fields) use this lookup, so the two stay consistent — a template that
+applies via the fuzzy match still suppresses the generic extractors it's
+meant to replace.
+
 **Import/Export (spec §49).** Once a template is worked out (via the
 picker or otherwise), `SiteTemplatesPage` can export it — or all
 templates — as JSON (`SourceRepository::find_by_id()` backs the

@@ -598,6 +598,9 @@ msgstr ""
 msgid "For example, for the price field, the correct entry looks like //span[@itemprop=\"price\"] — NOT the price \"23820\" itself. The grey example text in each field below is the shape to copy, not real data."
 msgstr ""
 
+msgid "You only need to save one template per site: it is matched to any page on that domain automatically, including \"www.\" and other subdomain variants — you never need to look up or re-enter the exact host a product page happens to load from."
+msgstr ""
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr ""
 

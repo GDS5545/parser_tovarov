@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.8.2
+Stable tag: 0.8.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,16 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.8.3 =
+* Simplified Site Template domain matching: a template now applies to
+  any page on that domain automatically, including "www." and other
+  subdomain variants (e.g. a template saved for `example.com` also
+  matches `www.example.com` and `shop.example.com`). Previously the
+  saved domain had to match the product page's host exactly, which
+  meant an otherwise-correct template could silently fail to apply.
+  Exact matches are still tried first; the looser same-registrable-
+  domain match is only a fallback.
 
 = 0.8.2 =
 * Added an "XPath Picker" bookmarklet to the Site Templates page: drag it

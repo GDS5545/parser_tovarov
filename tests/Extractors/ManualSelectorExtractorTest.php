@@ -24,6 +24,9 @@ final class ManualSelectorExtractorTest extends TestCase {
 				}
 				return (object) array( 'domain' => $domain, 'selectors' => $this->selectors );
 			}
+			public function all() {
+				return array();
+			}
 		};
 	}
 

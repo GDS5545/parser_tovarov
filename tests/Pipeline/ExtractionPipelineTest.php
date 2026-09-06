@@ -34,6 +34,9 @@ final class ExtractionPipelineTest extends TestCase {
 			public function find( $domain ) {
 				return empty( $this->selectors ) ? null : (object) array( 'domain' => $domain, 'selectors' => $this->selectors );
 			}
+			public function all() {
+				return array();
+			}
 		};
 	}
 

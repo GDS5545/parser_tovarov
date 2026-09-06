@@ -101,7 +101,7 @@ class ManualSelectorExtractor implements ProductExtractorInterface {
 		}
 
 		if ( ! array_key_exists( $domain, $this->cache ) ) {
-			$template               = $this->sources->find( $domain );
+			$template               = $this->sources->find_for_host( $domain );
 			$this->cache[ $domain ] = $template ? $template->selectors : array();
 		}
 

@@ -137,7 +137,7 @@ class ExtractionPipeline {
 			return $this->extractors;
 		}
 
-		$template = $this->sources->find( $domain );
+		$template = $this->sources->find_for_host( $domain );
 		if ( ! $template || empty( $template->selectors ) ) {
 			return $this->extractors;
 		}

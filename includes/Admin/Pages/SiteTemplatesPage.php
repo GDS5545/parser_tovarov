@@ -182,6 +182,9 @@ class SiteTemplatesPage {
 			<p>
 				<?php esc_html_e( 'For a site whose markup the automatic extractors can\'t read correctly, tell the plugin exactly where each field lives with an XPath expression. Get one from your browser\'s DevTools: right-click the element on the page → Copy → "Copy XPath" (Chrome/Edge) or "XPath" (Firefox). Any field left blank here keeps using automatic detection.', 'universal-woo-scraper' ); ?>
 			</p>
+			<p>
+				<?php esc_html_e( 'You only need to save one template per site: it is matched to any page on that domain automatically, including "www." and other subdomain variants — you never need to look up or re-enter the exact host a product page happens to load from.', 'universal-woo-scraper' ); ?>
+			</p>
 			<p><strong><?php esc_html_e( 'Important: type a path to the element (an XPath expression, usually starting with //), never the value itself.', 'universal-woo-scraper' ); ?></strong>
 				<?php esc_html_e( 'For example, for the price field, the correct entry looks like //span[@itemprop="price"] — NOT the price "23820" itself. The grey example text in each field below is the shape to copy, not real data.', 'universal-woo-scraper' ); ?>
 			</p>

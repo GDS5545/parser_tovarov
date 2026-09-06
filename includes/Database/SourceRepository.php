@@ -13,6 +13,8 @@
 
 namespace Uws\Database;
 
+use Uws\Support\DomainMatcher;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -63,6 +65,41 @@ class SourceRepository {
 		$row->selectors = is_array( $profile ) && ! empty( $profile['selectors'] ) ? $profile['selectors'] : array();
 
 		return $row;
+	}
+
+	/**
+	 * Looks up the Site Template that applies to a page's actual host,
+	 * tolerating the mismatches a merchant typing a domain by hand will
+	 * routinely hit — "www.example.com" vs "example.com", or a product
+	 * living on a subdomain like "shop.example.com" while the template was
+	 * saved as "example.com". An exact match is tried first (the common
+	 * case, and avoids scanning every template for a large list); only if
+	 * that misses do we fall back to comparing registrable domains so one
+	 * saved template still applies across a site's www/non-www/subdomain
+	 * variants without the merchant having to know or care which host the
+	 * page actually loads from.
+	 *
+	 * @param string $host
+	 * @return object|null
+	 */
+	public function find_for_host( $host ) {
+		$host = (string) $host;
+		if ( '' === $host ) {
+			return null;
+		}
+
+		$exact = $this->find( $host );
+		if ( $exact ) {
+			return $exact;
+		}
+
+		foreach ( $this->all() as $row ) {
+			if ( DomainMatcher::same_site( $host, $row->domain ) ) {
+				return $row;
+			}
+		}
+
+		return null;
 	}
 
 	/**
