@@ -30,6 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Dispatcher {
 
+	/** Safety cap on links processed from a single listing page in one category job — see process_category_job(). */
+	const MAX_LINKS_PER_CATEGORY_PAGE = 200;
+
 	/** @var LogRepository */
 	private $logs;
 
@@ -52,6 +55,20 @@ class Dispatcher {
 	public function handle_tick( array $due_jobs, JobRepository $repository ) {
 		if ( empty( $due_jobs ) ) {
 			return;
+		}
+
+		// A category job can mean several network fetches (the listing page,
+		// its pagination) plus one DB round-trip per discovered link
+		// (JobRepository::enqueue_if_new()'s dedup check) — comfortably over
+		// a shared host's default 30s max_execution_time for a listing page
+		// with many links. That's a hard PHP fatal, not a catchable
+		// Throwable, so the try/catch below can't help with it; raising the
+		// limit here is the only thing that can. Also applies when this
+		// runs via the "Run queue now" button rather than WP-Cron, where a
+		// host may apply the same execution-time limit to an admin-ajax/REST
+		// request as to any other page load.
+		if ( function_exists( 'set_time_limit' ) ) {
+			@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors, WordPress.PHP.DiscouragedPHPFunctions
 		}
 
 		/** @var \Uws\Scraper\ScraperEngineInterface|null $engine */
@@ -154,6 +171,16 @@ class Dispatcher {
 		if ( is_wp_error( $urls ) ) {
 			$this->fail( $repository, $job, $urls->get_error_message() );
 			return;
+		}
+
+		// A cap, not a real-world expectation: a page linking to more than
+		// this is almost certainly picking up site chrome (mega-menu, footer
+		// sitemap) alongside real listing content. Bounds this one job's
+		// worst-case work (a DB round-trip per link, via enqueue_if_new()'s
+		// dedup check) instead of leaving it unbounded by whatever a given
+		// page happens to link to.
+		if ( count( $urls ) > self::MAX_LINKS_PER_CATEGORY_PAGE ) {
+			$urls = array_slice( $urls, 0, self::MAX_LINKS_PER_CATEGORY_PAGE );
 		}
 
 		$queued = 0;

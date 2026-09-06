@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.2
+Stable tag: 0.9.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,16 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.3 =
+* Raised the PHP execution time limit (to 120s) for the queue's per-tick
+  job processing, and capped how many links a single category job will
+  act on from one listing page (200). Added after a live "Run queue now"
+  click on a real catalog root produced a PHP fatal error rather than a
+  normal failure: a category job's work (fetching the listing page, then
+  one dedup lookup per discovered link) can add up past a shared host's
+  default 30-second execution limit, which is not a catchable error the
+  existing per-job try/catch (0.9.1) can do anything about.
 
 = 0.9.2 =
 * Added a "Run queue now" button on the Queue admin page: processes
