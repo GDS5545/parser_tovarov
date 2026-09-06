@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.5
+Stable tag: 0.9.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,22 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.6 =
+* Reported the exact same "Argument #1 ($due_jobs) must be of type
+  array, stdClass given" crash again after 0.9.5, at a line number that
+  showed the update HAD been applied — pointing at stale PHP bytecode
+  (OPcache) on that host serving an older `Dispatcher.php` despite the
+  file on disk being current, rather than a remaining logic gap.
+  `QueueRunner` no longer hands jobs to `Dispatcher::handle_tick()` via
+  a `do_action( 'uws_queue_tick', ... )` WordPress hook — nothing else
+  in the plugin (or, as far as reported, outside it) ever listened on
+  it — and instead calls it directly as a plain method. This removes an
+  indirection that added ambiguity while diagnosing a live crash without
+  adding any real flexibility, and is not itself expected to change
+  behavior if OPcache is in fact the cause; if this exact error recurs
+  after updating to 0.9.6, ask your host to restart PHP-FPM or clear
+  OPcache, since a code-only fix cannot undo a stale bytecode cache.
 
 = 0.9.5 =
 * Fixed the actual reported crash on a live "Run queue now" click, now

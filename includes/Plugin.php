@@ -11,7 +11,6 @@ namespace Uws;
 
 use Uws\Admin\Menu;
 use Uws\Database\Installer;
-use Uws\Queue\Dispatcher;
 use Uws\Queue\QueueRunner;
 use Uws\Rest\RestApi;
 use Uws\Scraper\HttpEngine;
@@ -40,7 +39,6 @@ class Plugin {
 
 		add_filter( 'cron_schedules', array( $this, 'register_cron_schedule' ) );
 		add_action( 'uws_process_queue', array( new QueueRunner(), 'run_due_jobs' ) );
-		add_action( 'uws_queue_tick', array( new Dispatcher(), 'handle_tick' ), 10, 2 );
 		add_filter( 'uws_scraper_engine', array( $this, 'register_scraper_engine' ) );
 
 		if ( is_admin() ) {

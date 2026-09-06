@@ -1,7 +1,8 @@
 <?php
 /**
- * Consumes the jobs QueueRunner::run_due_jobs() hands to 'uws_queue_tick'.
- * A "single" job is analyzed and imported through the same
+ * Consumes the jobs QueueRunner::run_due_jobs() hands to handle_tick()
+ * directly (a plain method call, not a WordPress hook — see QueueRunner's
+ * docblock for why). A "single" job is analyzed and imported through the same
  * ExtractionPipeline + ProductImporter used by the synchronous
  * /analyze + /import REST flow. A "category" job (spec §19) fetches its
  * URL and classifies it: if it turns out to already be a single product's

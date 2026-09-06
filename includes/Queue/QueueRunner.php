@@ -4,8 +4,19 @@
  * (registered as a 1-minute WP-Cron event in Plugin::register_cron_schedule).
  * Before each tick, recovers any job left stuck in 'processing' by an
  * earlier crash (see reset_stale_processing()), then hands the batch of
- * due jobs to whatever listens on 'uws_queue_tick' — Dispatcher, wired up
- * in Plugin.php.
+ * due jobs directly to Dispatcher::handle_tick().
+ *
+ * This used to go through a 'uws_queue_tick' action hook instead of a
+ * direct call, on the theory that some other listener might one day want
+ * to process jobs differently. Nothing in this plugin (or, as far as
+ * anyone reported, outside it) ever used that extensibility, and it
+ * became a real liability while chasing a live "Argument #1 ($due_jobs)
+ * must be of type array, stdClass given" crash: with the call routed
+ * through do_action()/WP_Hook, there was no way to be certain, from a
+ * debug.log stack trace alone, that a stale bytecode cache (or a second,
+ * unexpected listener) wasn't involved. A direct method call removes
+ * that entire class of doubt — if this crashes now, it's unambiguously
+ * this exact function's own logic.
  *
  * @package Uws\Queue
  */
@@ -26,9 +37,13 @@ class QueueRunner {
 	/** @var LogRepository */
 	private $logs;
 
-	public function __construct( JobRepository $jobs = null, LogRepository $logs = null ) {
-		$this->jobs = $jobs ?: new JobRepository();
-		$this->logs = $logs ?: new LogRepository();
+	/** @var Dispatcher */
+	private $dispatcher;
+
+	public function __construct( JobRepository $jobs = null, LogRepository $logs = null, Dispatcher $dispatcher = null ) {
+		$this->jobs       = $jobs ?: new JobRepository();
+		$this->logs       = $logs ?: new LogRepository();
+		$this->dispatcher = $dispatcher ?: new Dispatcher();
 	}
 
 	/**
@@ -57,19 +72,12 @@ class QueueRunner {
 			// fetch_due() already guarantees an array; this is a second,
 			// cheap guard directly at the call site that fatal-crashed on a
 			// live install ("Argument #1 ($due_jobs) must be of type array,
-			// stdClass given") — whatever produced that, do_action() below
+			// stdClass given") — whatever produced that, handle_tick() below
 			// must never receive anything but an array.
 			$due_jobs = is_object( $due_jobs ) ? array( $due_jobs ) : array();
 		}
 
-		/**
-		 * Fires once per tick with the jobs that are due to run. Dispatcher
-		 * (wired up in Plugin.php) is what actually fetches/extracts/imports.
-		 *
-		 * @param array<int,object> $due_jobs
-		 * @param JobRepository     $repository
-		 */
-		do_action( 'uws_queue_tick', $due_jobs, $this->jobs );
+		$this->dispatcher->handle_tick( $due_jobs, $this->jobs );
 
 		return count( $due_jobs );
 	}
