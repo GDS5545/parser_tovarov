@@ -617,6 +617,15 @@ msgstr "Найдено ссылок: %1$d, поставлено в очеред�
 msgid "Recovered a job stuck in \"processing\" (likely an unexpected crash mid-run) and reset it to pending."
 msgstr "Восстановлена зависшая в статусе «processing» задача (вероятно, из-за сбоя в процессе выполнения) — возвращена в статус «pending»."
 
+msgid "Run queue now"
+msgstr "Запустить очередь сейчас"
+
+msgid "Processes whatever is currently due immediately, instead of waiting for WP-Cron — useful on a low-traffic site where WP-Cron's only trigger (a visitor request) may not fire for a while."
+msgstr "Обрабатывает все готовые задачи сразу, не дожидаясь WP-Cron — полезно на малопосещаемом сайте, где единственный триггер WP-Cron (заход посетителя) может долго не срабатывать."
+
+msgid "Processed %d due job(s)."
+msgstr "Обработано готовых задач: %d."
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr "example.com — только домен, а не полный URL страницы товара"
 

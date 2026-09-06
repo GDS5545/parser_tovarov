@@ -613,6 +613,15 @@ msgstr ""
 msgid "Recovered a job stuck in \"processing\" (likely an unexpected crash mid-run) and reset it to pending."
 msgstr ""
 
+msgid "Run queue now"
+msgstr ""
+
+msgid "Processes whatever is currently due immediately, instead of waiting for WP-Cron — useful on a low-traffic site where WP-Cron's only trigger (a visitor request) may not fire for a while."
+msgstr ""
+
+msgid "Processed %d due job(s)."
+msgstr ""
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr ""
 

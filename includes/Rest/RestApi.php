@@ -114,6 +114,16 @@ class RestApi {
 
 		register_rest_route(
 			self::NAMESPACE_V1,
+			'/jobs/run-now',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $jobs, 'run_now' ),
+				'permission_callback' => array( Capabilities::class, 'rest_permission_check' ),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE_V1,
 			'/products',
 			array(
 				'methods'             => 'GET',

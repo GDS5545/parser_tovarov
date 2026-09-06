@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.1
+Stable tag: 0.9.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,14 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.2 =
+* Added a "Run queue now" button on the Queue admin page: processes
+  whatever is currently due immediately, in the request, instead of
+  waiting for WP-Cron. Added because WP-Cron's default "pseudo-cron"
+  only fires on a visitor request — on a low-traffic or pre-launch site
+  with no visitors, a queued job could sit at "pending" indefinitely
+  with nothing actually wrong, which looked identical to a stuck queue.
 
 = 0.9.1 =
 * Fixed a robustness gap in the queue worker: an unexpected error partway

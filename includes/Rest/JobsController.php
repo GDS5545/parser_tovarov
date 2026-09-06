@@ -1,7 +1,10 @@
 <?php
 /**
- * /wp-json/uws/v1/jobs — real queue CRUD backed by wp_uws_jobs (spec §30).
- * This works today even though nothing consumes the queue yet (Stage 11).
+ * /wp-json/uws/v1/jobs — queue CRUD backed by wp_uws_jobs (spec §30), plus
+ * run_now() for the "Run queue now" button that drives the queue directly
+ * (bypassing WP-Cron) for a site where the cron event isn't firing on its
+ * own — a real-world case: a low-traffic site whose only WP-Cron trigger is
+ * a visitor request has no visitor to trigger it.
  *
  * @package Uws\Rest
  */
@@ -9,6 +12,7 @@
 namespace Uws\Rest;
 
 use Uws\Queue\JobRepository;
+use Uws\Queue\QueueRunner;
 use Uws\Security\UrlValidator;
 use WP_Error;
 use WP_REST_Request;
@@ -74,5 +78,16 @@ class JobsController {
 	public function retry( WP_REST_Request $request ) {
 		$this->jobs->retry( (int) $request->get_param( 'id' ) );
 		return new WP_REST_Response( array( 'status' => 'pending' ), 200 );
+	}
+
+	/**
+	 * Runs one queue tick right now, in this request, instead of waiting
+	 * for WP-Cron. Safe to click repeatedly: it only ever processes
+	 * whatever is currently due (respecting max_parallel_workers), the
+	 * same as a real cron tick would.
+	 */
+	public function run_now( WP_REST_Request $request ) {
+		$processed = ( new QueueRunner( $this->jobs ) )->run_due_jobs();
+		return new WP_REST_Response( array( 'processed' => $processed ), 200 );
 	}
 }

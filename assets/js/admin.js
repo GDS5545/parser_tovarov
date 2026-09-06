@@ -392,6 +392,29 @@
 				} );
 			} );
 		} );
+
+		var runNowButton = document.getElementById( 'uws-queue-run-now' );
+		if ( runNowButton ) {
+			runNowButton.addEventListener( 'click', function () {
+				var resultBox = document.getElementById( 'uws-queue-run-result' );
+				var resultMessage = document.getElementById( 'uws-queue-run-message' );
+
+				runNowButton.disabled = true;
+				restRequest( '/jobs/run-now', 'POST' ).then( function ( result ) {
+					if ( result.ok ) {
+						var template = uwsAdmin.i18n.queueRunNowTemplate || 'Processed %d due job(s).';
+						if ( resultBox && resultMessage ) {
+							resultMessage.textContent = template.replace( '%d', result.data.processed );
+							resultBox.hidden = false;
+						}
+						setTimeout( function () { window.location.reload(); }, 1200 );
+					} else {
+						alert( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error ); // eslint-disable-line no-alert
+						runNowButton.disabled = false;
+					}
+				} );
+			} );
+		}
 	}
 
 	document.addEventListener( 'DOMContentLoaded', function () {

@@ -32,7 +32,13 @@ class QueueRunner {
 	}
 
 	/**
-	 * Entry point for the 'uws_process_queue' cron hook.
+	 * Entry point for the 'uws_process_queue' cron hook — also called
+	 * directly (not through cron) by JobsController::run_now(), the
+	 * "Run queue now" button on the Queue admin page, for a site where
+	 * WP-Cron isn't firing on its own (see the class docblock) and a
+	 * merchant needs the queue to move without waiting on it.
+	 *
+	 * @return int Number of due jobs handed to the dispatcher this call.
 	 */
 	public function run_due_jobs() {
 		foreach ( $this->jobs->reset_stale_processing() as $job ) {
@@ -46,16 +52,18 @@ class QueueRunner {
 			);
 		}
 
+		$due_jobs = $this->jobs->fetch_due( self::batch_size() );
+
 		/**
-		 * Fires once per cron tick with the jobs that are due to run.
-		 * Stage 11 attaches the real dispatcher (fetch → extract → import)
-		 * here via add_action(); until then no listener is registered and
-		 * this method is a correct no-op rather than a fake success.
+		 * Fires once per tick with the jobs that are due to run. Dispatcher
+		 * (wired up in Plugin.php) is what actually fetches/extracts/imports.
 		 *
 		 * @param array<int,object> $due_jobs
 		 * @param JobRepository     $repository
 		 */
-		do_action( 'uws_queue_tick', $this->jobs->fetch_due( self::batch_size() ), $this->jobs );
+		do_action( 'uws_queue_tick', $due_jobs, $this->jobs );
+
+		return count( $due_jobs );
 	}
 
 	/**

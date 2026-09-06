@@ -101,6 +101,7 @@ class Menu {
 					'urlsQueuedTemplate'    => __( '%1$d / %2$d URLs queued.', 'universal-woo-scraper' ),
 					'categoryQueuedTemplate' => __( 'Category job #%d queued.', 'universal-woo-scraper' ),
 					'duplicatePromptSuffix'  => __( '). Type "update", "duplicate", or "skip":', 'universal-woo-scraper' ),
+					'queueRunNowTemplate'    => __( 'Processed %d due job(s).', 'universal-woo-scraper' ),
 					'error'          => __( 'Error', 'universal-woo-scraper' ),
 				),
 			)

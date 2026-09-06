@@ -23,6 +23,12 @@ class QueuePage {
 		<div class="wrap uws-wrap">
 			<h1><?php esc_html_e( 'Queue', 'universal-woo-scraper' ); ?></h1>
 
+			<p>
+				<button type="button" class="button button-primary" id="uws-queue-run-now"><?php esc_html_e( 'Run queue now', 'universal-woo-scraper' ); ?></button>
+				<span class="description"><?php esc_html_e( 'Processes whatever is currently due immediately, instead of waiting for WP-Cron — useful on a low-traffic site where WP-Cron\'s only trigger (a visitor request) may not fire for a while.', 'universal-woo-scraper' ); ?></span>
+			</p>
+			<div id="uws-queue-run-result" class="notice notice-info" hidden><p id="uws-queue-run-message"></p></div>
+
 			<table class="widefat striped">
 				<thead>
 					<tr>

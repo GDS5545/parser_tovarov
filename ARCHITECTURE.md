@@ -194,6 +194,28 @@ fetch, so the existing per-tick job limit (`max_parallel_workers`) and
 everything else in the queue — no separate "safe background mode"
 machinery was needed.
 
+**Queue reliability.** `Dispatcher::handle_tick()` wraps each job's
+processing in try/catch(Throwable): without this, an unexpected error
+partway through one job (a page structure that crashes an extractor, a
+WooCommerce API edge case) would crash the whole cron request, freezing
+that job at `status = 'processing'` forever with no log entry, since
+`fetch_due()` only ever looks at `pending`/`retry` — from the admin's
+side, the queue would simply appear to have stopped with nothing
+explaining why. Caught errors go through the normal `fail()` path
+(logged, retried with backoff) instead. As a second safety net for a
+hosting timeout that kills the request outright (skipping even that
+catch), `JobRepository::reset_stale_processing()` runs at the start of
+every `QueueRunner::run_due_jobs()` call and resets any job still stuck
+in `processing` after 10+ minutes back to `pending`, logging the
+recovery. `run_due_jobs()` is also callable directly, outside of
+WP-Cron: the "Run queue now" button (Queue admin page →
+`JobsController::run_now()`) processes whatever is currently due in the
+same request — needed because WP-Cron's default "pseudo-cron" only
+fires on a visitor request, so a low-traffic or pre-launch site can have
+a queue that never moves for reasons entirely outside the plugin (no
+visitors → no cron trigger), which looks identical to a genuinely stuck
+queue from the admin's side.
+
 ## 3. Directory layout (WordPress plugin, PSR-4 autoloaded)
 
 ```
@@ -309,7 +331,7 @@ English in the templates). `Plugin::boot()` calls
 `load_plugin_textdomain()` pointed at `languages/`, so a translation is
 picked up automatically based on the site's configured locale, no setting
 to flip. `languages/universal-woo-scraper-ru_RU.mo` ships a complete
-Russian translation (180 strings, verified against every `__()`-family
+Russian translation (220 strings, verified against every `__()`-family
 call site with no gaps); `languages/universal-woo-scraper.pot` is the
 source catalog for adding another language with a standard PO editor
 (Poedit, Loco Translate, etc.) — translate it, compile to
