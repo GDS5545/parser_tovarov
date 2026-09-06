@@ -415,6 +415,24 @@
 				} );
 			} );
 		}
+
+		var clearAllButton = document.getElementById( 'uws-queue-clear-all' );
+		if ( clearAllButton ) {
+			clearAllButton.addEventListener( 'click', function () {
+				if ( ! confirm( uwsAdmin.i18n.confirmClearQueue || 'Delete every job in the queue? This cannot be undone.' ) ) { // eslint-disable-line no-alert
+					return;
+				}
+				clearAllButton.disabled = true;
+				restRequest( '/jobs/clear-all', 'POST' ).then( function ( result ) {
+					if ( result.ok ) {
+						window.location.reload();
+					} else {
+						alert( result.data && result.data.message ? result.data.message : uwsAdmin.i18n.error ); // eslint-disable-line no-alert
+						clearAllButton.disabled = false;
+					}
+				} );
+			} );
+		}
 	}
 
 	document.addEventListener( 'DOMContentLoaded', function () {

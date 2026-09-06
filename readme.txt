@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.9.6
+Stable tag: 0.9.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,21 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.7 =
+* Fixed a real fan-out bug on a live category crawl: a catalog root
+  linked to the site's HTML site map ("Карта сайта"), and — since a site
+  map's whole purpose is linking to every page on the site — following
+  it like any other listing page queued hundreds of unrelated pages
+  (contacts, FAQ, price-list terms, complaints book, certificates, ...)
+  as if they were product sub-categories. `HttpEngine`'s excluded-path
+  list now recognizes site maps and several other common non-catalog
+  Russian-site sections (feedback forms, news/articles, delivery/payment
+  policy pages, vacancies, etc.) and skips them during discovery.
+* Added a "Clear queue" button (Queue admin page) to recover from a
+  queue a crawl already filled with the wrong links, plus a total job
+  count on that page — clearing hundreds of rows by hand, one Cancel
+  click at a time, was the only previous option.
 
 = 0.9.6 =
 * Reported the exact same "Argument #1 ($due_jobs) must be of type

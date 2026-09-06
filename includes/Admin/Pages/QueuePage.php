@@ -17,15 +17,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 class QueuePage {
 
 	public function render() {
-		$page = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$jobs = ( new JobRepository() )->paginate( null, $page, 20 );
+		$repository = new JobRepository();
+		$page       = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$jobs       = $repository->paginate( null, $page, 20 );
+		$total      = $repository->count_all();
 		?>
 		<div class="wrap uws-wrap">
 			<h1><?php esc_html_e( 'Queue', 'universal-woo-scraper' ); ?></h1>
 
 			<p>
 				<button type="button" class="button button-primary" id="uws-queue-run-now"><?php esc_html_e( 'Run queue now', 'universal-woo-scraper' ); ?></button>
+				<button type="button" class="button" id="uws-queue-clear-all"><?php esc_html_e( 'Clear queue', 'universal-woo-scraper' ); ?></button>
 				<span class="description"><?php esc_html_e( 'Processes whatever is currently due immediately, instead of waiting for WP-Cron — useful on a low-traffic site where WP-Cron\'s only trigger (a visitor request) may not fire for a while.', 'universal-woo-scraper' ); ?></span>
+			</p>
+			<p>
+				<?php
+				printf(
+					/* translators: %d: total number of jobs currently in the queue, any status */
+					esc_html__( 'Total jobs in queue: %d.', 'universal-woo-scraper' ),
+					(int) $total
+				);
+				?>
 			</p>
 			<div id="uws-queue-run-result" class="notice notice-info" hidden><p id="uws-queue-run-message"></p></div>
 

@@ -124,6 +124,16 @@ class RestApi {
 
 		register_rest_route(
 			self::NAMESPACE_V1,
+			'/jobs/clear-all',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $jobs, 'clear_all' ),
+				'permission_callback' => array( Capabilities::class, 'rest_permission_check' ),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE_V1,
 			'/products',
 			array(
 				'methods'             => 'GET',

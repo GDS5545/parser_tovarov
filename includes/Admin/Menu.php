@@ -102,6 +102,7 @@ class Menu {
 					'categoryQueuedTemplate' => __( 'Category job #%d queued.', 'universal-woo-scraper' ),
 					'duplicatePromptSuffix'  => __( '). Type "update", "duplicate", or "skip":', 'universal-woo-scraper' ),
 					'queueRunNowTemplate'    => __( 'Processed %d due job(s).', 'universal-woo-scraper' ),
+					'confirmClearQueue'      => __( 'Delete every job in the queue? This cannot be undone.', 'universal-woo-scraper' ),
 					'error'          => __( 'Error', 'universal-woo-scraper' ),
 				),
 			)

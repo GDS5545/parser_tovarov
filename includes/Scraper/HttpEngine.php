@@ -35,8 +35,24 @@ class HttpEngine implements ScraperEngineInterface {
 
 	const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 UniversalWooScraper/0.1 (+no-JS fallback fetch)';
 
-	/** Path/query keywords that are almost never a product detail page — mirrors worker/src/pageFetcher.js's isLikelyProductLink(). */
-	const EXCLUDED_PATH_KEYWORDS = array( '/cart', '/checkout', '/login', '/account', '/wishlist', '/compare', '/search', '/contact', '/about', '/blog', '/wp-content', '/wp-admin' );
+	/**
+	 * Path/query keywords that are almost never a product detail page —
+	 * mirrors worker/src/pageFetcher.js's isLikelyProductLink(). Extended
+	 * (spec §19, category-tree crawl) after a real "/katalog/" root on a
+	 * live 1C-Bitrix site linked to an HTML site map ("Карта сайта"),
+	 * which the crawler followed like any other link since nothing here
+	 * recognized it as non-catalog; a site map's entire purpose is linking
+	 * to every page on the site, so treating it as "just another category
+	 * to descend into" fanned the queue out to the whole site (contacts,
+	 * FAQ, price-list terms, complaints book, certificates, ...) in one
+	 * jump rather than staying inside the actual product catalog.
+	 */
+	const EXCLUDED_PATH_KEYWORDS = array(
+		'/cart', '/checkout', '/login', '/account', '/wishlist', '/compare', '/search', '/contact', '/about', '/blog', '/wp-content', '/wp-admin',
+		'/sitemap', '/site-map', '/karta-sajta', '/feedback', '/informaciya', '/forum', '/vopros-otvet', '/servisnyy_centr', '/kniga_zhalob',
+		'/sertifikat', '/praysy', '/price-list', '/pricelist', '/vakansii', '/news', '/novosti', '/stati', '/articles', '/dostavka', '/delivery',
+		'/oplata', '/payment', '/politika', '/policy', '/privacy',
+	);
 
 	public function fetch_page( $url, array $options = array() ) {
 		$valid = UrlValidator::validate( $url );

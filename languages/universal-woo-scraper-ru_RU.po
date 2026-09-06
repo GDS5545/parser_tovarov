@@ -626,6 +626,15 @@ msgstr "Обрабатывает все готовые задачи сразу, 
 msgid "Processed %d due job(s)."
 msgstr "Обработано готовых задач: %d."
 
+msgid "Clear queue"
+msgstr "Очистить очередь"
+
+msgid "Total jobs in queue: %d."
+msgstr "Всего задач в очереди: %d."
+
+msgid "Delete every job in the queue? This cannot be undone."
+msgstr "Удалить все задачи из очереди? Это действие нельзя отменить."
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr "example.com — только домен, а не полный URL страницы товара"
 

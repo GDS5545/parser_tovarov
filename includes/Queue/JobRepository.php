@@ -198,6 +198,14 @@ class JobRepository {
 	}
 
 	/**
+	 * @return int Total number of jobs regardless of status.
+	 */
+	public function count_all() {
+		global $wpdb;
+		return (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . Tables::jobs() ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
 	 * @param string|null $status Filter, or null for all.
 	 * @param int         $page   1-based.
 	 * @param int         $per_page
@@ -258,5 +266,22 @@ class JobRepository {
 		global $wpdb;
 		$table = Tables::jobs();
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE status IN ('completed','cancelled')" ) ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	/**
+	 * Deletes every job regardless of status — the "start over" escape
+	 * hatch for a queue a category crawl has filled with the wrong links
+	 * (e.g. before EXCLUDED_PATH_KEYWORDS caught a site's HTML sitemap,
+	 * a single category job could fan out into hundreds of non-catalog
+	 * pages) rather than making a merchant cancel hundreds of rows by hand.
+	 *
+	 * @return int Number of jobs deleted.
+	 */
+	public function clear_all() {
+		global $wpdb;
+		$table = Tables::jobs();
+		$count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQL.NotPrepared
+		return $count;
 	}
 }

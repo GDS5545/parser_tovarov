@@ -622,6 +622,15 @@ msgstr ""
 msgid "Processed %d due job(s)."
 msgstr ""
 
+msgid "Clear queue"
+msgstr ""
+
+msgid "Total jobs in queue: %d."
+msgstr ""
+
+msgid "Delete every job in the queue? This cannot be undone."
+msgstr ""
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr ""
 

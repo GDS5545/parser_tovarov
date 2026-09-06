@@ -90,4 +90,15 @@ class JobsController {
 		$processed = ( new QueueRunner( $this->jobs ) )->run_due_jobs();
 		return new WP_REST_Response( array( 'processed' => $processed ), 200 );
 	}
+
+	/**
+	 * Deletes every queued job, regardless of status — the "Clear queue"
+	 * button's escape hatch for a category crawl that fanned out into the
+	 * wrong pages (e.g. a site's HTML sitemap before EXCLUDED_PATH_KEYWORDS
+	 * caught it) faster than a merchant could cancel rows by hand.
+	 */
+	public function clear_all( WP_REST_Request $request ) {
+		$deleted = $this->jobs->clear_all();
+		return new WP_REST_Response( array( 'deleted' => $deleted ), 200 );
+	}
 }
