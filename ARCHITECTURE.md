@@ -166,6 +166,34 @@ indiscriminately: a homepage-style photo carousel as "product images", a
 "why choose us" marketing table as "specifications", and an unrelated
 related-product's price paired into a fake sale price.
 
+**Recursive category-tree crawl (`Dispatcher::process_category_job()`,
+spec §19).** A "category" job's URL isn't necessarily one page of flat
+product cards — it can be a catalog root several sub-category levels
+above any actual product (`/catalog/` → sub-category → sub-sub-category →
+product). There is no way to tell, from a listing page alone, which of
+its links are further sub-categories versus actual products without
+fetching them, so each job now: fetches its own URL once; classifies that
+page with `ExtractionPipeline::looks_like_product_page()` (the same
+extractors `analyze()` uses, minus AI — a page "looks like a product"
+once a name plus a price or SKU resolve); if it *is* a product, imports
+it right there, reusing the page already fetched (`analyze()` takes an
+optional `$prefetched_page` so this doesn't fetch it a second time); if
+it *isn't*, calls `discover_product_urls()` for this one page's links
+(still handling that engine's own pagination/"Load more" as before) and
+enqueues each new link as another "category" job one level deeper.
+`JobRepository::enqueue_if_new()` — backed by a `url_hash` column checked
+before inserting — skips a link already queued by any earlier job, which
+is what keeps this from looping when the same page is reachable from
+more than one parent (breadcrumbs, "related categories" widgets) and
+bounds the crawl to the site's distinct URLs rather than needing an
+explicit visited-set. Depth is capped (`max_depth`, default 5, settable
+per job from the Bulk Import page) as a backstop against a pathologically
+deep or cyclic site structure. Each "category" job does exactly one
+fetch, so the existing per-tick job limit (`max_parallel_workers`) and
+1-minute cron already pace a whole-catalog crawl the same way they pace
+everything else in the queue — no separate "safe background mode"
+machinery was needed.
+
 ## 3. Directory layout (WordPress plugin, PSR-4 autoloaded)
 
 ```
@@ -219,7 +247,9 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
   §48, "on first visit to a new domain, record what was found") — that
   detection isn't built yet, so those columns exist but nothing writes
   to them.
-- **uws_jobs** — the scrape/import queue: url, type (single/category/bulk),
+- **uws_jobs** — the scrape/import queue: url, url_hash (md5 of url, so
+  `JobRepository::url_already_queued()` can check for an existing job by
+  exact URL without a full-table TEXT scan), type (single/category/bulk),
   status (`pending|processing|completed|failed|retry|cancelled`), attempts,
   next_retry_at, payload (JSON), result (JSON), timestamps.
 - **uws_logs** — one row per job attempt: status, duration, counts
@@ -259,7 +289,7 @@ All under `$wpdb->prefix . 'uws_'`, created via `dbDelta` in
 | 8 | WooCommerce importer (`ProductImporter`, real `WC_Product_Simple`/`WC_Product_Attribute` CRUD) | ✅ done — simple products only |
 | 9 | Variable products | ◐ partial — `VariationExtractor` detects `<select>`/radio-group option sets and flags them for variation; `ProductImporter` creates a real `WC_Product_Variable` with those attributes marked for variation. Per-variation price/SKU/stock/image is **not** synthesized (that data lives behind AJAX on real stores, essentially never in the initial HTML) — the result tells the merchant to use WooCommerce's own "Generate variations" button instead of inventing numbers |
 | 10 | Categories + mappings | ✅ done — `Database\MappingRepository` backs both `CategoryResolver` (scoped per source domain) and `AttributeResolver` (scoped globally); an identity mapping row is auto-created the first time a label is seen, and the Mappings admin page lets a merchant rename the WooCommerce-facing label or set a row to "skip" for all future imports without touching already-imported products |
-| 11 | Queue (worker loop, retries, rate limiting) | ✅ done — cron-driven `Dispatcher`, exponential backoff, category→single fan-out |
+| 11 | Queue (worker loop, retries, rate limiting) | ✅ done — cron-driven `Dispatcher`, exponential backoff, recursive category-tree crawl (below) |
 | 12 | AI extraction | ✅ done — `Ai\AiExtractor` runs as a distinct second pass after the normal merge (not a member of the uniform extractor list, since it needs to see what's already resolved), calling Anthropic or OpenAI only when an important field (name/sku/brand/price/description) is still missing/low-confidence, on a script/style-stripped and size-capped (~12,000 char) copy of the page. Never overwrites an already-confident field |
 | 13 | Synchronization | ✅ done for the fields that matter most — `ImportSnapshot` records what the plugin last wrote for title/description/short description/regular+sale price/stock, so a re-scrape can tell "matches what we imported, safe to refresh" apart from "a human changed this in wp-admin since" (protect_manual_edits). Per-field update-policy toggles (title/description/price/stock/categories/attributes/images) gate whether a group is touched at all. No diff/changed-fields *review* UI (a side-by-side "here's what would change" screen before committing) — updates apply directly, governed by the toggles above |
 | 14 | Admin UI (full preview/editor) | ◐ partial — Import Product has an editable, confidence-highlighted preview; Bulk/Queue/Logs/Products are functional but plain |

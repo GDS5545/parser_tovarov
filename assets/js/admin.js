@@ -353,11 +353,16 @@
 		if ( categoryButton ) {
 			categoryButton.addEventListener( 'click', function () {
 				var input = document.getElementById( 'uws-category-url' );
+				var depthInput = document.getElementById( 'uws-category-depth' );
 				if ( ! input.value ) {
 					return;
 				}
 				categoryButton.disabled = true;
-				restRequest( '/jobs', 'POST', { url: input.value, type: 'category' } ).then( function ( result ) {
+				var payload = { url: input.value, type: 'category' };
+				if ( depthInput && depthInput.value ) {
+					payload.max_depth = parseInt( depthInput.value, 10 );
+				}
+				restRequest( '/jobs', 'POST', payload ).then( function ( result ) {
 					categoryButton.disabled = false;
 					if ( result.ok ) {
 						var template = uwsAdmin.i18n.categoryQueuedTemplate || 'Category job #%d queued.';

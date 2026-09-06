@@ -5,7 +5,7 @@ Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
 WC requires at least: 7.0
-Stable tag: 0.8.3
+Stable tag: 0.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,24 @@ table.
    specific site needs JavaScript rendering (see `INSTALL.md`).
 
 == Changelog ==
+
+= 0.9.0 =
+* "Import from a category / listing URL" (Bulk Import) now crawls a
+  whole nested catalog, not just one flat product grid: pasting a
+  catalog-root URL (e.g. a site's `/catalog/` page) discovers its
+  sub-category links, descends into each of those, and so on down to a
+  configurable depth (default 5), rather than only reading the one page
+  pasted in. Every discovered link is fetched once and classified —
+  reusing the exact same extractors Analyze/Import already run — as
+  either a further sub-category (keep descending) or an actual product
+  page (queue to import); links already queued are never queued twice,
+  however many category pages happen to link to them, so this can't
+  loop. Added because a real catalog root (several nested sub-category
+  levels deep) could not previously be imported in one step — the
+  category job only ever discovered links from the single page pasted
+  in and treated every one of them as a product, so nested sub-category
+  pages were queued and "imported" as broken, non-product entries
+  instead of being crawled into.
 
 = 0.8.3 =
 * Simplified Site Template domain matching: a template now applies to

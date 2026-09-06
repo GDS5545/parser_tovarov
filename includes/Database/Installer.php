@@ -82,6 +82,7 @@ class Installer {
 				id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 				type VARCHAR(20) NOT NULL DEFAULT 'single',
 				url TEXT NOT NULL,
+				url_hash CHAR(32) NOT NULL DEFAULT '',
 				status VARCHAR(20) NOT NULL DEFAULT 'pending',
 				priority SMALLINT NOT NULL DEFAULT 10,
 				attempts SMALLINT UNSIGNED NOT NULL DEFAULT 0,
@@ -96,6 +97,7 @@ class Installer {
 				updated_at DATETIME NOT NULL,
 				PRIMARY KEY  (id),
 				KEY status (status),
+				KEY url_hash (url_hash),
 				KEY parent_job_id (parent_job_id),
 				KEY next_retry_at (next_retry_at)
 			) {$charset_collate};",

@@ -601,6 +601,15 @@ msgstr ""
 msgid "You only need to save one template per site: it is matched to any page on that domain automatically, including \"www.\" and other subdomain variants — you never need to look up or re-enter the exact host a product page happens to load from."
 msgstr ""
 
+msgid "Works for a whole nested catalog too, not just one flat product grid: a URL like a catalog root is crawled sub-category by sub-category — each discovered link is fetched once to tell a further sub-category (kept crawling) from an actual product page (queued to import) apart, down to the depth set below."
+msgstr ""
+
+msgid "Maximum nested category depth to crawl"
+msgstr ""
+
+msgid "Discovered %1$d links, queued %2$d for further crawling/import."
+msgstr ""
+
 msgid "example.com — just the domain, not the full product page URL"
 msgstr ""
 

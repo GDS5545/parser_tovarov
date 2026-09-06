@@ -35,6 +35,7 @@ class JobRepository {
 			array(
 				'type'       => $type,
 				'url'        => $url,
+				'url_hash'   => md5( $url ),
 				'status'     => 'pending',
 				'priority'   => $priority,
 				'payload'    => wp_json_encode( $payload ),
@@ -42,10 +43,47 @@ class JobRepository {
 				'created_at' => $now,
 				'updated_at' => $now,
 			),
-			array( '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
+			array( '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s' )
 		);
 
 		return (int) $wpdb->insert_id;
+	}
+
+	/**
+	 * @param string $url
+	 * @return bool True if any job (any type/status) already exists for this
+	 *              exact URL. Backs enqueue_if_new() so the category-tree
+	 *              crawler (Dispatcher::process_category_job(), spec §19)
+	 *              can discover the same link from multiple listing pages
+	 *              without spawning a duplicate job for it every time.
+	 */
+	public function url_already_queued( $url ) {
+		global $wpdb;
+		$table = Tables::jobs();
+
+		return (bool) $wpdb->get_var(
+			$wpdb->prepare( "SELECT id FROM {$table} WHERE url_hash = %s LIMIT 1", md5( $url ) ) // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		);
+	}
+
+	/**
+	 * Like enqueue(), but a no-op (returns 0) if a job for this URL already
+	 * exists. Used only for URLs the crawler discovers on its own rather
+	 * than ones a merchant explicitly submitted — an explicit "Add to
+	 * Queue"/"Queue Category" action always queues, even for a URL already
+	 * queued, so a merchant can deliberately retry one.
+	 *
+	 * @param string               $url
+	 * @param string               $type
+	 * @param array<string,mixed>  $payload
+	 * @param int                  $priority
+	 * @return int Inserted job ID, or 0 if this URL was already queued.
+	 */
+	public function enqueue_if_new( $url, $type = 'single', array $payload = array(), $priority = 10 ) {
+		if ( $this->url_already_queued( $url ) ) {
+			return 0;
+		}
+		return $this->enqueue( $url, $type, $payload, $priority );
 	}
 
 	/**

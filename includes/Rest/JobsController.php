@@ -46,7 +46,12 @@ class JobsController {
 		$options = $request->get_param( 'options' );
 		$payload = is_array( $options ) ? array( 'discover_options' => $options ) : array();
 
-		$id = $this->jobs->enqueue( $url, $request->get_param( 'type' ) ?: 'single', $payload );
+		$type = $request->get_param( 'type' ) ?: 'single';
+		if ( 'category' === $type && null !== $request->get_param( 'max_depth' ) ) {
+			$payload['max_depth'] = max( 1, min( 10, (int) $request->get_param( 'max_depth' ) ) );
+		}
+
+		$id = $this->jobs->enqueue( $url, $type, $payload );
 
 		return new WP_REST_Response( array( 'id' => $id ), 201 );
 	}

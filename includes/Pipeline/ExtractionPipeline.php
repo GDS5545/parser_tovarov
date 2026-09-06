@@ -92,12 +92,22 @@ class ExtractionPipeline {
 	/**
 	 * @param string $url
 	 * @param array<string,mixed> $options Passed through to the scraper engine.
+	 * @param array<string,mixed>|null $prefetched_page A page already
+	 *        returned by ScraperEngineInterface::fetch_page() for this
+	 *        exact URL — skips fetching it again. Used by the category-tree
+	 *        crawler (Dispatcher::process_category_job(), spec §19), which
+	 *        must fetch a listing page once to decide whether it is itself
+	 *        a product detail page (see looks_like_product_page()) and, if
+	 *        so, wants to analyze that same HTML rather than fetch it twice.
 	 * @return array{data: ProductData, page: array<string,mixed>, ai_used?: bool, ai_error?: string}|\WP_Error
 	 */
-	public function analyze( $url, array $options = array() ) {
-		$page = $this->engine->fetch_page( $url, $options );
-		if ( is_wp_error( $page ) ) {
-			return $page;
+	public function analyze( $url, array $options = array(), array $prefetched_page = null ) {
+		$page = $prefetched_page;
+		if ( null === $page ) {
+			$page = $this->engine->fetch_page( $url, $options );
+			if ( is_wp_error( $page ) ) {
+				return $page;
+			}
 		}
 
 		$domain     = (string) ( wp_parse_url( ! empty( $page['final_url'] ) ? $page['final_url'] : $url, PHP_URL_HOST ) ?: '' );
@@ -116,6 +126,30 @@ class ExtractionPipeline {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Cheap product-vs-listing classifier for a page that has already been
+	 * fetched: runs the same (non-AI) extractors analyze() uses and checks
+	 * whether they found enough to call this a single product's detail
+	 * page, without the cost — or the API calls — of a full analyze().
+	 *
+	 * Backs the category-tree crawler (Dispatcher::process_category_job(),
+	 * spec §19): given a listing URL like a catalog root, it cannot know in
+	 * advance which discovered links are further sub-category pages (keep
+	 * crawling) versus actual product pages (import), so each one is
+	 * fetched once and classified with this before deciding which.
+	 *
+	 * @param array<string,mixed> $page Already-fetched page.
+	 * @param string              $url
+	 * @return bool
+	 */
+	public function looks_like_product_page( array $page, $url ) {
+		$domain     = (string) ( wp_parse_url( ! empty( $page['final_url'] ) ? $page['final_url'] : $url, PHP_URL_HOST ) ?: '' );
+		$extractors = $this->extractors_for_domain( $domain );
+		$data       = $this->merger->merge( $page, $extractors );
+
+		return '' !== trim( (string) $data->name ) && ( '' !== trim( (string) $data->regular_price ) || '' !== trim( (string) $data->sku ) );
 	}
 
 	/**
